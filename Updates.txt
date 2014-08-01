@@ -1,0 +1,28 @@
+Fixed erase bug in shapes
+
+Added shapes to student side
+__________________________________________________________________________________________________________________________
+Note: Static vs. nonstatic images? 
+Note: push notifications from student to teacher  
+Note: Collab -> both by grabbing images and by letting them draw
+Note: Scaling images
+Note: CSS updates to alerts, storing names, and general user friendliness (including image moving icons)
+Note: Implement complex UI
+Note: Highlighting
+Note: Private notes bar for typed notes that is made to look like a document? on sidebar for desktop only
+Note: login integration system
+Note: Diagnostics (sorta like push notifications, but simpler for only thumbs up, down, or middle; + who is on the active
+screen + records/storage of this data for later on + seeing which slide students are on + monitoring screens (?) )
+Note: re-editable text boxes
+Note: Toggle for student view, teacher view etc. 
+Note: Voice recording
+Note: Student independent page up/down
+Note: Teacher non-transfer option 
+
+Note: lock code so that random users cannot view all of it through the web browser (how?)
+Note: Fix Images from drive so it doesn't always start at 0,0
+
+Unreplicated glitches: 
+Socket.io would randomly add users (teacher) back into the same room but without ability to draw
+Google images would load but wouldn't save to teacher's canvas if teacher undo/redo/update; however would appear on other tablets/whiteboard client
+Random copy issue with dotted line saving and replicating over

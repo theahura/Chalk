@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta name="viewport" content="initial-scale=1, user-scalable = no" />
+	
+	<title>Chalk: Student</title>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>		
+
+	<script type="text/javascript" src="JS/jquery.event.drag-2.2.js"></script>
+    <script type="text/javascript" src="JS/jquery.event.drag.live-2.2.js"></script>
+
+
+	<script src="/socket.io/socket.io.js"></script>
+	
+        <link rel="stylesheet" href="css/v2_ipad_UI.css" />
+    </head>
+    
+    <body>
+
+    	<canvas id="TeacherLayer" class="drag" width="2000" height="2000"  tabindex="1" style="position: absolute; left: 120px; top: 0px; z-index: -2; width: 2000px; height: 2000px;"></canvas>
+
+	    <canvas id="StudentLayer" class="drag" width="2000" height="2000" tabindex="1" style="position: absolute; left: 120px; top: 0px; z-index: -1; width: 2000px; height: 2000px;"></canvas>
+
+        <canvas id="DrawLayer" class="drag" width="2000" height="2000"  tabindex="1" style="position: absolute; left: 120px; top: 0px; z-index: 0; width: 2000px; height: 2000px;"></canvas>
+
+        <div id="toolbar" class="button">
+            <ul id="nav">
+                <li><a class="fly button" tabindex="1" id="Paint" href="javascript:void(0)">Pen</a>
+                     <ul class="ee">
+                    <li> <a id="Red" class="button" href="javascript:void(0)" style="color:#990000;" tabindex="0"> Red</a> 
+                </li>
+                    <li> <a id="Yellow" class="button" href="javascript:void(0)" style="color:#999900" tabindex="0"> Yellow </a> 
+                </li>
+                    <li> <a id="Orange" class="button" href="javascript:void(0)" style="color:#996300" tabindex="0"> Orange  </a> 
+                </li>
+                    <li> <a id="Green" class="button" href="javascript:void(0)" style="color:#009900" tabindex="0"> Green  </a> 
+                </li>
+                    <li> <a id="Blue" class="button" href="javascript:void(0)" style="color:#000099" tabindex="0"> Blue   </a> 
+                </li>
+                    <li> <a id="Purple" class="button" href="javascript:void(0)" style="color:#990099" tabindex="0"> Purple  </a> 
+                </li>
+                    <li> <a id="Black" class="button" href="javascript:void(0)" style="color:black" tabindex="0"> Black  </a> 
+                </li>
+            </ul>
+            <li><a class="fly button" tabindex="1" id="Shape" href="javascript:void(0)" >Shape</a>
+                     <ul class="ee">
+	                    <li> <a id="Box" href="javascript:void(0)" tabindex="0" class="button"> Box</a> 
+	                	</li>
+	                    <li> <a id="Line" href="javascript:void(0)" tabindex="0" class="button"> Line </a> 
+	                	</li>
+	                    <li> <a id="Circle" href="javascript:void(0)" tabindex="0" class="button"> Circle  </a> 
+	                	</li>
+	            	</ul>
+            </li>
+                <li><a class="fly button" tabindex="1" id="Eraser" href="javascript:void(0)">Erase</a>
+
+                </li>
+                <li><a class="fly button" tabindex="1" id="Copy" href="javascript:void(0)">Copy</a>
+
+                </li>
+                <li><a class="fly button" tabindex="1" id="Pan" href="javascript:void(0)">Pan</a>
+
+                </li>
+                <li><a class="fly button" tabindex="1" id="PageUp" href="javascript:void(0)">Page Up</a>
+
+                </li>
+                <li><a class="fly button" tabindex="1" id="PageDown" href="javascript:void(0)">Page Down</a>
+                </li>
+                <li><a class="fly button" tabindex="1" id="Save" href="javascript:void(0)">Save As</a>
+                </li>
+                <li><a class="fly button" tabindex="1" id="Open" href="javascript:void(0)">Open</a>
+                   
+                </li>
+		        <li><a class="fly button" tabindex="1" id="MoveToTeacher" href="javascript:void(0)">To Teacher</a>
+                </li>
+		        <li><a class="fly button" tabindex="1" id="Update" href="javascript:void(0)">Update</a>
+                </li>
+		        <li><a class="fly button" tabindex="1" id="LogIn" href="javascript:void(0)">Log In</a>
+                </li>
+                <li><a class="fly button" tabindex="1" id="Push" href="javascript:void(0)">Message Teacher</a>
+                </li>
+            </ul>
+</div>
+     	  <a class="guy button" tabindex="1" id="Redo" href="javascript:void(0)">Redo</a>
+          <a class="guy button" tabindex="1" id="Undo" href="javascript:void(0)">Undo</a>
+          <a class="guy button" tabindex="1" id="ZoomOut" href="javascript:void(0)" >Zoom Out</a>
+          <a class="guy button" tabindex="1" id="ZoomIn" href="javascript:void(0)" >Zoom In</a>
+          <a class="guy" id="PageNumber">0 of 0</a> 
+
+       <div id="Right" class="button"> Go Right </div>
+          <div id="Left" class="button"> Go Left </div> 
+
+        <div id="Drag" class="button"> Click Here to Drag </div>
+
+	<div id="Updating"> Updating... </div>
+	
+    <div id="LoadingColor">
+        <div id="Loading"><img src="../images/LoadingWheel.png">
+            <div id="LoadingText">Loading</div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="JS/scriptsCommonLogin.js"></script>
+    <script type="text/javascript" src="JS/scriptsCommon_1.0.js"></script>
+    <script type="text/javascript" src="JS/scriptsCommonPen.js"></script>
+	<script type="text/javascript" src="JS/scriptsStudent_Test.js"></script>
+    </body>
