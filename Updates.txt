@@ -1,6 +1,8 @@
 Fixed erase bug in shapes
 
 Added shapes to student side
+
+Made it so images could be added based on scroll location
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images? 
 Note: push notifications from student to teacher  
@@ -20,7 +22,6 @@ Note: Student independent page up/down
 Note: Teacher non-transfer option 
 
 Note: lock code so that random users cannot view all of it through the web browser (how?)
-Note: Fix Images from drive so it doesn't always start at 0,0
 
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw

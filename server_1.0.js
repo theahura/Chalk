@@ -23,10 +23,9 @@ var  io = require('socket.io').listen(3000);
 //  io.set('log level', 1);
   io.sockets.on('connection', function(socket) 
   {   
-	  socket.on('room', function(room) {
-	      socket.join(room);
-	      socket.room = room;
-	      
+	  socket.on('room', function(data) {
+	      socket.join(data.Room);
+	      socket.room = data.Room;
 	      //socket.in(room).emit('Joined',{});
 	      
 	  });
@@ -55,7 +54,8 @@ var  io = require('socket.io').listen(3000);
 		  		PanX: data.PanX,
 		  		PanY: data.PanY,
 		  		PanWidth: data.PanWidth,
-		  		PanHeight: data.PanHeight
+		  		PanHeight: data.PanHeight,
+		  		opacity: data.opacity
 		  	});
 	  });
 		  
@@ -79,7 +79,8 @@ var  io = require('socket.io').listen(3000);
 		  		ImgData: data.ImgData,
 		  		Pages: data.Pages,
 		  		UndoList: data.UndoList,
-		  		PushText: data.PushText
+		  		PushText: data.PushText,
+		  		Name: data.Name
 		  	});
 	  });
 	  

@@ -88,6 +88,10 @@
 	
 	var XMidOther;
 	var YMidOther;
+	
+	//stores image start location (for scrolling)
+	var ImageScrollX;
+	var ImageScrollY;
 
 /*Shape vars (including copy/paste and pan)*/
 	
@@ -126,14 +130,48 @@
  */
 
 	//Type: Int; stores the location within the document URL of the questionmark for data splicing (finding querystring)
-	var Index = document.URL.indexOf("?");	
+	var Index_Question = document.URL.indexOf("?");	
+	var Index_Ampersand = document.URL.indexOf("&");
 	
 	//Type: String; based on whether the index exists, the room is either the string after the index number in the URL, or a test room
-	var Room = Index == -1 ? "Test" : document.URL.substring(Index + 1); //plus 1 gets rid of question mark
+	var Room; 
+	var Name;
+	
+	if (Index_Question == -1) //no question mark
+	{
+		Room = "Test";
+		
+		if (Index_Ampersand == -1)
+		{
+			Name = "Anonymous";
+		}
+		else
+		{
+			Name = document.URL.substring(Index_Ampersand + 1);
+		}
+	}
+	else
+	{
+		if (Index_Ampersand == -1)
+		{
+			Room = document.URL.substring(Index_Question + 1);
+			Name = "Anonymous";
+		}
+		else 
+		{
+			Room = document.URL.substring(Index_Question + 1, Index_Ampersand);
+			Name = document.URL.substring(Index_Ampersand + 1);
+		}
+	}
 	
 	if (Room == "")
 	{
 		Room = "Test";
+	}
+	
+	if (Name == "")
+	{
+		Name = "Anonymous";
 	}
 	
 	/**
@@ -149,7 +187,10 @@
 	socket.on('connect', function() 
 	{
 		// Connected, let's sign-up for to receive messages for this room
-		socket.emit('room', Room);
+		socket.emit('room', 
+		{
+			Room: Room 
+		});
 	});
 	
 	/**
@@ -585,7 +626,7 @@
 	        		{
 	        			var img = new Image();
 	        			img.src = pt.ImgData; 
-	        			canvasListObject.context.drawImage(img, pt.StartPositionX, pt.StartPositionY);
+	        			canvasListObject.context.drawImage(img, 0, 0);
 	        		}
 	        	}
 	        }	       

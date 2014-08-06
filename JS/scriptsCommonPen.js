@@ -49,7 +49,7 @@
 			//closes css/submenu tabs
 			CanvasInfo[CurrentPage].canvas.focus();
 
-			if (ToolType != "Paint")
+			if (ToolType != "Paint" )
 			{
 				//makes sure erase only happens when in paint mode
 				context.globalCompositeOperation = BackUpErase;
@@ -64,6 +64,7 @@
 				context.strokeStyle = DrawContext.strokeStyle = BackUpColor;		
 				context.lineWidth = DrawContext.lineWidth = BackUpSize*(MaxZoom - GlobalScale + 1);		
 				context.globalCompositeOperation = BackUpErase;
+
 			}
 			
 			//clears the redolist because the person made a change after the last undo/redo; prevents weird issues regarding non-chronological redo 
@@ -490,7 +491,7 @@
 			}
 			else if (StoreToolType == "Image")
 			{
-				DrawContext.drawImage(OverlayObject, 0, 0);
+				DrawContext.drawImage(OverlayObject, ImageScrollX, ImageScrollY);
 			}
 		} 
 		else //mouse release
@@ -507,8 +508,8 @@
 					y: EndPositionY + CanvasPositionY, 
 					//if its an image data set, we want only the amount the person moved the image over, not the amount + where the mouse 
 					//ended up
-					StartPositionX: StoreToolType == "Image" ? CanvasPositionX : StartPositionX + CanvasPositionX,
-					StartPositionY: StoreToolType == "Image" ? CanvasPositionY : StartPositionY + CanvasPositionY, 
+					StartPositionX: StoreToolType == "Image" ? CanvasPositionX + ImageScrollX : StartPositionX + CanvasPositionX,
+					StartPositionY: StoreToolType == "Image" ? CanvasPositionY + ImageScrollY : StartPositionY + CanvasPositionY, 
 					PageNumber: pageNumber,
 					ToolType: StoreToolType,
 					color: BackUpColor,
@@ -519,7 +520,7 @@
 					PanWidth: CopyPanWidth,
 					PanHeight: CopyPanHeight,
 					Image: StoreToolType == "Image" ? OverlayObject : null,
-					ImgData: StoreToolType == "Image" ? TempCanvas.toDataURL() : null
+					ImgData: StoreToolType == "Image" ? DrawCanvas.toDataURL() : null
 			});
 
 			if(isTeacher)
