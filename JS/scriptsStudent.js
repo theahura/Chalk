@@ -290,6 +290,14 @@
 	
 		document.getElementById("LoadingColor").style.display = "block";
 	
+	  	if(CurrentPage == 0)
+		{
+	  		alert("You are at the first page.");
+	  	  	document.getElementById("LoadingColor").style.display = "none";
+
+	  		return;
+		}
+	  	
 		if(CanvasInfo[CurrentPage - 1])
 		{
 			//specific changes for teacher canvases
@@ -497,16 +505,16 @@
 		
 	/************************Push Notifications**************************************/
 		
-		document.getElementById("Push").onclick = function()
-		{
-			var note = prompt("Write what you want to send to the presenter here:");
-			
-			socket.emit('CommandToStudent', 
-			{
-				ToolType: "Notification",
-				PushText: note
-			});
-		}	
+//		document.getElementById("Push").onclick = function()
+//		{
+//			var note = prompt("Write what you want to send to the presenter here:");
+//			
+//			socket.emit('CommandToStudent', 
+//			{
+//				ToolType: "Notification",
+//				PushText: note
+//			});
+//		}	
 	
 	
 /********************************************Handles all communication**************************************************/
@@ -514,15 +522,18 @@
 	socket.on('CommandFromTeacher', function(data) 
 	{				
 		TeacherPage = data.PageNumber;
-						
+					
 		if (data.ToolType == "Paint")
 		{
 			MouseTeacherX = data.x; 
 			MouseTeacherY = data.y;
 			
 			CanvasInfoTeacher[TeacherPage].context.strokeStyle = data.color;
-			CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase;
 			CanvasInfoTeacher[TeacherPage].context.lineWidth = data.size;
+			CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
+
+			CanvasInfoTeacher[TeacherPage].context.globalAlpha = data.opacity; 
+						
 		    draw(data.x, data.y, data.type, false, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
 		}
 		else if (data.ToolType == "Extend")
@@ -614,7 +625,8 @@
 			//makes sure styling is correct
 			CanvasInfoTeacher[TeacherPage].context.strokeStyle = data.color; 
 			CanvasInfoTeacher[TeacherPage].context.lineWidth = data.size; 
-			CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = "source-over"; 
+			CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
+			CanvasInfoTeacher[TeacherPage].context.globalAlpha = data.opacity;
 
 			if (data.ToolType == "Box")
 			{

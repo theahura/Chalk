@@ -8,14 +8,6 @@
  * Needs: scriptsCommon, jquery.event.drag-2.2, scriptsCommonPen, scriptsLogin
  */
 
-/*
- * QUICK NOTE: I highly recommend that you set your IDE color prefs for comments so that // <- those comments and
- *  /* <- those comments and /** <- those comments show
- * up in different colors. The first is basic line by line description; the second, broad descriptions; and the third, function api doc
- */
-
-
-
 	/**
 	 * Starts the save counter, to be used after the last edit on the page
 	 */
@@ -160,19 +152,19 @@ $(document).on("dragcanceled",".drag",function(ev, dd){
  * 
  * @Param: "drag"; String; the ID that is used to search for what is 'clicked' 
  */
-document.getElementById("Drag").onclick = function()
-{
-	dragMode(); 
-}
+//document.getElementById("Drag").onclick = function()
+//{
+//	dragMode(); 
+//}
 
 /*Removes the dragpad (basically same as the de-toggle) whenever anything on the main toolbar div is touched*/
-document.getElementById("toolbar").onclick = function()
-{
-	if (DragMode)
-	{
-		dragMode();
-	}
-}
+//document.getElementById("toolbar").onclick = function()
+//{
+//	if (DragMode)
+//	{
+//		dragMode();
+//	}
+//}
 
 /**Copy/Paste + Pan**************************************/	
 
@@ -203,41 +195,63 @@ document.getElementById("Pan").onclick = function()
 
 //Red
 document.getElementById("Red").onclick = function(){
-	changeStyle("#FF0000", "source-over", 5);
+	changeStyle("#FF0000", "source-over", BackUpSize, BackUpOpacity);
 	};
 	
 //Blue
 document.getElementById("Blue").onclick = function(){
-	changeStyle("#0000FF", "source-over", 5);};
+	changeStyle("#0000FF", "source-over", BackUpSize, BackUpOpacity);};
 	
 //Yellow
 document.getElementById("Yellow").onclick = function(){
-	changeStyle("#FFFF00", "source-over", 5);};
+	changeStyle("#FFFF00", "source-over", BackUpSize, BackUpOpacity);};
 	
 //Green
 document.getElementById("Green").onclick = function(){
-	changeStyle("#00FF00", "source-over", 5);};
+	changeStyle("#00FF00", "source-over", BackUpSize, BackUpOpacity);};
 	
 //Purple
 document.getElementById("Purple").onclick = function(){
-	changeStyle("#FF00FF", "source-over", 5);};
+	changeStyle("#FF00FF", "source-over", BackUpSize, BackUpOpacity);};
 	
 //Orange
 document.getElementById("Orange").onclick = function(){
-	changeStyle("#FFA500", "source-over", 5);};
+	changeStyle("#FFA500", "source-over", BackUpSize, BackUpOpacity);};
 	
 //Black
 document.getElementById("Black").onclick = function(){
-	changeStyle("#A8A8A8", "source-over", 5);};
+	changeStyle("#A8A8A8", "source-over", BackUpSize, BackUpOpacity);};
 	
-//Black
+//Pen
 document.getElementById("Paint").onclick = function(){
-	changeStyle("#A8A8A8", "source-over", 5);};
+	DrawContext.globalAlpha = BackUpOpacity = 1.0;
+	changeStyle("#A8A8A8", "source-over", BackUpSize, BackUpOpacity);
+	};
 
 //Erase
-document.getElementById("Eraser").onclick = function(){
-	changeStyle("rgba(0,0,0,1)", "destination-out", 70);}; 
+document.getElementById("Eraser").onclick = function()
+{
+	DrawContext.globalAlpha = BackUpOpacity = 1.0;
+	changeStyle(BackUpColor, "destination-out", 70, BackUpOpacity);
+	
+	DrawContext.strokeStyle = "rgba(0,0,0,1)";
+	
+	document.getElementById("FontSize").value = 70;
+	$(".dot i").css({"font-size":"70"});
+}; 
 
+//Highlight
+document.getElementById("Highlight").onclick = function() {
+	DrawContext.globalAlpha = BackUpOpacity = 0.25;
+	changeStyle(BackUpColor,  "source-over", BackUpSize, BackUpOpacity);
+}	
+
+//sizing
+$('#FontSize').on("input", function(){
+	BackUpSize = $('#FontSize').val();
+    var v = $('#FontSize').val().toString();
+    $(".dot i").css({"font-size":v});
+});  
 	
 /*********************Shapes***********************************/
 
@@ -284,7 +298,7 @@ document.getElementById("PageUp").onclick = function()
 		
 		
 		/*Actually creates the new page*/ 
-		var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, 0, 0, 0, true, null, null, CanvasHeight*GlobalScale, CanvasWidth*GlobalScale);
+		var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight*GlobalScale, CanvasWidth*GlobalScale);
 		
 		//create a new spot in the canvasinfo list
 		CanvasInfo.push({});
@@ -320,7 +334,15 @@ document.getElementById("PageDown").onclick = function()
 {		
   	document.getElementById("LoadingColor").style.display = "block";
 
-	changePage(false, false);
+  	if(CurrentPage == 0)
+	{
+  		alert("You are at the first page.");
+  	  	document.getElementById("LoadingColor").style.display = "none";
+
+  		return;
+	}
+  	
+	changePage(false);
 		
 	if(Auth)
 	{

@@ -51,20 +51,21 @@
 
 			if (ToolType != "Paint" )
 			{
-				//makes sure erase only happens when in paint mode
 				context.globalCompositeOperation = BackUpErase;
+				
 				context.lineWidth = DrawContext.lineWidth = BackUpSize*(MaxZoom - GlobalScale + 1);	
 				
-				if(ToolType != "Copy" && ToolType != "Pan")
+				if(ToolType != "Copy" && ToolType != "Pan" && BackUpErase != "destination-out")
 					context.strokeStyle = DrawContext.strokeStyle = BackUpColor;		
 			}
 			else
 			{
 				//sets settings
-				context.strokeStyle = DrawContext.strokeStyle = BackUpColor;		
+				if(BackUpErase != "destination-out")
+					context.strokeStyle = DrawContext.strokeStyle = BackUpColor;		
+
 				context.lineWidth = DrawContext.lineWidth = BackUpSize*(MaxZoom - GlobalScale + 1);		
 				context.globalCompositeOperation = BackUpErase;
-
 			}
 			
 			//clears the redolist because the person made a change after the last undo/redo; prevents weird issues regarding non-chronological redo 
@@ -86,12 +87,11 @@
 					StartPositionY = y;
 					CanvasPositionX = 0;
 					CanvasPositionY = 0;
-					
-					DrawContext.strokeStyle = BackUpColor;
-					
+										
 					DrawContext.save();
 					
-					DrawContext.globalAlpha = 0.4;
+					if(ToolType != "Copy" && ToolType != "Pan")
+						DrawContext.globalAlpha = 0.4;
 				}	
 				//or, if it is a paint command, adds a new array to the undo list
 				//if the previous one is not an array; or if it is an array and the length is greater than 0 (i.e. exists)
@@ -134,7 +134,7 @@
 					
 					//Moves to either the midpoint calculated from the last curve, or the start of a new curve (pref. the former)
 					DrawContext.moveTo(XMid || x, YMid || y);
-					
+
 					/*ink depth; changes canvasctx.linewidth based on user draw speed*/
 					//Type: int; distance from the current point to the last point 
 					var distance = Math.pow( lastX-x, 2 ) + Math.pow(  lastY-y, 2 );
@@ -158,7 +158,7 @@
 						if (DrawContext.lineWidth >= Size - 1)	
 							DrawContext.lineWidth = DrawContext.lineWidth - ChangeAmount;
 					}
-				
+
 				
 					//calculates midpoints between the current and the last points
 					XMid = (lastX + x) / 2;
@@ -184,7 +184,8 @@
 							size: DrawContext.lineWidth,
 							erase: context.globalCompositeOperation,
 							//which canvas its drawing on 
-							PageNumber: pageNumber
+							PageNumber: pageNumber,
+							opacity: DrawContext.globalAlpha
 						});
 										
 					//renders the drawing
@@ -387,6 +388,7 @@
 			 * @Param: 'CommandToStudent'; name of command being sent to student clients
 			 * @Param: {}; object with data that will be handled on the student end
 			 */
+			console.log(context.globalAlpha);
 			socket.emit('CommandToStudent', { 
 				//x,y position of the mouse
 				x: x,
@@ -403,7 +405,8 @@
 				//Paint, in this case...
 				ToolType: ToolType,
 				//Where it is being drawn
-				PageNumber: pageNumber
+				PageNumber: pageNumber,
+				opacity: DrawContext.globalAlpha
 			}); 
 		}
 	}
@@ -498,8 +501,8 @@
 		{
 			if (StoreToolType == "Copy" || StoreToolType == "Pan")
 			{
-				var TempCanvas = createCanvas(OverlayObject.height, OverlayObject.width);
-				TempCanvas.getContext("2d").drawImage(OverlayObject, 0, 0);
+				//makes sure we're not in erase mode
+				context.globalCompositeOperation = "source-over";
 			}
 			
 			//replicates the draw image command in its final location for replication on undo
@@ -513,14 +516,15 @@
 					PageNumber: pageNumber,
 					ToolType: StoreToolType,
 					color: BackUpColor,
-					size: BackUpSize,
+					size: DrawContext.lineWidth,
 					erase: BackUpErase,
 					PanX: CopyPanX,
 					PanY: CopyPanY,
 					PanWidth: CopyPanWidth,
 					PanHeight: CopyPanHeight,
 					Image: StoreToolType == "Image" ? OverlayObject : null,
-					ImgData: StoreToolType == "Image" ? DrawCanvas.toDataURL() : null
+					ImgData: StoreToolType == "Image" ? DrawCanvas.toDataURL() : null,
+					opacity: DrawContext.globalAlpha
 			});
 
 			if(isTeacher)
@@ -546,7 +550,7 @@
 					ToolType: StoreToolType,
 					//Preferences
 					color: BackUpColor,
-					size: BackUpSize,
+					size: DrawContext.lineWidth,
 					erase: BackUpErase,
 					//Where the copy or pan data was taken from 
 					PanX: CopyPanX,
@@ -556,17 +560,17 @@
 					//note: if teacher uploads image and immediately starts drawing, the student 
 					//loses some notes from the teacher due to overwriting/timing issues; perhaps add 
 					//a loading screen teacher side to prevent additional writing immediately afterwords? food for thought
-					ImgData: StoreToolType == "Image" ? DrawCanvas.toDataURL() : null
+					ImgData: StoreToolType == "Image" ? DrawCanvas.toDataURL() : null,
+					opacity: DrawContext.globalAlpha
 				});
 			}
 								
 			//Memory clearing 
-			OverlayObject = null;
+			OverlayObject = null;			
 			
 			//draws the image from the temporary canvas to the main canvas, permanently 
 			context.drawImage(DrawCanvas, 0, 0);
-			
-			
+					
 			//deletes/clears memory for temp canvas and resets any changed vars
 			clear(true, DrawContext);
 			CanvasPositionX = CanvasPositionY = 0;
@@ -575,7 +579,7 @@
 			startSave();
 			
 			DrawContext.restore();
-						
+								
 			//makes sure the color preferences go back to the default color scheme after being changed to black-dashed lines for context
 			return changeStyle(BackUpColor, BackUpErase, BackUpSize);
 		}		
