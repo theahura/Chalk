@@ -380,9 +380,13 @@ function downloadFile(file) {
         {
         	//stores the storage overlay
         	OverlayObject = img;
-        	
+
         	//draws the image to temp canvas
-        	DrawCanvas.getContext("2d").drawImage( img, 0, 0 ); 
+        	DrawCanvas.getContext("2d").drawImage( img, document.body.scrollLeft,  document.body.scrollTop ); 
+        	
+        	//saves location for redrawing
+        	ImageScrollX = document.body.scrollLeft;
+        	ImageScrollY = document.body.scrollTop;
         	
         	StoreToolType = "Image";
         	

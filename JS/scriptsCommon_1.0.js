@@ -33,7 +33,7 @@
 	//keeps track of the zoom levels
 	var GlobalScale = 4;
 	var MaxZoom = 4;
-	
+		
 /*Storage of preferences for canvas; used for resetting properties on drag resizing or for multiple drawers */
 	
 	//Type: String; Stores Color, in hex or RGB
@@ -47,6 +47,9 @@
 	
 	//Type: String; Stores whether the object erases or not
 	var BackUpErase = "source-over";
+	
+	//Type: double; stores opacity of line
+	var BackUpOpacity = 1.0;
 	
 /*Saving vars*/ 
 
@@ -88,6 +91,10 @@
 	
 	var XMidOther;
 	var YMidOther;
+	
+	//stores image start location (for scrolling)
+	var ImageScrollX;
+	var ImageScrollY;
 
 /*Shape vars (including copy/paste and pan)*/
 	
@@ -119,21 +126,56 @@
 	
 	//Type: Socket; used to transfer data/commands to the student
 	//socket = io.connect('notepad.pingry.org:4000');
+	//socket = io('54.86.173.127:3000');
 	socket = io();
-
+	
 /**Rooms Setup ************************************************************************
  * Analyzes URL for room name and joins corresponding room
  */
 
 	//Type: Int; stores the location within the document URL of the questionmark for data splicing (finding querystring)
-	var Index = document.URL.indexOf("?");	
+	var Index_Question = document.URL.indexOf("?");	
+	var Index_Ampersand = document.URL.indexOf("&");
 	
 	//Type: String; based on whether the index exists, the room is either the string after the index number in the URL, or a test room
-	var Room = Index == -1 ? "Test" : document.URL.substring(Index + 1); //plus 1 gets rid of question mark
+	var Room; 
+	var Name;
+	
+	if (Index_Question == -1) //no question mark
+	{
+		Room = "Test";
+		
+		if (Index_Ampersand == -1)
+		{
+			Name = "Anonymous";
+		}
+		else
+		{
+			Name = document.URL.substring(Index_Ampersand + 1);
+		}
+	}
+	else
+	{
+		if (Index_Ampersand == -1)
+		{
+			Room = document.URL.substring(Index_Question + 1);
+			Name = "Anonymous";
+		}
+		else 
+		{
+			Room = document.URL.substring(Index_Question + 1, Index_Ampersand);
+			Name = document.URL.substring(Index_Ampersand + 1);
+		}
+	}
 	
 	if (Room == "")
 	{
 		Room = "Test";
+	}
+	
+	if (Name == "")
+	{
+		Name = "Anonymous";
 	}
 	
 	/**
@@ -149,7 +191,10 @@
 	socket.on('connect', function() 
 	{
 		// Connected, let's sign-up for to receive messages for this room
-		socket.emit('room', Room);
+		socket.emit('room', 
+		{
+			Room: Room 
+		});
 	});
 	
 	/**
@@ -243,10 +288,8 @@
 			canvas.style.left = "120px";
 		
 		//Sets layer
-		if (zIndex)
-			canvas.style.zIndex = zIndex;
-		
-		
+		canvas.style.zIndex = zIndex + "";
+				
 		/*ctx settings; only touched if you can actually edit the canvas*/
 		
 		if(canDraw)
@@ -365,7 +408,7 @@
 	 *  @Param: erase; String; whether the pen becomes an eraser or not (destination-out or source-over)
 	 *  @Param: size; double; the number of pixels the pen draws 
 	 */
-	function changeStyle(color, erase, size)
+	function changeStyle(color, erase, size, opacity)
 	{
 		ToolType = "Paint";
 
@@ -378,6 +421,9 @@
 		
 		if(erase)
 			BackUpErase = erase;
+		
+		if(opacity)
+			BackUpOpacity = opacity;
 	}
 	
 
@@ -441,6 +487,8 @@
 			}
 		}
 		
+		Zoom(GlobalScale);
+		
 		//Used to write to the pageNumber div
 		var TotalPages = CanvasInfo.length-1;
 		
@@ -467,6 +515,8 @@
 	    //redraws what happened before the undolist was cleared on page up or down
 	    if(canvasListObject.image)
 	    {
+		    canvasListObject.context.globalCompositeOperation = "source-over";
+
 	    	canvasListObject.context.drawImage(canvasListObject.image, 0, 0);
 	    }
 	    
@@ -475,7 +525,6 @@
 	        return;
 	    
 	    //makes sure object doesn't accidentally erase
-	    canvasListObject.context.globalCompositeOperation = "source-over";
 	    
 	    //runs through the entire undo list
 	    for (var i = 0; i < list.length; i++) 
@@ -501,6 +550,8 @@
 	        	canvasctx.strokeStyle = pt[0].color;
 	        	canvasctx.globalCompositeOperation = pt[0].erase;
 	        		     
+        		canvasctx.globalAlpha = pt[0].opacity;
+	        	
 	        	var XMid_Undo = 0;
 	        	var YMid_Undo = 0;
 	        	
@@ -536,6 +587,7 @@
 	        	canvasctx.lineWidth = pt.size;
 	        	canvasctx.strokeStyle = pt.color;
 	        	canvasctx.globalCompositeOperation = pt.erase;
+	        	canvasctx.globalAlpha = pt.opacity;
 	        	
 	        	/*rebuilds the shape by pulling the info from a previous location instead of storing 
 	        	 * imgdata; can cause problems if it desyncs for copy, pan*/
@@ -585,11 +637,17 @@
 	        		{
 	        			var img = new Image();
 	        			img.src = pt.ImgData; 
-	        			canvasListObject.context.drawImage(img, pt.StartPositionX, pt.StartPositionY);
+	        			canvasListObject.context.drawImage(img, 0, 0);
 	        		}
 	        	}
 	        }	       
 	    }
+	    
+	    canvasListObject.context.strokeStyle = BackUpColor;	    
+	    canvasListObject.context.globalCompositeOperation = BackUpErase;
+	    canvasListObject.context.globalAlpha = BackUpOpacity;
+	    canvasListObject.context.lineWidth = BackUpSize;
+	    
 	}
 	
 	/**********************************Zooming***********************************************************/
