@@ -49,24 +49,13 @@
 			//closes css/submenu tabs
 			CanvasInfo[CurrentPage].canvas.focus();
 
-			if (ToolType != "Paint" )
-			{
-				context.globalCompositeOperation = BackUpErase;
+			context.globalCompositeOperation = PaintType.erase; 
 				
-				context.lineWidth = DrawContext.lineWidth = BackUpSize*(MaxZoom - GlobalScale + 1);	
+			context.lineWidth = DrawContext.lineWidth = PaintType.size*(MaxZoom - GlobalScale + 1);	
 				
-				if(ToolType != "Copy" && ToolType != "Pan" && BackUpErase != "destination-out")
-					context.strokeStyle = DrawContext.strokeStyle = BackUpColor;		
-			}
-			else
-			{
-				//sets settings
-				if(BackUpErase != "destination-out")
-					context.strokeStyle = DrawContext.strokeStyle = BackUpColor;		
-
-				context.lineWidth = DrawContext.lineWidth = BackUpSize*(MaxZoom - GlobalScale + 1);		
-				context.globalCompositeOperation = BackUpErase;
-			}
+			context.strokeStyle = DrawContext.strokeStyle = PaintType.color;		
+			
+			DrawContext.globalAlpha = PaintType.opacity;
 			
 			//clears the redolist because the person made a change after the last undo/redo; prevents weird issues regarding non-chronological redo 
 			RedoList = new Array();
@@ -74,8 +63,7 @@
 
 		//on mouse click down...
 		if (type === "dragstart") 
-		{
-			
+		{		
 			if(isSelf)
 			{
 				//sets up for shapes...
@@ -107,10 +95,9 @@
 					YMid = 0;
 										
 					DrawContext.save();			
-				}
-								
+				}					
 			}
-			else
+			else //not self writing 
 			{
 				XMidOther = YMidOther = 0;
 				
@@ -119,8 +106,7 @@
 				
 				//Moves the pen to the starting location
 				context.moveTo(x, y);
-			}
-				
+			}			
 		} 
 		//on mouse click down and move...
 		else if (type === "drag") 
@@ -388,7 +374,6 @@
 			 * @Param: 'CommandToStudent'; name of command being sent to student clients
 			 * @Param: {}; object with data that will be handled on the student end
 			 */
-			console.log(context.globalAlpha);
 			socket.emit('CommandToStudent', { 
 				//x,y position of the mouse
 				x: x,
@@ -515,9 +500,9 @@
 					StartPositionY: StoreToolType == "Image" ? CanvasPositionY + ImageScrollY : StartPositionY + CanvasPositionY, 
 					PageNumber: pageNumber,
 					ToolType: StoreToolType,
-					color: BackUpColor,
+					color: DrawContext.strokeStyle,
 					size: DrawContext.lineWidth,
-					erase: BackUpErase,
+					erase: DrawContext.globalCompositeOperation,
 					PanX: CopyPanX,
 					PanY: CopyPanY,
 					PanWidth: CopyPanWidth,
@@ -549,9 +534,9 @@
 					//Can't be influenced by outside user
 					ToolType: StoreToolType,
 					//Preferences
-					color: BackUpColor,
+					color: DrawContext.strokeStyle,
 					size: DrawContext.lineWidth,
-					erase: BackUpErase,
+					erase: DrawContext.globalCompositeOperation,
 					//Where the copy or pan data was taken from 
 					PanX: CopyPanX,
 					PanY: CopyPanY,
@@ -581,7 +566,7 @@
 			DrawContext.restore();
 								
 			//makes sure the color preferences go back to the default color scheme after being changed to black-dashed lines for context
-			return changeStyle(BackUpColor, BackUpErase, BackUpSize);
+			return changeStyle(PaintType.color, null, PaintType.size, PaintType.opacity);
 		}		
 	}
 	

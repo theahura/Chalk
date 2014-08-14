@@ -49,15 +49,13 @@ CanvasInfo[0].context.fillStyle = "solid";
 
 //color of lines
 CanvasInfo[0].context.strokeStyle = "#A8A8A8";
-BackUpColor = CanvasInfo[0].context.strokeStyle; 
+BackUpPen.color = PaintType.color = CanvasInfo[0].context.strokeStyle; 
 
 //size of lines
-CanvasInfo[0].context.lineWidth = 5;
-BackUpSize = CanvasInfo[0].context.lineWidth;
+CanvasInfo[0].context.lineWidth = BackUpPen.size;
 
 //cap style of lines
 CanvasInfo[0].context.lineCap = "round";
-BackUpCap = CanvasInfo[0].context.lineCap;
 
 
 
@@ -74,7 +72,7 @@ BackUpCap = CanvasInfo[0].context.lineCap;
  */
 $(document).on("dragstart", ".drag", function(ev, dd){
 	//the x/y location of the event hit
-	x = (ev.pageX-120)*MaxZoom/GlobalScale; 
+	x = (ev.pageX)*MaxZoom/GlobalScale; 
 	y = (ev.pageY)*MaxZoom/GlobalScale; 
 	
 	if(!ShapeAdjust)
@@ -91,7 +89,7 @@ $(document).on("dragstart", ".drag", function(ev, dd){
 
 $(document).on("drag", ".drag", function(ev, dd){
 	//the x/y location of the event hit
-	x = (ev.pageX-120)*MaxZoom/GlobalScale; 
+	x = (ev.pageX)*MaxZoom/GlobalScale; 
 	y = (ev.pageY)*MaxZoom/GlobalScale;   
 	
 	
@@ -107,7 +105,7 @@ $(document).on("drag", ".drag", function(ev, dd){
 
 $(document).on("dragend",".drag",function(ev, dd){
 	//the x/y location of the event hit
-	x = (ev.pageX-120)*MaxZoom/GlobalScale; 
+	x = (ev.pageX)*MaxZoom/GlobalScale; 
 	y = (ev.pageY)*MaxZoom/GlobalScale; 
 	
 	if(!ShapeAdjust)
@@ -166,106 +164,11 @@ $(document).on("dragcanceled",".drag",function(ev, dd){
 //	}
 //}
 
-/**Copy/Paste + Pan**************************************/	
-
-/*Because most of the actual functionality for copy/pan is handled in the massive draw function, these are just 
- * making sure the computer knows what to do	 */
-
-document.getElementById("Copy").onclick = function()
-{
-	ToolType = "Copy";
-}
-
-document.getElementById("Pan").onclick = function()
-{
-	ToolType = "Pan";
-}
-
 
 /********************************************************************************************
   Random Tools 
   *******************************************************************************************/	 	
 
-
-/*********************STYLING***********************************/
-
-/*the following are basically just style changes; the same could be done for sizes, if you had 
- * the corresponding html DOM elements; note that if a color is touched, it automatically switches
- * to paint mode, even if it was in erase mode	 */
-
-//Red
-document.getElementById("Red").onclick = function(){
-	changeStyle("#FF0000", "source-over", BackUpSize, BackUpOpacity);
-	};
-	
-//Blue
-document.getElementById("Blue").onclick = function(){
-	changeStyle("#0000FF", "source-over", BackUpSize, BackUpOpacity);};
-	
-//Yellow
-document.getElementById("Yellow").onclick = function(){
-	changeStyle("#FFFF00", "source-over", BackUpSize, BackUpOpacity);};
-	
-//Green
-document.getElementById("Green").onclick = function(){
-	changeStyle("#00FF00", "source-over", BackUpSize, BackUpOpacity);};
-	
-//Purple
-document.getElementById("Purple").onclick = function(){
-	changeStyle("#FF00FF", "source-over", BackUpSize, BackUpOpacity);};
-	
-//Orange
-document.getElementById("Orange").onclick = function(){
-	changeStyle("#FFA500", "source-over", BackUpSize, BackUpOpacity);};
-	
-//Black
-document.getElementById("Black").onclick = function(){
-	changeStyle("#A8A8A8", "source-over", BackUpSize, BackUpOpacity);};
-	
-//Pen
-document.getElementById("Paint").onclick = function(){
-	DrawContext.globalAlpha = BackUpOpacity = 1.0;
-	changeStyle("#A8A8A8", "source-over", BackUpSize, BackUpOpacity);
-	};
-
-//Erase
-document.getElementById("Eraser").onclick = function()
-{
-	DrawContext.globalAlpha = BackUpOpacity = 1.0;
-	changeStyle(BackUpColor, "destination-out", 70, BackUpOpacity);
-	
-	DrawContext.strokeStyle = "rgba(0,0,0,1)";
-	
-	document.getElementById("FontSize").value = 70;
-	$(".dot i").css({"font-size":"70"});
-}; 
-
-//Highlight
-document.getElementById("Highlight").onclick = function() {
-	DrawContext.globalAlpha = BackUpOpacity = 0.25;
-	changeStyle(BackUpColor,  "source-over", BackUpSize, BackUpOpacity);
-}	
-
-//sizing
-$('#FontSize').on("input", function(){
-	BackUpSize = $('#FontSize').val();
-    var v = $('#FontSize').val().toString();
-    $(".dot i").css({"font-size":v});
-});  
-	
-/*********************Shapes***********************************/
-
-document.getElementById("Box").onclick = function(){
-	ToolType = "Box";
-}	
-
-document.getElementById("Line").onclick = function(){
-	ToolType = "Line";
-}	
-
-document.getElementById("Circle").onclick = function(){
-	ToolType = "Circle";
-}	
 
 /**Extend ************************************************************************/
 
@@ -357,83 +260,6 @@ document.getElementById("PageDown").onclick = function()
 			return;
 		}
 	}
-}
-
-/**Save, Update, Open***********************************************************************/    
-
-//Note: a lot of this will be moved to its own file for cross client use because the functions are basically the same for 
-//both students and teachers
-
-/**
- * The login function does what you'd assume: logs into (or out of; its a toggle) google drive. Most of this is gapi copied stuff
- * which you can find online if you look up the authorization workflow. 
- * 
- * @Param: "LogIn"; String; ID of the DOM element that is being clicked
- */    
-document.getElementById("LogIn").onclick = function()
-{
-	//if you're already logged in...
-	if(Auth)	
-	{
-		//confirm logout intent
-		var check = prompt("Are you sure you want to log out? (Y/N)", "N");
-		
-		if (check.toLowerCase() == "n")
-		{
-			return;
-		}
-		else //Could be risky if its not a direct yes
-		{
-			logout();
-		}
-	}
-	//if not already logged in...
-	else
-		//requests login info, and calls the login function handler on callback
-		gapi.auth.authorize(
-		           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
-		           login);
-	
-}
-
-
-/**
- * Checks if the user has already logged in. If he hasn't, asks for login confirmation. 
- * 
- * Either way, begins the save flow. 
- * 
- * @Param: "Save"; String; ID of DOM element that begins save callback
- */
-document.getElementById("Save").onclick = function()
-{
-	//gets the save file name from the user if they want a different one; pastname is the previous save name
-	var name = prompt("Please enter the name of the file (note: only saves current page)", PastName);
-	
-	if (name != null)
-		PastName = name;
-	
-	if (Auth == false) //if not already logged in
-	{
-		//requests login
-		gapi.auth.authorize(
-		           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
-		           login);
-	}
-	else
-		Save(true, null,CanvasInfo[CurrentPage].canvas);
-};
-
-document.getElementById('Open').onclick = function () 
-{
-	if (Auth == false) //if not already logged in
-	{
-		//requests login
-		gapi.auth.authorize(
-		           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
-		           login);
-	}
-	else
-		createPicker(); 
 }
 
 /**Undo and Redo***********************************************************************/   
@@ -615,28 +441,6 @@ function Update()
 	
 	SelfUpdating = false;
 }
-
-/**********************ZOOMING*****************************************************/
-	
-	document.getElementById("ZoomIn").onclick = function()
-	{
-		if (GlobalScale < MaxZoom)
-			GlobalScale++;
-		else
-			return;
-
-		Zoom(GlobalScale);
-	}
-	
-	document.getElementById("ZoomOut").onclick = function()
-	{
-		if (GlobalScale > 1)
-			GlobalScale--;
-		else
-			return;
-
-		Zoom(GlobalScale);
-	}
 	
 /********************************************Handles all communication**************************************************/
 

@@ -36,20 +36,36 @@
 		
 /*Storage of preferences for canvas; used for resetting properties on drag resizing or for multiple drawers */
 	
-	//Type: String; Stores Color, in hex or RGB
-	var BackUpColor;
+	var BackUpPen = 
+	{
+		type: "Pen", 
+		color:"",
+		size: 5,
+		erase: "source-over",
+		opacity: 1.0
+	};
 	
-	//Type: double; Stores Size of the line being drawn
-	var BackUpSize;
+	var BackUpErase = 
+	{
+			type: "Erase",
+			color:"#000000",
+			size: 70,
+			erase: "destination-out",
+			opacity: 1.0
+	};
 	
-	//Type: String; Stores Line design (specifically, cap of line)
-	var BackUpCap;
+	var BackUpHighlight =
+	{
+		type: "Highlight",
+		color:"",
+		size: 5,
+		erase: "source-over",
+		opacity: 0.4,
+		colorElementID: "Black"
+	};
 	
-	//Type: String; Stores whether the object erases or not
-	var BackUpErase = "source-over";
+	var PaintType = BackUpPen;
 	
-	//Type: double; stores opacity of line
-	var BackUpOpacity = 1.0;
 	
 /*Saving vars*/ 
 
@@ -221,10 +237,12 @@
 		templist[i].addEventListener('touchstart', function(e)
 		{
 			this.focus();
-			this.onclick();
-			e.preventDefault();
-			e.stopPropagation();
-			e.stopImmediatePropagation();
+			if(this.onclick)
+				this.onclick;
+		//MAKE SURE THIS WORKS
+		//	e.preventDefault();
+		//	e.stopPropagation();
+		//	e.stopImmediatePropagation();
 		});	
 	};
 		
@@ -283,9 +301,9 @@
 			canvas.style.top = "0px";
 		
 		if (left)
-			canvas.style.left = 120 + left + "px";
+			canvas.style.left = left + "px";
 		else
-			canvas.style.left = "120px";
+			canvas.style.left = "0px";
 		
 		//Sets layer
 		canvas.style.zIndex = zIndex + "";
@@ -408,25 +426,42 @@
 	 *  @Param: erase; String; whether the pen becomes an eraser or not (destination-out or source-over)
 	 *  @Param: size; double; the number of pixels the pen draws 
 	 */
-	function changeStyle(color, erase, size, opacity)
+	function changeStyle(color, colorElementID, size, opacity)
 	{
 		ToolType = "Paint";
-
-		//stores current properties as backups
-		if(size)
-			BackUpSize = size;
 		
-		if(color)
-			BackUpColor = color;
+		if (color)
+			PaintType.color = color; 
 		
-		if(erase)
-			BackUpErase = erase;
+		if(colorElementID)
+			PaintType.colorElementID = colorElementID;
 		
-		if(opacity)
-			BackUpOpacity = opacity;
+		if (size)
+			PaintType.size = size;
+		
+		if (opacity)
+			PaintType.opacity = opacity; 
 	}
 	
 
+	function changePaintType(BackUpObj)
+	{
+		if(PaintType.type == "Pen")
+			BackUpPen = PaintType; 
+		else if (PaintType.type == "Highlight")
+			BackUpHighlight = PaintType;
+		else if (PaintType.type == "Erase")
+			BackUpErase = PaintType;
+		
+		PaintType = BackUpObj;
+		
+		//UI settings
+		document.getElementById("FontSize").value = PaintType.size;
+		$(".dot i").css({"font-size":PaintType.size});
+        $('.color-list ul li').css({"box-shadow":"none"});        
+		$("#"+PaintType.colorElementID).css({"box-shadow":"0px 0px 0px 4px white inset"});
+	}
+	
 	/**
 	 * The main tool for pages. Handles adding new pages and flipping up and down between pages
 	 * 
@@ -643,10 +678,10 @@
 	        }	       
 	    }
 	    
-	    canvasListObject.context.strokeStyle = BackUpColor;	    
-	    canvasListObject.context.globalCompositeOperation = BackUpErase;
-	    canvasListObject.context.globalAlpha = BackUpOpacity;
-	    canvasListObject.context.lineWidth = BackUpSize;
+	    canvasListObject.context.strokeStyle = PaintType.color;	    
+	    canvasListObject.context.globalCompositeOperation = PaintType.erase;
+	    canvasListObject.context.globalAlpha = PaintType.opacity;
+	    canvasListObject.context.lineWidth = PaintType.size;
 	    
 	}
 	

@@ -60,10 +60,15 @@ All Rights Reserved
                     $(this).css({"box-shadow":"0px 0px 0px 4px white inset"});
                 });
 
+                $('#Black').css({"box-shadow":"0px 0px 0px 4px white inset"});
+
                 $('.pen-type ul li').click(function(){
-                    $('.item-holder ul li').css({"box-shadow":"none"});
+                    $('.pen-type ul li').css({"box-shadow":"none"});
                     $(this).css({"box-shadow":"0px 0px 0px 3px black inset"});
                 });
+
+                $('#Paint').css({"box-shadow":"0px 0px 0px 3px black inset"});
+
 
                 $('.tool-picker ul li').click(function(){
                     $('.tool-picker ul li').css({"box-shadow":"none"});
@@ -295,7 +300,7 @@ All Rights Reserved
 
 				background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
 
-                height:140px;
+                height:100px;
                 width: 50px;
 
 				text-align: center;       
@@ -305,7 +310,7 @@ All Rights Reserved
             }
             .side-ui .text
             {
-            	padding-top: 50px;
+            	padding-top: 30px;
             }
             .side-ui .shapes-text
             {
@@ -584,7 +589,7 @@ All Rights Reserved
             #PageNumber
             {
             	text-align: center;
-            	margin-top: 50px;
+            	margin-top: 20px;
             }
 
             #Updating 
@@ -652,9 +657,9 @@ All Rights Reserved
     
     <body>
 
-   		<canvas id="TeacherLayer" class="drag" width="2000" height="2000"  tabindex="1" style="position: absolute; left: 120px; top: 0px; z-index: -1; width: 2000px; height: 2000px;"></canvas>
+   		<canvas id="TeacherLayer" class="drag" width="2000" height="2000"  tabindex="1" style="position: absolute; left: 0px; top: 0px; z-index: -1; width: 2000px; height: 2000px;"></canvas>
 
-        <canvas id="DrawLayer" class="drag" width="2000" height="2000"  tabindex="1" style="position: absolute; left: 120px; top: 0px; z-index: 0; width: 2000px; height: 2000px;"></canvas>
+        <canvas id="DrawLayer" class="drag" width="2000" height="2000"  tabindex="1" style="position: absolute; left: 0px; top: 0px; z-index: 0; width: 2000px; height: 2000px;"></canvas>
 
 
         <div class="cover pen">
@@ -857,6 +862,7 @@ All Rights Reserved
         <script type="text/javascript" src="JS/scriptsCommonLogin.js"></script>
 	    <script type="text/javascript" src="JS/scriptsCommon_1.0.js"></script>
 	    <script type="text/javascript" src="JS/scriptsCommonPen.js"></script>
+        <script type="text/javascript" src="JS/scriptsCommonFeatures.js"></script>
 		<script type="text/javascript" src="JS/scriptsTeacher.js"></script>
     </body>
 </html>
