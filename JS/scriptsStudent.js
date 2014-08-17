@@ -362,7 +362,7 @@
 		{
 			var note = prompt("Write what you want to send to the presenter here:");
 			
-			socket.emit('CommandToStudent', 
+			socket.emit('CommandToTeacher', 
 			{
 				ToolType: "Notification",
 				PushText: note
@@ -381,7 +381,7 @@
 			MouseTeacherX = data.x; 
 			MouseTeacherY = data.y;
 			
-			if(data.opacity != 1.0) //highlighter
+			if(data.opacity && data.opacity != 1.0) //highlighter
 			{
 				CanvasInfoTeacher[TeacherPage].context.save();
 				CanvasInfoTeacher[TeacherPage].context.globalAlpha = data.opacity;
