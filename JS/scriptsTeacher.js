@@ -49,7 +49,7 @@ CanvasInfo[0].context.fillStyle = "solid";
 
 //color of lines
 CanvasInfo[0].context.strokeStyle = "#A8A8A8";
-BackUpPen.color = PaintType.color = CanvasInfo[0].context.strokeStyle; 
+BackUpPen.color = BackUpHighlight.color = PaintType.color = CanvasInfo[0].context.strokeStyle; 
 
 //size of lines
 CanvasInfo[0].context.lineWidth = BackUpPen.size;

@@ -1,23 +1,3 @@
-Fixed erase bug in shapes
-
-Added shapes to student side
-
-Made it so images could be added based on scroll location
-
-Fixed (previously unreplicated) glitch in which images would not appear due to globalcontext being set to erase mode
-
-UI updated on teacher side
-
-Fixed copy/pan opacity glitch + Shapes erase glitch
-
-Added highlighter on teacher side
-
-Fixed MULTITUDE of glitches on teacher side regarding highlight + erase integration 
-
-Fixed glitch where zoom is not accounted for from one page to the next
-
-Fixed glitch where zoom sizing is not accounted for in undo/redo for shapes
-
 Fixed pagenumber div so it appears on ipad screen 
 
 Added scriptsCommonFeatures to track UI functions that are the same (e.g. colors)
@@ -25,6 +5,12 @@ Added scriptsCommonFeatures to track UI functions that are the same (e.g. colors
 Cleaned up erase/opacity/draw tools code (removed old backupsystem, replaced with objects, cleaned up change style)
 
 Made it so that preferences save from one pentype to the next
+
+Fixed weird circles in highlighter
+
+Fixed student UI, added features in for student UI
+
+Added permanent highlightcanvas function to student ui
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images? 
 Note: push notifications from student to teacher   
@@ -46,9 +32,12 @@ Note: Teacher non-transfer option
 Note: min code so that random users cannot view all of it through the web browser (how?)
 Note: changing pages decreases image quality
 Note: Div to store username + div to store google drive login account name
-Note: Clean up code -> make erase + highlight vars instead of backups, consolidate pen draw function
-Note: add proper tools in for student side
+Note: indexedDB
+Note: wrist protection
+
+//For next update
 Note: COMMENT code
+
 
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw

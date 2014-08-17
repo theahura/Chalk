@@ -13,6 +13,11 @@
 	//current page of teacher
 	var TeacherPage = 0;
 	
+	var MouseTeacherX, MouseTeacherY;
+	
+	//note: highlightcanvas can be drawn on, even though it is not ever rendered
+	HighlightCanvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, 0, 0, 0, true);
+	
 	//Differences between student and teacher
 	//var PageDifference = 0;
 	
@@ -86,7 +91,7 @@
 	//uses plugin
 	$(document).on("dragstart", ".drag", function(ev, dd){
 		
-		x = (ev.pageX-120)*MaxZoom/GlobalScale; 
+		x = (ev.pageX)*MaxZoom/GlobalScale; 
 		y = (ev.pageY)*MaxZoom/GlobalScale; 
 		
 		if(!ShapeAdjust)
@@ -101,7 +106,7 @@
 	
 	$(document).on("drag", ".drag", function(ev, dd){
 				
-		x = (ev.pageX-120)*MaxZoom/GlobalScale; 
+		x = (ev.pageX)*MaxZoom/GlobalScale; 
 		y = (ev.pageY)*MaxZoom/GlobalScale; 
 
 		if(!ShapeAdjust)
@@ -116,7 +121,7 @@
 	
 	$(document).on("dragend",".drag",function(ev, dd){
 
-		x = (ev.pageX-120)*MaxZoom/GlobalScale; 
+		x = (ev.pageX)*MaxZoom/GlobalScale; 
 		y = (ev.pageY)*MaxZoom/GlobalScale; 
 		
 		if(!ShapeAdjust)
@@ -131,18 +136,18 @@
 	
 /****************************MODES***********************************/
 
-	document.getElementById("Drag").onclick = function()
-	{
-		dragMode();
-	}
+	//document.getElementById("Drag").onclick = function()
+	//{
+	//	dragMode();
+	//}
 	
-	document.getElementById("toolbar").onclick = function()
-	{
-		if (DragMode)
-		{
-			dragMode();
-		}
-	}
+	//document.getElementById("toolbar").onclick = function()
+	//{
+	//	if (DragMode)
+	//	{
+	//		dragMode();
+	//	}
+	//}
 
 /********************************************************************************************
   Random Tools 
@@ -200,7 +205,7 @@
 		}
 		
 		changePage(true);		
-				
+		
 		//saves previous page (not new page) on pageup/down		
 		if(window.auth)
 		{
@@ -238,7 +243,7 @@
 		}
 		
 		changePage(false);
-								
+			
 		//saves previous page (not new page) on pageup/down		
 		if(window.auth)
 		{
@@ -330,11 +335,14 @@
 	
 	document.getElementById("MoveToTeacher").onclick = function()
 	{		
-		document.body.removeChild(CanvasInfo[CurrentPage].canvas);
-		document.body.removeChild(CanvasInfoTeacher[CurrentPage].canvas);
-				
-		document.body.appendChild(CanvasInfoTeacher[TeacherPage].canvas);
-		document.body.appendChild(CanvasInfo[TeacherPage].canvas);
+		if(TeacherPage != CurrentPage)
+		{
+			document.body.removeChild(CanvasInfo[CurrentPage].canvas);
+			document.body.removeChild(CanvasInfoTeacher[CurrentPage].canvas);
+					
+			document.body.appendChild(CanvasInfoTeacher[TeacherPage].canvas);
+			document.body.appendChild(CanvasInfo[TeacherPage].canvas);
+		}
 		
 		CurrentPage = TeacherPage;
 		
@@ -350,16 +358,16 @@
 		
 	/************************Push Notifications**************************************/
 		
-//		document.getElementById("Push").onclick = function()
-//		{
-//			var note = prompt("Write what you want to send to the presenter here:");
-//			
-//			socket.emit('CommandToStudent', 
-//			{
-//				ToolType: "Notification",
-//				PushText: note
-//			});
-//		}	
+		document.getElementById("Push").onclick = function()
+		{
+			var note = prompt("Write what you want to send to the presenter here:");
+			
+			socket.emit('CommandToStudent', 
+			{
+				ToolType: "Notification",
+				PushText: note
+			});
+		}	
 	
 	
 /********************************************Handles all communication**************************************************/
@@ -373,13 +381,31 @@
 			MouseTeacherX = data.x; 
 			MouseTeacherY = data.y;
 			
-			CanvasInfoTeacher[TeacherPage].context.strokeStyle = data.color;
-			CanvasInfoTeacher[TeacherPage].context.lineWidth = data.size;
-			CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
+			if(data.opacity != 1.0) //highlighter
+			{
+				CanvasInfoTeacher[TeacherPage].context.save();
+				CanvasInfoTeacher[TeacherPage].context.globalAlpha = data.opacity;
+				
+				HighlightCanvas.getContext("2d").strokeStyle = data.color; 
+				HighlightCanvas.getContext("2d").lineWidth = data.size;
+				
+				draw(data.x, data.y, data.type, false, data.lastX, data.lastY, HighlightCanvas.getContext("2d"), TeacherPage);
+				
+				if(data.type == "dragend")
+				{
+					CanvasInfoTeacher[TeacherPage].context.drawImage(HighlightCanvas, 0, 0);
+					clear(true, HighlightCanvas.getContext("2d"));
+					CanvasInfoTeacher[TeacherPage].context.restore();
+				}
+			}
+			else
+			{
+				CanvasInfoTeacher[TeacherPage].context.strokeStyle = data.color;
+				CanvasInfoTeacher[TeacherPage].context.lineWidth = data.size;
+				CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
 
-			CanvasInfoTeacher[TeacherPage].context.globalAlpha = data.opacity; 
-						
-		    draw(data.x, data.y, data.type, false, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
+				draw(data.x, data.y, data.type, false, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
+			}
 		}
 		else if (data.ToolType == "Extend")
 		{

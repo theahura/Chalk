@@ -36,13 +36,17 @@
 		
 /*Storage of preferences for canvas; used for resetting properties on drag resizing or for multiple drawers */
 	
+	//The following are objects that track pen settings for each different type of pen (Pen, Erase, and Highlight)
+	//Each setting obj contains the type, color, size, globalOperation, and Opacity of the preference (with opacity, type, and globalOperation hardcoded)
+	//colorElementID stores the DOM UI element for later CSS/UI usage
 	var BackUpPen = 
 	{
 		type: "Pen", 
 		color:"",
 		size: 5,
 		erase: "source-over",
-		opacity: 1.0
+		opacity: 1.0,
+		colorElementID: "Black"
 	};
 	
 	var BackUpErase = 
@@ -64,6 +68,7 @@
 		colorElementID: "Black"
 	};
 	
+	//This is the preference set that actually gets edited at any given time. It's default setting is pen. 
 	var PaintType = BackUpPen;
 	
 	
@@ -105,12 +110,16 @@
 	var XMid;
 	var YMid;
 	
+	//Used for the student/teacher to keep track of X/Y positioning of incoming commands
 	var XMidOther;
 	var YMidOther;
 	
 	//stores image start location (for scrolling)
 	var ImageScrollX;
 	var ImageScrollY;
+	
+	//Used to store highlight commands on student side before transferring to main canvas; acts as temp
+	var HighlightCanvas;
 
 /*Shape vars (including copy/paste and pan)*/
 	
@@ -133,17 +142,17 @@
 
 /*Misc*/
 
-	//make this 8 by 11, or the default for powerpoint
+	//The starting visible number of pixels of the canvas
 	var CanvasHeight = 500;
 	var CanvasWidth = 500;
 	
+	//The total number of pixels in the canvas
 	var CanvasPixelHeight = 2000;
 	var CanvasPixelWidth = 2000;
 	
 	//Type: Socket; used to transfer data/commands to the student
-	//socket = io.connect('notepad.pingry.org:4000');
-	//socket = io('54.86.173.127:3000');
-	socket = io();
+	socket = io('http://54.86.173.127:3000');
+	//socket = io();
 	
 /**Rooms Setup ************************************************************************
  * Analyzes URL for room name and joins corresponding room
@@ -154,7 +163,9 @@
 	var Index_Ampersand = document.URL.indexOf("&");
 	
 	//Type: String; based on whether the index exists, the room is either the string after the index number in the URL, or a test room
-	var Room; 
+	var Room;
+	
+	//Type: String; based on whether the & index exists, the name is either Anonymous or the string after the index in the URL
 	var Name;
 	
 	if (Index_Question == -1) //no question mark
@@ -184,6 +195,7 @@
 		}
 	}
 	
+	//Error checking in case either scenario is not filled
 	if (Room == "")
 	{
 		Room = "Test";
@@ -230,8 +242,11 @@
 
 /**Fast button setup***************************************************************************/
 
+	//Type: array; stores every button in the UI, indicated in css/html by class .button
 	var templist = document.getElementsByClassName("button");
 	
+	//Goes through each button in the UI and sets an eventlistener for touchstart, hijacks click function to start immediately on touchstart
+	//to prevent 300ms lag on iPads/touch screens
 	for(var i = 0; i < templist.length; i++)
 	{
 		templist[i].addEventListener('touchstart', function(e)
@@ -330,7 +345,7 @@
 	 *  The clear function does just what you'd expect: it clears the page the user currently on. Will eventually be 
 	 *  implemented as an actual button; for now, its used as a helper method
 	 *  
-	 *  @Param: IsUndo; Boolean; makes sure the clear command isn't being called by the undo list because once implemented as 
+	 *  @Param: Don'tStoreUndo; Boolean; makes sure the clear command isn't being called by the undo list because once implemented as 
 	 *  		a button, it can't create an infinite loop in which the undo list calls a clear that is added to the undo list and 
 	 *  		called again
 	 *  
@@ -366,65 +381,18 @@
 	
 /**End of Multipurpose************************************************************/
 
-
-	/**
-	 * Toggles the UI for the drag canvas. It creates a canvas overlay and sets the css styling so that
-	 * the user cannot drag over it. Although it creates a canvas, it would be far more efficient for the 
-	 * code to create a div; will change as soon as I can figure out why the div is not working. 
-	 */
-	function dragMode()
-	{
-		//toggles between drag or not with the same button
-		DragMode = !DragMode;
-		
-		//turn dragmode on
-		if (DragMode)
-		{
-			//Changes text of the inside of the drag box to indicate what will happen on click
-			document.getElementById("Drag").innerHTML = "Click Here to Paint";
-
-			/*creates the div that covers the page and acts as a drag pad; should be div...*/ 
-			DragCanv = createCanvas(CanvasHeight*GlobalScale, CanvasWidth*GlobalScale, 3, 0, 0)
-		
-			//mostly CSS styling that sets it apart from normal canvases
-			DragCanv.style.opacity = "0.2";
-			DragCanv.style.background = 'blue';
-
-			//renders to screen
-			document.body.appendChild(DragCanv);
-		}
-		//turn dragmode off
-		else
-		{
-			//Again, changes inner html text
-			document.getElementById("Drag").innerHTML = "Click Here to Drag";
-
-			//removes the dragcanvas if it exists
-			if (DragCanv != null)
-			{
-				document.body.removeChild(DragCanv);
-				DragCanv = null;
-			}
-		}
-	}
-	
-
-/**End of Drawing tool setup*************************************************************/
+/**Drawing tool setup*************************************************************/
 	
 	/**
-	 *  changeStyle is the central function that handles changing the context of the overall pen being used
-	 *  It should probly be used more often in the above sections of the code than it is, especially if it took 
-	 *  in a fourth parameter for the context that's being edited (a simplification that may appear later). Note that 
-	 *  the actual context variables are never changed, only the backups; this is due to the redundancy of having 
-	 *  the context changed in the actual draw function anyway.
+	 *  Used to change preferences in the PaintType object that are later stored into backups
 	 *  
-	 *  If changeStyle is being used, it automatically sets the tooltype to Paint
-	 *  
-	 *  Erase is done by switching between destination-out (i.e. erase mode) and source-over
+	 *  If changeStyle is being used, it automatically sets the tooltype to Paint; only is called by 
+	 *  pen related functions
 	 *  
 	 *  @Param: color; Hex/RGB; the color the pen needs to become
-	 *  @Param: erase; String; whether the pen becomes an eraser or not (destination-out or source-over)
+	 *  @Param: colorElementID; the element used to change the color, used to set CSS settings in the UI
 	 *  @Param: size; double; the number of pixels the pen draws 
+	 *  @Param: opacity; double; tracks how transparent the pen stroke is
 	 */
 	function changeStyle(color, colorElementID, size, opacity)
 	{
@@ -443,9 +411,14 @@
 			PaintType.opacity = opacity; 
 	}
 	
-
+	/**
+	 * Used to initiate changes between different pen styles (pen, erase, highlighter)
+	 * 
+	 * @Param: BackUpObj; Pen Pref Obj; used to determine what the new painttype will be
+	 */
 	function changePaintType(BackUpObj)
 	{
+		//checks which backup to save latest preferences too
 		if(PaintType.type == "Pen")
 			BackUpPen = PaintType; 
 		else if (PaintType.type == "Highlight")
@@ -453,6 +426,7 @@
 		else if (PaintType.type == "Erase")
 			BackUpErase = PaintType;
 		
+		//pulls old preferences
 		PaintType = BackUpObj;
 		
 		//UI settings
@@ -481,7 +455,8 @@
 		
 		if (directionUp)
 		{
-			//makes sure it doesn't go above to a page thats not created
+			//makes sure it doesn't go above to a page thats not created; teachers going up a page should have created 
+			//a new page in scriptsTeacher
 			if(!CanvasInfo[CurrentPage + 1])
 			{
 				document.getElementById("LoadingColor").style.display = "none"; //turns off the loading screen				
@@ -522,6 +497,7 @@
 			}
 		}
 		
+		//makes sure the new page's zoom is the same as the last one's
 		Zoom(GlobalScale);
 		
 		//Used to write to the pageNumber div
@@ -530,7 +506,7 @@
 		//edits the page number div to let the user know what page they are on
 		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
 		
-		//makes sure when you jump to a new page you always start at the 0/0 spot
+		//makes sure when you jump to a page you always start at the 0/0 spot
 		window.scrollTo(0, 0);
 	}
 	
@@ -547,6 +523,10 @@
 		//wipes the canvas to prep for rebuild
 	    clear(true, canvasListObject.context); 
 	    
+	    //Saves the current canvascontext setup, for restoration after undo/redo build
+	    canvasListObject.context.save();
+	    canvasListObject.context.globalAlpha = 1.0;
+	    
 	    //redraws what happened before the undolist was cleared on page up or down
 	    if(canvasListObject.image)
 	    {
@@ -556,11 +536,12 @@
 	    }
 	    
 	    //Debugging
-	    if (list.length == 0) 
+	    if (list.length == 0)
+	    {
+	    	canvasListObject.context.restore();
 	        return;
-	    
-	    //makes sure object doesn't accidentally erase
-	    
+	    }
+	    	    
 	    //runs through the entire undo list
 	    for (var i = 0; i < list.length; i++) 
 	    {
@@ -584,12 +565,21 @@
 	        		        	
 	        	canvasctx.strokeStyle = pt[0].color;
 	        	canvasctx.globalCompositeOperation = pt[0].erase;
-	        		     
-        		canvasctx.globalAlpha = pt[0].opacity;
-	        	
+	        		        		     	        	
 	        	var XMid_Undo = 0;
 	        	var YMid_Undo = 0;
+	        		     
+	        	//to draw a consistent highlighting line, need to draw a full line at complete opaqueness on a doubled canvas, and then copy to the 
+	        	//base canvas at a lower opacity setting
+        		canvasListObject.context.globalAlpha = pt[0].opacity; 
+
+	        	if (pt[0].opacity != 1.0)
+	        		if(HighlightCanvas)
+	        			canvasctx = HighlightCanvas.getContext("2d"); 
+	        		else
+	        			canvasctx = DrawContext;
 	        	
+	        	//draws pointbypoint
 	        	for (var j = 0; j < list[i].length; j++)
 	        	{
 		        	canvasctx.beginPath();
@@ -607,6 +597,17 @@
 				    canvasctx.quadraticCurveTo(pt[j].lastX, pt[j].lastY, XMid_Undo, YMid_Undo);
 	     
 				    canvasctx.stroke();
+	        	}
+	        	
+	        	//copies from drawcanvas to base if opacity is in highlight mode
+	        	if (pt[0].opacity != 1.0)
+	        	{
+	        		if(HighlightCanvas)
+	        			canvasListObject.context.drawImage(HighlightCanvas, 0, 0);
+	        		else
+	        			canvasListObject.context.drawImage(DrawCanvas, 0, 0);
+
+	        	    clear(true, canvasctx); 
 	        	}
 	        }
 	    	else //not paint; shapes
@@ -678,11 +679,7 @@
 	        }	       
 	    }
 	    
-	    canvasListObject.context.strokeStyle = PaintType.color;	    
-	    canvasListObject.context.globalCompositeOperation = PaintType.erase;
-	    canvasListObject.context.globalAlpha = PaintType.opacity;
-	    canvasListObject.context.lineWidth = PaintType.size;
-	    
+	    canvasListObject.context.restore();
 	}
 	
 	/**********************************Zooming***********************************************************/
@@ -694,11 +691,14 @@
 	 */
 	function Zoom(Scale)
 	{
+		//changing the visible size of both the back canvas and the drawcanvas
 		CanvasInfo[CurrentPage].canvas.style.width = DrawCanvas.style.width = CanvasWidth*Scale + "px";
-		CanvasInfo[CurrentPage].canvas.style.height = DrawCanvas.style.height = CanvasHeight*Scale + "px";//changing the visible size of both the back canvas and the drawcanvas
-	
+		CanvasInfo[CurrentPage].canvas.style.height = DrawCanvas.style.height = CanvasHeight*Scale + "px";
+		
+		//if a teachercanvas exists...
 		if(CanvasInfoTeacher)
 		{
+			//do the same for the teacher canvas set
 			CanvasInfoTeacher[CurrentPage].canvas.style.width = CanvasWidth*Scale + "px";
 			CanvasInfoTeacher[CurrentPage].canvas.style.height = CanvasWidth*Scale + "px";
 		}

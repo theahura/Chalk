@@ -49,13 +49,14 @@
 			//closes css/submenu tabs
 			CanvasInfo[CurrentPage].canvas.focus();
 
+			//settings for user in case of collaboration/change
 			context.globalCompositeOperation = PaintType.erase; 
 				
 			context.lineWidth = DrawContext.lineWidth = PaintType.size*(MaxZoom - GlobalScale + 1);	
 				
 			context.strokeStyle = DrawContext.strokeStyle = PaintType.color;		
 			
-			DrawContext.globalAlpha = PaintType.opacity;
+			context.globalAlpha = PaintType.opacity;
 			
 			//clears the redolist because the person made a change after the last undo/redo; prevents weird issues regarding non-chronological redo 
 			RedoList = new Array();
@@ -171,7 +172,7 @@
 							erase: context.globalCompositeOperation,
 							//which canvas its drawing on 
 							PageNumber: pageNumber,
-							opacity: DrawContext.globalAlpha
+							opacity: context.globalAlpha
 						});
 										
 					//renders the drawing
@@ -391,7 +392,7 @@
 				ToolType: ToolType,
 				//Where it is being drawn
 				PageNumber: pageNumber,
-				opacity: DrawContext.globalAlpha
+				opacity: context.globalAlpha
 			}); 
 		}
 	}
@@ -509,7 +510,7 @@
 					PanHeight: CopyPanHeight,
 					Image: StoreToolType == "Image" ? OverlayObject : null,
 					ImgData: StoreToolType == "Image" ? DrawCanvas.toDataURL() : null,
-					opacity: DrawContext.globalAlpha
+					opacity: context.globalAlpha
 			});
 
 			if(isTeacher)
@@ -546,7 +547,7 @@
 					//loses some notes from the teacher due to overwriting/timing issues; perhaps add 
 					//a loading screen teacher side to prevent additional writing immediately afterwords? food for thought
 					ImgData: StoreToolType == "Image" ? DrawCanvas.toDataURL() : null,
-					opacity: DrawContext.globalAlpha
+					opacity: context.globalAlpha
 				});
 			}
 								
