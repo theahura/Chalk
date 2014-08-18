@@ -448,6 +448,6 @@ socket.on('CommandFromStudent', function(data)
 {
 	if (data.ToolType == "Notification")
 	{
-		alert(data.PushText);
+		alert(data.Name + " said: " + data.PushText);
 	}
 });

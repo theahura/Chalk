@@ -365,7 +365,8 @@
 			socket.emit('CommandToTeacher', 
 			{
 				ToolType: "Notification",
-				PushText: note
+				PushText: note,
+				Name: Name
 			});
 		}	
 	

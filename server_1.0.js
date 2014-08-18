@@ -80,7 +80,8 @@ var  io = require('socket.io').listen(3000);
 		  		ImgData: data.ImgData,
 		  		Pages: data.Pages,
 		  		UndoList: data.UndoList,
-		  		PushText: data.PushText
+		  		PushText: data.PushText,
+		  		Name: data.Name
 		  	});
 	  });
 	  
