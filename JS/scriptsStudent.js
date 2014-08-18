@@ -385,7 +385,8 @@
 			{
 				CanvasInfoTeacher[TeacherPage].context.save();
 				CanvasInfoTeacher[TeacherPage].context.globalAlpha = data.opacity;
-				
+				CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
+
 				HighlightCanvas.getContext("2d").strokeStyle = data.color; 
 				HighlightCanvas.getContext("2d").lineWidth = data.size;
 				
@@ -403,6 +404,7 @@
 				CanvasInfoTeacher[TeacherPage].context.strokeStyle = data.color;
 				CanvasInfoTeacher[TeacherPage].context.lineWidth = data.size;
 				CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
+				CanvasInfoTeacher[TeacherPage].context.globalAlpha = 1.0;
 
 				draw(data.x, data.y, data.type, false, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
 			}

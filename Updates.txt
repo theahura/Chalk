@@ -1,16 +1,4 @@
-Fixed pagenumber div so it appears on ipad screen 
 
-Added scriptsCommonFeatures to track UI functions that are the same (e.g. colors)
-
-Cleaned up erase/opacity/draw tools code (removed old backupsystem, replaced with objects, cleaned up change style)
-
-Made it so that preferences save from one pentype to the next
-
-Fixed weird circles in highlighter
-
-Fixed student UI, added features in for student UI
-
-Added permanent highlightcanvas function to student ui
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images? 
 Note: push notifications from student to teacher   
@@ -36,7 +24,9 @@ Note: indexedDB
 Note: wrist protection
 
 //For next update
-Note: COMMENT code
+Note: Push notifications username add in
+Note: Username sign in + modify login *page*
+Note: Update whiteboard client
 
 
 Unreplicated glitches: 

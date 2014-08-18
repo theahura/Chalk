@@ -55,7 +55,8 @@ var  io = require('socket.io').listen(3000);
 		  		PanX: data.PanX,
 		  		PanY: data.PanY,
 		  		PanWidth: data.PanWidth,
-		  		PanHeight: data.PanHeight
+		  		PanHeight: data.PanHeight,
+		  		opacity: data.opacity
 		  	});
 	  });
 		  

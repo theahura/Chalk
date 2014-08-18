@@ -354,10 +354,12 @@
 					
 				}
 
-				startSave();
+				if(!IsWhiteboard)
+					startSave();
 			}
 			
-			DrawContext.restore();
+			if(DrawContext)
+				DrawContext.restore();
 		}
 				
 		/*sends draw function to server with socket.io if its paint; shapes are handled separately in shapeadjust mode; 
@@ -503,7 +505,7 @@
 					ToolType: StoreToolType,
 					color: DrawContext.strokeStyle,
 					size: DrawContext.lineWidth,
-					erase: DrawContext.globalCompositeOperation,
+					erase: context.globalCompositeOperation,
 					PanX: CopyPanX,
 					PanY: CopyPanY,
 					PanWidth: CopyPanWidth,
@@ -537,7 +539,7 @@
 					//Preferences
 					color: DrawContext.strokeStyle,
 					size: DrawContext.lineWidth,
-					erase: DrawContext.globalCompositeOperation,
+					erase: context.globalCompositeOperation,
 					//Where the copy or pan data was taken from 
 					PanX: CopyPanX,
 					PanY: CopyPanY,

@@ -69,6 +69,9 @@ function login(authResult)
 	    	  document.getElementById("LoadingColor").style.display = "none";
 
 	    	  document.getElementById("LogIn").innerHTML = "Log Out";
+	    	  
+	    	  document.getElementById("LogInName").innerHTML = "Cloud Tools - " + User;
+	    		  
 	    	  Auth = true;	 
 	    	  OauthToken = authResult.access_token;
 	    	  
@@ -129,6 +132,7 @@ function logout()
 	    	  
 	    	  alert("Logged Out");
 	    	  document.getElementById("LogIn").innerHTML = "Log In";
+	    	  document.getElementById("LogInName").innerHTML = "Cloud Tools - Not Logged In";
 	    },
 	    error: function(e) {
 	    	alert("There was an error: " + e);

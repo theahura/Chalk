@@ -96,12 +96,16 @@
 	
 	//Type: Canvas; this canvas overlays the rendered canvas whenever the user takes an action in order to make dynamic changes 
 	//before posting to permanent image as well as avoiding editing drawings directly below the image until absolutely necessary
-	var DrawCanvas = document.getElementById("DrawLayer"); 
 	
-	var DrawContext = DrawCanvas.getContext("2d");
+	if(document.getElementById("DrawLayer"))
+	{
+		var DrawCanvas = document.getElementById("DrawLayer"); 
+		
+		var DrawContext = DrawCanvas.getContext("2d");
 	
-	DrawContext.fillStyle = "solid";
-	DrawContext.lineCap = "round";
+		DrawContext.fillStyle = "solid";
+		DrawContext.lineCap = "round";
+	}
 	
 	//Type: Varies; A third layer to store image things (either canvases or images) when moving them around
 	var OverlayObject;
@@ -153,6 +157,8 @@
 	//Type: Socket; used to transfer data/commands to the student
 	socket = io('http://54.86.173.127:3000');
 	//socket = io();
+	
+	var IsWhiteboard = false; 
 	
 /**Rooms Setup ************************************************************************
  * Analyzes URL for room name and joins corresponding room
