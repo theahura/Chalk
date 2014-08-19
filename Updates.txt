@@ -1,4 +1,8 @@
+Push notifications username add in
 
+Username sign in + modify login *page*
+
+Update whiteboard client
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images? 
 Note: push notifications from student to teacher   
@@ -24,11 +28,11 @@ Note: indexedDB
 Note: wrist protection
 
 //For next update
-Note: Push notifications username add in
-Note: Username sign in + modify login *page*
-Note: Update whiteboard client
-
+Integrate localForage
+Look into dual page mech whereby only the current student and current teacher are loaded (?)
+Try saving all canvases into DOM memory instead of JS memory
 
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw
 Random copy issue with dotted line saving and replicating over
+Update failed to work, possibly sent whiteboard into negative pages

@@ -1,0 +1,605 @@
+           /* Gen CSS */
+            body,html
+            {
+                margin:0px;
+                padding:0px;
+                font-family:"Raleway",sans-serif;
+            }
+            .ui
+            {
+                z-index: 4;   
+            }
+            
+            /* Top UI CSS */
+            .top-ui
+            {        
+                position:fixed;
+                width:100%;
+                height:70px;   
+                background-color:rgba(223,223,223, 0.25);
+                overflow:visible;
+            }
+            .top-ui div
+            {
+                float:right;   
+                line-height: 70px;
+                text-align: center;
+            }
+            .scroll-outline
+            {
+                height:120px;
+                background-color:rgba(223,223,223, 0.25);
+                width:120px;
+
+                border-top-left-radius:20px;
+                border-top-right-radius:20px;
+                border-bottom-right-radius:20px;
+                border-bottom-left-radius:20px;
+            }
+            .scroll-outline
+            {
+                height:170px;
+                background-color:rgba(223,223,223, 0.25);
+                width:170px;
+
+                border-top-left-radius:20px;
+                border-top-right-radius:20px;
+                border-bottom-right-radius:20px;
+                border-bottom-left-radius:20px;
+            }
+            .scroll-outline-2
+            {
+                height: 135px;
+                width: 135px;
+                margin: 20px 20px;
+            }
+            .scroll-button
+            {
+                
+                border-bottom-left-radius:20px;
+
+                border-right-style: solid;
+                border-right-width: 1px;
+
+                height:60%;
+                width:59%;
+
+                background-color: #a8a8a8;
+            }
+            .scroll-button .text
+            {
+                position: relative;
+                top: 15px;
+
+                line-height: 30px;
+                float: none;
+            }
+            .left-right-button
+            {
+                border-bottom-right-radius:10px;
+                background-color: #a8a8a8;
+                width: 40%;
+                height: 60%;
+            }
+            .left-button
+            {        
+                height:50%;
+                width:100%;
+            }
+            .right-button
+            {
+                height:50%;
+                width:100%;
+            }
+            .left-right-button .text
+            {
+                margin-top: 10px;
+                float: none;
+                font-size: 18px;
+            }
+            .toteacher-button
+            {
+                border-top-left-radius:10px;
+                border-top-right-radius:10px;
+                border-bottom-style: solid;
+                border-bottom-width: 1px;
+
+                background-color: #a8a8a8;
+
+                height: 40%;
+                width: 100%;
+
+            }
+            .toteacher-button .text
+            {
+                float: none;
+                line-height: 60px;
+            }
+
+            .page-up-down
+            {
+                margin-top: 10px;
+                width:220px;
+                vertical-align: middle;
+            }
+            .page-down
+            {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+                border-top-left-radius:36px;
+                border-bottom-left-radius:36px;
+                height: 70%;
+                width: 49%;
+                border-right: 1px solid black;
+            }
+            .page-up
+            {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+                border-top-right-radius:36px;
+                border-bottom-right-radius:36px;
+                height: 70%;
+                width: 50%;
+            }
+            .page-up-down .text
+            {
+                float: none;
+                line-height: 50px;
+                font-size: 13px;
+            }
+            .page-up-down .text span
+            {
+                font-size: 8px;
+            }
+
+            .undo-redo
+            {
+                margin-top: 10px;
+                width:220px;
+                vertical-align: middle;
+            }
+            .undo
+            {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+                border-top-left-radius:36px;
+                border-bottom-left-radius:36px;
+                height: 70%;
+                width: 50%;
+            }
+            .redo
+            {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+                border-top-right-radius:36px;
+                border-bottom-right-radius:36px;
+                height: 70%;
+                width: 49%;
+
+                border-left: 1px solid black;
+            }
+            .undo-redo .text
+            {
+                float: none;
+                line-height: 50px;
+            }
+            .zoom
+            {
+                margin-top: 10px;
+                width:220px;
+                vertical-align: middle;
+            }
+            .zoom-in
+            {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+                border-top-left-radius:36px;
+                border-bottom-left-radius:36px;
+                height: 70%;
+                width: 49%;
+                border-right: 1px solid black;
+            }
+            .zoom-out
+            {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+                border-top-right-radius:36px;
+                border-bottom-right-radius:36px;
+                height: 70%;
+                width: 50%;
+            }
+
+            .zoom .text
+            {
+                float: none;
+                line-height: 50px;
+                font-size: 13px;
+            }
+
+            /* Side UI CSS */
+            .side-ui
+            {
+                position:fixed;
+                right:0px;
+                height:100%;
+                width:70px;
+                background-color: rgba(223,223,223, 0.25);
+            }
+
+            .menu-wrapper
+            {
+                position:relative;
+            }
+            .side-ui ul
+            {
+                padding:0px 10px;
+                list-style-type:none;
+            }
+            .side-ui ul li
+            {
+                border-top-left-radius:20px;
+                border-top-right-radius:20px;
+                border-bottom-right-radius:20px;
+                border-bottom-left-radius:20px;
+
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+                height:100px;
+                width: 50px;
+
+                text-align: center;       
+                color:#777777;
+
+                margin-top: 60px;
+            }
+            .side-ui .text
+            {
+                padding-top: 30px;
+            }
+            .side-ui .shapes-text
+            {
+                margin-left: -5%;
+            }
+
+            .side-ui ul li span.vert
+            {
+                position:absolute;
+                background-color:red;
+                text-align: center;
+                transform:rotate(-90deg);
+                -ms-transform:rotate(270deg); /* IE 9 */
+                -webkit-transform:rotate(-90deg); /* Opera, Chrome, and Safari */
+            }          
+            
+            /* Cover CSS */
+            .cover
+            {
+                position:fixed;
+                top:0px;
+                left:0px;
+                display:none;
+                z-index: 5;
+                width:100%;
+                height:100%;
+                background-color:rgba(200,200,200,.5);
+                text-align: center;
+            }
+            .scroll
+            {
+                line-height: 768px;
+                font-size:60px;
+            }
+            
+            .pen
+            {
+            }
+            .pen h1,h2,h3,h4,h5,h6
+            {
+                display:inline-block;
+            }
+            .item-holder
+            {
+                width:70%;
+                height:70px;
+                margin:0 15%;
+            }
+            .pen .color-list ul
+            {
+                display:table;
+                width:auto;
+                padding:0px;
+                margin:0 auto;
+                list-style-type: none;
+            }
+            .pen .color-list ul li
+            {
+                float:left;
+                margin:0px 16px;
+                width:70px;
+                height:70px;
+                background-color:green;
+                border-radius:20%;
+            }
+            #Red        { background-color:red;     }
+            #Orange     { background-color:orange;  }
+            #Yellow     { background-color:yellow;  }
+            #Green      { background-color:green;   }
+            #Blue       { background-color:blue;    }
+            #Purple       { background-color:magenta; }
+            #Black      { background-color:black;   }
+            
+            .pen .pen-size
+            {
+                height:30px; 
+            }
+            .pen .pen-size input[type="range"]
+            {
+                float:left;
+                -webkit-appearance: none;
+                width:89%;
+                height:10px;
+                background-color:#fff;
+                box-shadow: inset 0 0 5px #aaa;
+                background-color:
+            }
+            .pen .pen-size input[type='range']::-moz-range-track {
+                 -moz-appearance: none;
+                 border-radius: 5px;
+                 box-shadow: inset 0 0 5px #333;
+                 background-color: green;
+                 height: 10px;
+            }
+            .pen .pen-size input[type='range']::-webkit-slider-thumb
+            {
+                -webkit-appearance: none !important;
+                background-color: #fff;
+                box-shadow:inset 0 0 10px rgba(000,000,000,0.5);
+                border-radius:10%;
+                height: 30px;
+                width: 20px;
+            }
+            .pen .pen-size input[type='range']::-moz-range-thumb 
+            {
+                -moz-appearance: none;
+                background-color: blue;
+                box-shadow:inset 0 0 10px rgba(000,000,000,0.5);
+                border: 1px solid #999;
+                height: 20px;
+                width: 20px;
+            }
+            .pen .pen-size .dot
+            {
+                margin-top:-30px;
+                float:right;
+                width:10%;
+                height:30px;
+                text-align:center;
+                line-height: 10px;
+            }
+            .pen .pen-type
+            {
+            }
+            .pen .pen-type ul
+            {
+                display:table;
+                width:100%;
+                padding:0px;
+                margin:0 auto;
+                list-style-type: none;
+            }
+            .pen .pen-type ul li
+            {
+                float:left;
+                margin:0px 1.66666666%;
+                width:30%;
+                height:70px;
+                background-color:white;
+                border-radius:20px;
+                line-height: 70px;
+                font-size:20px;
+            }
+            .shapes
+            {
+            }
+            .shapes .shapes-list
+            {
+                width:70%;
+                margin:0 15%;   
+            }
+            .shapes .shapes-list ul
+            {
+                display:table;
+                width:100%;
+                margin:0 auto;
+                padding:0px;
+                list-style-type: none;
+            }
+            .shapes .shapes-list ul li
+            {
+                float:left;
+                margin:0 40px;
+            }
+            .tools
+            {
+            }
+            
+            .tools .tool-picker
+            {
+            }
+            .tools .tool-picker ul
+            {
+                padding:0px;
+                margin:0px;
+                list-style-type: none;
+            }
+            .tools .tool-picker ul li
+            {
+                float:left;
+                margin:1% 1.5%;
+                width:30%;
+                height:70px;
+                background-color:white;
+                border-radius:20px;
+                line-height: 70px;
+                font-size:20px;
+            }
+
+            .cover-close
+            {
+                position:fixed;
+                width:30px;
+                height:30px;
+                left:5px;
+                top:5px;
+                font-size:30px;
+            }
+            .cover-help
+            {
+                position:fixed;
+                width:30px;
+                height:30px;
+                bottom:5px;
+                left:5px;
+                font-size:20px;
+            }
+            /* Spacers CSS */
+            .spacer-a /* Spacer used in top ui */
+            {
+                width:70px;
+                height:100%;
+            }
+            
+            .spacer-b /* Spacer used to hide scroll */
+            {
+                width:100%;
+                height:120px;
+            }
+            .spacer-10
+            {
+                width:1px;
+                margin:0 auto;
+                height:10px;
+            }
+            .spacer-20
+            {
+                width:1px;
+                margin:0 auto;
+                height:20px;
+            }
+             .spacer-40
+            {
+                width:1px;
+                height:40px;
+                margin:0 auto;
+            }
+            .spacer-70
+            {
+                width:1px;
+                height:70px;
+                margin:0 auto;
+            }
+            .spacer-80
+            {
+                width:100%;
+                height:80px; 
+            }
+            
+            /* Shapes CSS */               
+            #Box
+            {
+                width:100px;
+                height:100px;
+                background-color:red;
+            }
+            #Circle
+            {
+                width:100px;
+                height:100px;
+                border-radius:50%;
+                background-color:red;
+            }
+            #Line 
+            {
+                width:100px;
+                height:100px;
+                background: 
+                   linear-gradient(to top left,
+                       rgba(0,0,0,0) 0%,
+                       rgba(0,0,0,0) calc(50% - 0.8px),
+                       red 50%,
+                       rgba(0,0,0,0) calc(50% + 0.8px),
+                       rgba(0,0,0,0) 100%);
+            }
+            
+            .help-text
+            {
+                opacity: 0.0;
+            }
+
+            #PageNumber
+            {
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            #Updating 
+            {
+                color:#000;
+                background:#C0C0C0;
+                opacity:.4;
+                display: none;
+                position:fixed;
+
+                width:80px;
+                height:30px;
+
+                left:10px;
+                top:80px;
+            }
+
+            #LoadingColor 
+            {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                background-color: #ecf5fe;
+                width: 2000px;
+                height: 2000px;
+                z-index: 5;
+                opacity: 0.8;
+                display: none;
+            }
+
+            #Loading {
+                margin-right: 100px;
+                margin-left: 190px;
+                margin-bottom: 0px;
+                display: block;
+            }
+
+            #LoadingText {
+                position: fixed;
+                z-index: 6;
+                font-size: 50px;
+                margin-top: -340px;
+                margin-left: 220px;
+                display:block;
+            }
+
+            canvas 
+            {
+                border: 2px solid #000000;
+            }
+
+
+             #ZoomOut:active,  #ZoomIn:active, #Undo:active, #Redo:active, #PageUp:active, #PageDown:active, #Scroll:active, #Pen:active, #Shapes:active, #Tools:active, #MoveToTeacher:active, #Left:active, #Right:active
+            {
+                background: red;
+            }
+
+    
+            
+            .push-note
+            {
+                position: fixed;
+            }

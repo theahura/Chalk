@@ -5,7 +5,8 @@ All Rights Reserved
 <html>
     <head>  
 
-        <meta name="viewport" content="initial-scale=1, user-scalable = no" />
+        <meta name="viewport" content="initial-scale=1, minimal-ui, user-scalable = no" />
+
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta content='white-translucent' name='apple-mobile-web-app-status-bar-style'>
 
@@ -361,7 +362,7 @@ All Rights Reserved
 				text-align: center;       
 				color:#777777;
 
-                margin-top: 30px;
+                margin-top: 40px;
             }
             .side-ui .text
             {
@@ -598,6 +599,12 @@ All Rights Reserved
                 margin:0 auto;
                 height:20px;
             }
+            .spacer-40
+            {
+                width:1px;
+                height:40px;
+                margin:0 auto;
+            }
             .spacer-70
             {
                 width:1px;
@@ -717,10 +724,10 @@ All Rights Reserved
 
 
         <div class="cover pen">
-            <div class="spacer-70"></div>
+            <div class="spacer-40"></div>
             <h1> Pen Styling </h1>
             <div class="help-text">Click anywhere in the background to close the pen tab</div>
-            <div class="spacer-20"></div>
+            <div class="spacer-10"></div>
             <h2> Pen Color </h2>
             <div class="spacer-20"></div>
             <div class="color-list item-holder">
@@ -734,16 +741,16 @@ All Rights Reserved
                     <li class="button" id="Black"></li>
                 </ul>
             </div>
-			<div class="spacer-20"></div>
+			<div class="spacer-10"></div>
             <div class="help-text"> Click on any color to change the color of your pen </div>
-            <div class="spacer-20"></div>
+            <div class="spacer-10"></div>
             <h2> Pen Size </h2>
             <div class="pen-size item-holder">
                 <input type="range" name="pen_size" id="FontSize" min="1" max="70" step="1" value="5"><div class="dot"><i style="font-size:12px; line-height:70px;" class="fa fa-circle"></i></div>
             </div>
-            <div class="spacer-20"></div>
+            <div class="spacer-10"></div>
             <div class="help-text"> Click and drag the slider to change the size of your pen </div>
-            <div class="spacer-20"></div>
+            <div class="spacer-10"></div>
             <h2> Pen Type </h2>
             <div class="pen-type item-holder">
                 <ul>
@@ -752,14 +759,14 @@ All Rights Reserved
                     <li class="button" id="Highlight"> Highlighter </li>
                 </ul>
             </div>
-            <div class="spacer-20"></div>
+            <div class="spacer-10"></div>
             <div class="help-text"> Click these buttons to change what each stroke does: make it a pen, eraser, or highlighter </div>
             <div class="cover-help help button"><i class="fa fa-question-circle"></i></div>
         </div>
         
         
         <div class="cover shapes">
-            <div class="spacer-70"></div>
+            <div class="spacer-40"></div>
             <h1> Shapes </h1>
             <div class="help-text">Click anywhere in the background to close the Shapes tab</div>
             <div class="spacer-70"></div>
@@ -776,7 +783,7 @@ All Rights Reserved
             <div class="cover-help help button"><i class="fa fa-question-circle"></i></div>
         </div>
         <div class="cover tools">
-            <div class="spacer-70"></div>
+            <div class="spacer-40"></div>
             <h1> Tools </h1>
             <div class="help-text">Click anywhere in the background to close the tools tab</div>
             <h2> Drawing Tools </h2>
@@ -787,8 +794,7 @@ All Rights Reserved
                 </ul>
             </div>
             <div class="spacer-20"></div>
-            <div class="help-text"> Use Copy/Paste by clicking and dragging over an area, and dragging again to create a copy </div>
-            <div class="help-text"> Use Pan by clicking and dragging over an area, and dragging again to move your selection </div>
+            <div class="help-text"> Use Copy/Paste and Pan by clicking and dragging over an area, and dragging again to create a copy or move your selection </div>
             <h2 id="LoginName"> Cloud Tools - Not Logged In </h2>
             <div class="item-holder tool-picker">
                 <ul>
@@ -808,8 +814,7 @@ All Rights Reserved
                 </ul>
             </div>
             <div class="spacer-20"></div>
-            <div class="help-text"> Use Update to make sure everyone in the room has the same 'presenter' information </div>
-            <div class="help-text"> Use Exit to return to the Chalk log in page, and use Message to send a private note to the presenter </div>
+            <div class="help-text"> Use Update to make sync presenter information, and use Message to send a private note to the presenter </div>
 
             <div class="cover-help help button"><i class="fa fa-question-circle"></i></div>
         </div>
