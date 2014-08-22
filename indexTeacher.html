@@ -24,6 +24,20 @@ All Rights Reserved
         <script type="text/javascript">
             $(document).ready(function(){
 
+                //Red click indicator
+                $('#ZoomOut,  #ZoomIn, #Undo, #Redo, #PageUp, #PageDown, #Scroll, #Pen, #Shapes, #Tools, #MoveToTeacher, #Left, #Right').click(function(){
+                    
+                    var currentBackground = $(this).css('background');
+                    var storedThis = this;
+
+                    $(this).css({"background":"red"});
+
+                    setTimeout(function() {
+                        $(storedThis).css({"background":currentBackground});
+                    }, 500);
+
+                })
+
                 //Tabs
                 $('#Pen').click(function(){
                     $('.pen').fadeIn(250); 
@@ -645,12 +659,6 @@ All Rights Reserved
             canvas 
             {
                 border: 2px solid #000000;
-            }
-
-
-            #ZoomOut:active,  #ZoomIn:active, #Undo:active, #Redo:active, #PageUp:active, #PageDown:active, #Scroll:active, #Pen:active, #Shapes:active, #Tools:active
-            {
-                background: red;
             }
     
             

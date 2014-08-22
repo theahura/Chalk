@@ -25,6 +25,21 @@ All Rights Reserved
         <script type="text/javascript">
             $(document).ready(function(){
 
+                //Red click indicator
+                $('#ZoomOut,  #ZoomIn, #Undo, #Redo, #PageUp, #PageDown, #Scroll, #Pen, #Shapes, #Tools, #MoveToTeacher, #Left, #Right').click(function(){
+                    
+                    var currentBackground = $(this).css('background');
+                    var storedThis = this;
+
+                    $(this).css({"background":"red"});
+
+                    setTimeout(function() {
+                        $(storedThis).css({"background":currentBackground});
+                    }, 500);
+
+                })
+
+
                 //Tabs
                 $('#Pen').click(function(){
                     $('.pen').fadeIn(250); 
@@ -659,14 +674,14 @@ All Rights Reserved
                 color:#000;
                 background:#C0C0C0;
                 opacity:.4;
-                display:none;
-
+                display: none;
                 position:fixed;
-                float:right;
+
                 width:80px;
                 height:30px;
-                left:350px;
-                top:10px;
+
+                left:10px;
+                top:80px;
             }
 
             #LoadingColor 
@@ -701,12 +716,6 @@ All Rights Reserved
             canvas 
             {
                 border: 2px solid #000000;
-            }
-
-
-            #ZoomOut:active,  #ZoomIn:active, #Undo:active, #Redo:active, #PageUp:active, #PageDown:active, #Scroll:active, #Pen:active, #Shapes:active, #Tools:active, #MoveToTeacher:active, #Left:active, #Right:active
-            {
-                background: red;
             }
 
 

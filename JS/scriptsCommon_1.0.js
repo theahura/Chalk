@@ -61,11 +61,11 @@
 	var BackUpHighlight =
 	{
 		type: "Highlight",
-		color:"",
-		size: 5,
+		color:"#FFFF00",
+		size: 40,
 		erase: "source-over",
 		opacity: 0.4,
-		colorElementID: "Black"
+		colorElementID: "Yellow"
 	};
 	
 	//This is the preference set that actually gets edited at any given time. It's default setting is pen. 
@@ -260,10 +260,12 @@
 			this.focus();
 			if(this.onclick)
 				this.onclick;
-		//MAKE SURE THIS WORKS
-		//	e.preventDefault();
-		//	e.stopPropagation();
-		//	e.stopImmediatePropagation();
+			
+			$(this).trigger("click"); 
+			
+			e.preventDefault();
+			e.stopPropagation();
+			e.stopImmediatePropagation();
 		});	
 	};
 		
@@ -454,11 +456,13 @@
 		RedoList = new Array();
 
 		/*Stores the image for undo/redo due to undo/redo list clear*/
-		var previous_image = new Image(); 
 		
+		if(!CanvasInfo[CurrentPage].image)
+			CanvasInfo[CurrentPage].image = new Image(); 
+
 		//creates the image
-		previous_image.src = CanvasInfo[CurrentPage].canvas.toDataURL();
-		
+		CanvasInfo[CurrentPage].image.src = CanvasInfo[CurrentPage].canvas.toDataURL();
+				
 		if (directionUp)
 		{
 			//makes sure it doesn't go above to a page thats not created; teachers going up a page should have created 
@@ -474,12 +478,7 @@
 			CurrentPage++;
 			document.body.appendChild(CanvasInfo[CurrentPage].canvas);
 			
-			previous_image.onload = function()
-			{
-				CanvasInfo[CurrentPage - 1].image = previous_image;
-				
-				document.getElementById("LoadingColor").style.display = "none"; //turns off the loading screen				
-			}
+			document.getElementById("LoadingColor").style.display = "none"; //turns off the loading screen				
 		}
 		else 
 		{	
@@ -495,12 +494,7 @@
 			CurrentPage--;
 			document.body.appendChild(CanvasInfo[CurrentPage].canvas);
 			
-			previous_image.onload = function()
-			{
-				CanvasInfo[CurrentPage + 1].image = previous_image;
-				
-				document.getElementById("LoadingColor").style.display = "none";
-			}
+			document.getElementById("LoadingColor").style.display = "none";
 		}
 		
 		//makes sure the new page's zoom is the same as the last one's
@@ -568,6 +562,12 @@
 	        	var PageNumber = pt[0].PageNumber;
 
 	        	var canvasctx = canvasListObject.context;
+	        	
+	        	if (pt[0].opacity != 1.0)
+	        		if(HighlightCanvas)
+	        			canvasctx = HighlightCanvas.getContext("2d"); 
+	        		else
+	        			canvasctx = DrawContext;
 	        		        	
 	        	canvasctx.strokeStyle = pt[0].color;
 	        	canvasctx.globalCompositeOperation = pt[0].erase;
@@ -579,12 +579,6 @@
 	        	//base canvas at a lower opacity setting
         		canvasListObject.context.globalAlpha = pt[0].opacity; 
 
-	        	if (pt[0].opacity != 1.0)
-	        		if(HighlightCanvas)
-	        			canvasctx = HighlightCanvas.getContext("2d"); 
-	        		else
-	        			canvasctx = DrawContext;
-	        	
 	        	//draws pointbypoint
 	        	for (var j = 0; j < list[i].length; j++)
 	        	{

@@ -438,8 +438,8 @@
 				{
 					if(!CanvasInfo[i])
 					{
-						var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, 0, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
-						var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+						var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+						var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -2, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
 						
 						CanvasInfo[i] = {};
 						CanvasInfoTeacher[i] = {};
