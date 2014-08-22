@@ -23,11 +23,11 @@ var  io = require('socket.io').listen(3000);
 //  io.set('log level', 1);
   io.sockets.on('connection', function(socket) 
   {   
-	  socket.on('room', function(room) {
-	      socket.join(room);
-	      socket.room = room;
+	  socket.on('room', function(data) {
+	      socket.join(data.Room);
+	      socket.room = data.Room;
 	      
-	      //socket.in(room).emit('Joined',{});
+	     // socket.in(data.Room).emit('Joined',{Room: data.Room});
 	      
 	  });
 

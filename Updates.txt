@@ -26,11 +26,24 @@ Note: changing pages decreases image quality
 Note: Div to store username + div to store google drive login account name
 Note: indexedDB
 Note: wrist protection
+Note: loading image fix
+Note: Page numbers
+
+Glitch: Background touching isn't registered in background
+Glitch: Double tap css glitch on tab buttons for iPads
+Glitch: Draw through cover css layer when scrolling
+Glitch: Update causes new canvas layers to be drawn over
+Glitch: Coloring for student side on new pages are teacher colors - scripts Common Features
+Glitch: Undo/Redo removes coloring in highlight student side (?)
+Glitch: bottom pull up menu kills app function on second+ page
+Glitch: Pageup/down memory leak with image storage
+Glitch: Google Picker memory leak with image previews
 
 //For next update
 Integrate localForage
 Look into dual page mech whereby only the current student and current teacher are loaded (?)
 Try saving all canvases into DOM memory instead of JS memory
+Fix event timers for saving 
 
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw

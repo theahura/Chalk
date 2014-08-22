@@ -211,7 +211,7 @@
 	{
 		Name = "Anonymous";
 	}
-	
+		
 	/**
 	 * When the socket connects (recieving 'connect' as a command) 
 	 * it emits it's room choice to the socket.io server, which 
@@ -241,7 +241,7 @@
 	 */
 	socket.on('Joined', function(data) 
 	{
-	//	alert("You joined: " + Room);
+		alert("You joined: " + data.Room);
 	});
 
 /**End of Rooms Setup **************************************************************************/
