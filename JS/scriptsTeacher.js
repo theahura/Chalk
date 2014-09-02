@@ -37,8 +37,6 @@ var TeacherLayer = document.getElementById('TeacherLayer');
 
 var CanvasSize = 2000; //remove later
 
-//creates a new object for the list
-CanvasInfo[0] = {};
 //adds the first canvas context info and the canvas itself
 CanvasInfo[0].context = TeacherLayer.getContext("2d");
 CanvasInfo[0].canvas = TeacherLayer;
@@ -179,7 +177,7 @@ document.getElementById("PageUp").onclick = function()
 	//creates a new canvas and sends an extension command to the student if it doesn't exist
 	if(!CanvasInfo[CurrentPage + 1])
 	{
-		if(CurrentPage >= 2)
+		if(CurrentPage >= 5)
 		{
 			alert("You have reached the maximum number of pages. Use save-as to reuse previous pages. Have the class (teacher and student) use " +
 					"save-as to name their page something new, and then erase previous data. Auto-updating will begin to save the image as a new page.");
@@ -208,6 +206,8 @@ document.getElementById("PageUp").onclick = function()
 		//to store the data for our new canvas/page
 		CanvasInfo[CanvasInfo.length - 1].context = canvas.getContext("2d"); 
 		CanvasInfo[CanvasInfo.length - 1].canvas = canvas;
+		CanvasInfo[CanvasInfo.length - 1].UndoList = new Array();
+		CanvasInfo[CanvasInfo.length - 1].RedoList = new Array();
 	}
 	
 	//adds the canvas
@@ -270,21 +270,10 @@ document.getElementById("Undo").onclick = function()
 	//stops update call for google drive
 	clearSaveTimer();
 	
-	if (UndoList.length > 0)
+	if (CanvasInfo[CurrentPage].UndoList.length > 0)
 	{			
-		RedoList.push(UndoList.pop());
-		redrawUndo(UndoList, CanvasInfo[CurrentPage]);
-	}
-
-	//make a helper method
-	//if a storage image exists, convert it to a string to send it over
-	var TempImgData = null;
-	
-	if (CanvasInfo[CurrentPage].image)
-	{
-		var canvas = createCanvas(CanvasInfo[CurrentPage].image.height, CanvasInfo[CurrentPage].image.width);
-		canvas.getContext("2d").drawImage(CanvasInfo[CurrentPage].image, 0, 0);
-		TempImgData = canvas.toDataURL();
+		CanvasInfo[CurrentPage].RedoList.push(CanvasInfo[CurrentPage].UndoList.pop());
+		redrawUndo(CanvasInfo[CurrentPage].UndoList, CanvasInfo[CurrentPage]);
 	}
 	
 	/**
@@ -296,11 +285,10 @@ document.getElementById("Undo").onclick = function()
 	{
 		ToolType: "Undo",
 		TotalPages: CanvasInfo.length,
-		ImgData: TempImgData,
 		PageNumber: CurrentPage,
 		
 		//sends a string form of the undolist array
-		UndoList: JSON.stringify(UndoList, function(key, value) //makes objects into strings
+		UndoList: JSON.stringify(CanvasInfo[CurrentPage].UndoList, function(key, value) //makes objects into strings
 		{
 			if(value instanceof Image) //images returned as empty if there are any in the undolist (which there shouldn't be YET)
 			{
@@ -320,29 +308,19 @@ document.getElementById("Redo").onclick = function()
 	//stops update call 
 	clearSaveTimer();
 	
-	if (RedoList.length > 0)
+	if (CanvasInfo[CurrentPage].RedoList.length > 0)
 	{
-		UndoList.push(RedoList.pop());
-		redrawUndo(UndoList, CanvasInfo[CurrentPage]);
-	}
-	
-	var TempImgData = null;
-	
-	if (CanvasInfo[CurrentPage].image)
-	{
-		var canvas = createCanvas(CanvasInfo[CurrentPage].image.height, CanvasInfo[CurrentPage].image.width);
-		canvas.getContext("2d").drawImage(CanvasInfo[CurrentPage].image, 0, 0);
-		TempImgData = canvas.toDataURL();
+		CanvasInfo[CurrentPage].UndoList.push(CanvasInfo[CurrentPage].RedoList.pop());
+		redrawUndo(CanvasInfo[CurrentPage].UndoList, CanvasInfo[CurrentPage]);
 	}
 	
 	socket.emit('CommandToStudent',   
 	{
 		ToolType: "Undo",
 		TotalPages: CanvasInfo.length,
-		ImgData: TempImgData,
 		PageNumber: CurrentPage,
 
-		UndoList: JSON.stringify(UndoList, function(key, value)
+		UndoList: JSON.stringify(CanvasInfo[CurrentPage].UndoList, function(key, value)
 		{
 			if(value instanceof Image)
 			{
@@ -411,15 +389,6 @@ function Update()
 		type: SelfUpdating
 	});
 	
-	var TempImgData = null;
-	
-	if (CanvasInfo[CurrentPage].image)
-	{
-		var canvas = createCanvas(CanvasInfo[CurrentPage].image.height, CanvasInfo[CurrentPage].image.width);
-		canvas.getContext("2d").drawImage(CanvasInfo[CurrentPage].image, 0, 0);
-		TempImgData = canvas.toDataURL();
-	}
-	
 	//the undo call
 	socket.emit('CommandToStudent', 
 	{
@@ -428,7 +397,7 @@ function Update()
 		ImgData: TempImgData,
 		type: SelfUpdating, 
 		//basically just sends the undolist
-		UndoList: JSON.stringify(UndoList, function(key, value)
+		UndoList: JSON.stringify(CanvasInfo[CurrentPage].UndoList, function(key, value)
 		{
 			if(value instanceof Image)
 			{
@@ -451,3 +420,19 @@ socket.on('CommandFromStudent', function(data)
 		alert(data.Name + " said: " + data.PushText);
 	}
 });
+
+
+
+
+//DEBUG
+//
+//document.getElementById("Debug").onclick = function()
+//{
+//	var x = prompt();
+//	for (var i = 0; i < x; i++)
+//	{
+//		draw(100, 100, "dragstart", true, 100, 100, CanvasInfo[CurrentPage].context, CurrentPage, true);
+//		draw(500, 500, "drag", true, 100, 100, CanvasInfo[CurrentPage].context, CurrentPage, true);
+//		draw(500, 500, "dragend", true, 500, 500, CanvasInfo[CurrentPage].context, CurrentPage, true);
+//	}
+//}

@@ -51,7 +51,6 @@
 	var StudentLayer = document.getElementById('StudentLayer');
 	
 	//sets default marker styling 
-	CanvasInfo[0] = {};
 	CanvasInfo[0].context = StudentLayer.getContext("2d");
 	CanvasInfo[0].canvas = StudentLayer;
 
@@ -93,7 +92,7 @@
 		
 		x = (ev.pageX)*MaxZoom/GlobalScale; 
 		y = (ev.pageY)*MaxZoom/GlobalScale; 
-		
+				
 		if(!ShapeAdjust)
 			//calls the drag start event
 			draw(x, y, "dragstart", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
@@ -304,11 +303,11 @@
 		clearSaveTimer();
 		
 		//pops last undo command to redo, calls redraw
-		if (UndoList.length > 0)
+		if (CanvasInfo[CurrentPage].UndoList.length > 0)
 		{
-			RedoList.push(UndoList.pop());
+			CanvasInfo[CurrentPage].RedoList.push(CanvasInfo[CurrentPage].UndoList.pop());
 			
-			redrawUndo(UndoList, CanvasInfo[CurrentPage]);
+			redrawUndo(CanvasInfo[CurrentPage].UndoList, CanvasInfo[CurrentPage]);
 		}
 		
 		startSave();
@@ -320,10 +319,10 @@
 		clearSaveTimer();
 		
 		//pops last redo command to undo, calls redraw
-		if (RedoList.length > 0)
+		if (CanvasInfo[CurrentPage].RedoList.length > 0)
 		{
-			UndoList.push(RedoList.pop());
-			redrawUndo(UndoList, CanvasInfo[CurrentPage]);
+			CanvasInfo[CurrentPage].UndoList.push(CanvasInfo[CurrentPage].RedoList.pop());
+			redrawUndo(CanvasInfo[CurrentPage].UndoList, CanvasInfo[CurrentPage]);
 		}
 		
 		startSave();
@@ -421,7 +420,9 @@
 			CanvasInfo.push({}); 
 			CanvasInfo[CanvasInfo.length - 1].context = context; 
 			CanvasInfo[CanvasInfo.length - 1].canvas = canvas; 
-			
+			CanvasInfo[CanvasInfo.length - 1].UndoList = new Array(); 
+			CanvasInfo[CanvasInfo.length - 1].RedoList = new Array(); 
+
 			CanvasInfoTeacher.push({}); 
 			CanvasInfoTeacher[CanvasInfoTeacher.length - 1].context = contextT; 
 			CanvasInfoTeacher[CanvasInfoTeacher.length - 1].canvas = canvasT; 
@@ -474,14 +475,6 @@
 				}
 			
 			var UndoListTeacher = JSON.parse(data.UndoList);
-			
-			//if theres a previously stored image
-			if (data.ImgData)
-			{
-				var img = new Image();
-				img.src = data.ImgData;
-				CanvasInfoTeacher[data.PageNumber].image = img;
-			}
 				
 			redrawUndo(UndoListTeacher, CanvasInfoTeacher[data.PageNumber]);
 			

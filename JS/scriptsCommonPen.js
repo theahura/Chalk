@@ -59,7 +59,7 @@
 			context.globalAlpha = PaintType.opacity;
 			
 			//clears the redolist because the person made a change after the last undo/redo; prevents weird issues regarding non-chronological redo 
-			RedoList = new Array();
+			CanvasInfo[pageNumber].RedoList = new Array();
 		}
 
 		//on mouse click down...
@@ -86,9 +86,10 @@
 				//if the previous one is not an array; or if it is an array and the length is greater than 0 (i.e. exists)
 				else 
 				{
-					if(!(UndoList[UndoList.length - 1] instanceof Array) || (UndoList[UndoList.length - 1] instanceof Array && UndoList[UndoList.length - 1].length > 0))//debugging for paint events when dots dont get registered; only adds new array if previous array length != 0
+					console.log(CanvasInfo[pageNumber] + " " + CanvasInfo[pageNumber].UndoList);
+					if(!(CanvasInfo[pageNumber].UndoList[CanvasInfo[pageNumber].UndoList.length - 1] instanceof Array) || (CanvasInfo[pageNumber].UndoList[CanvasInfo[pageNumber].UndoList.length - 1] instanceof Array && CanvasInfo[pageNumber].UndoList[CanvasInfo[pageNumber].UndoList.length - 1].length > 0))//debugging for paint events when dots dont get registered; only adds new array if previous array length != 0
 					{
-						UndoList.push(new Array());
+						CanvasInfo[pageNumber].UndoList.push(new Array());
 					}
 					
 					//Resets midpoints to prepare for stroke commands with new input data
@@ -158,7 +159,7 @@
 				    //debugs to make sure doesn't store excess points that are the same
 					if (x != lastX || y != lastY) 
 						//adds an extra point to a previous paint line
-						UndoList[UndoList.length - 1].push(
+						CanvasInfo[pageNumber].UndoList[CanvasInfo[pageNumber].UndoList.length - 1].push(
 						{
 							//x,y position of the mouse
 							x: x,
@@ -494,7 +495,7 @@
 			}
 			
 			//replicates the draw image command in its final location for replication on undo
-			UndoList.push({
+			CanvasInfo[pageNumber].UndoList.push({
 					x: EndPositionX + CanvasPositionX, 
 					y: EndPositionY + CanvasPositionY, 
 					//if its an image data set, we want only the amount the person moved the image over, not the amount + where the mouse 

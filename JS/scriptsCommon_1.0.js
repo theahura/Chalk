@@ -22,11 +22,6 @@
 	var ToolType = "Paint";
 	var StoreToolType = "Paint";
 	
-	//Type: Array List; stores a list of commands the user has done to undo/redo mistakes, etc. Paint commands are stored as arrays
-	//within the array to account for strokes and to avoid undo-ing each individual point; other commands are stored as single objects
-	var UndoList = new Array();
-	var RedoList = new Array();
-	
 	//Keeps track of who is sending out update calls to figure out who actually needs to be updated
 	var SelfUpdating = false; 
 
@@ -90,6 +85,14 @@
 	//as a tracker of pages, where the index represents the pageNumber
 	var CanvasInfo = new Array();
 	var CanvasInfoTeacher;
+
+	CanvasInfo[0] = {};
+	
+	//Type: Array List; stores a list of commands the user has done to undo/redo mistakes, etc. Paint commands are stored as arrays
+	//within the array to account for strokes and to avoid undo-ing each individual point; other commands are stored as single objects
+	CanvasInfo[0].UndoList = new Array();
+	CanvasInfo[0].RedoList = new Array();
+	
 	
 	//Type: Int; stores the page the user is currently on to access info from CanvasInfo array list
 	var CurrentPage = 0;
@@ -366,7 +369,7 @@
 		context.clearRect(0, 0, 2000, 2000);
 		
 		if(!DontStoreUndo)
-			UndoList.push({ToolType: "Clear"});
+			CanvasInfo[CurrentPage].UndoList.push({ToolType: "Clear"});
 	}
 	
 	/**
@@ -450,19 +453,7 @@
 	 * @Param: DirectionUp; boolean; tracks whether the page flip is up or down 
 	 */
 	function changePage(directionUp)
-	{
-		//clears undo/redo list on page change to save space
-		UndoList = new Array();
-		RedoList = new Array();
-
-		/*Stores the image for undo/redo due to undo/redo list clear*/
-		
-		if(!CanvasInfo[CurrentPage].image)
-			CanvasInfo[CurrentPage].image = new Image(); 
-
-		//creates the image
-		CanvasInfo[CurrentPage].image.src = CanvasInfo[CurrentPage].canvas.toDataURL();
-				
+	{	
 		if (directionUp)
 		{
 			//makes sure it doesn't go above to a page thats not created; teachers going up a page should have created 
@@ -503,8 +494,10 @@
 		//Used to write to the pageNumber div
 		var TotalPages = CanvasInfo.length-1;
 		
+		var CurrentPageTemp = CurrentPage + 1;
+		
 		//edits the page number div to let the user know what page they are on
-		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+		document.getElementById("PageNumber").innerHTML = CurrentPageTemp + " of " + TotalPages;
 		
 		//makes sure when you jump to a page you always start at the 0/0 spot
 		window.scrollTo(0, 0);
@@ -526,14 +519,6 @@
 	    //Saves the current canvascontext setup, for restoration after undo/redo build
 	    canvasListObject.context.save();
 	    canvasListObject.context.globalAlpha = 1.0;
-	    
-	    //redraws what happened before the undolist was cleared on page up or down
-	    if(canvasListObject.image)
-	    {
-		    canvasListObject.context.globalCompositeOperation = "source-over";
-
-	    	canvasListObject.context.drawImage(canvasListObject.image, 0, 0);
-	    }
 	    
 	    //Debugging
 	    if (list.length == 0)
