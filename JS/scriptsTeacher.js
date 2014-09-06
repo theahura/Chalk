@@ -167,6 +167,35 @@ $(document).on("dragcanceled",".drag",function(ev, dd){
   Random Tools 
   *******************************************************************************************/	 	
 
+	/**	Colors **/
+	//Red
+	document.getElementById("Red").onclick = function(){
+		changeStyle("#FF0000", "Red");
+		};
+		
+	//Blue
+	document.getElementById("Blue").onclick = function(){
+		changeStyle("#0000FF", "Blue");};
+		
+	//Yellow
+	document.getElementById("Yellow").onclick = function(){
+		changeStyle("#FFFF00", "Yellow");};
+		
+	//Green
+	document.getElementById("Green").onclick = function(){
+		changeStyle("#00FF00", "Green");};
+		
+	//Purple
+	document.getElementById("Purple").onclick = function(){
+		changeStyle("#FF00FF", "Purple");};
+		
+	//Orange
+	document.getElementById("Orange").onclick = function(){
+		changeStyle("#FFA500", "Orange");};
+		
+	//Black
+	document.getElementById("Black").onclick = function(){
+		changeStyle("#A8A8A8", "Black");};
 
 /**Extend ************************************************************************/
 
@@ -373,10 +402,7 @@ function Update()
 	var ImageList = new Array();
 	
 	for (var i = 0; i < CanvasInfo.length; i++)
-		if (i != CurrentPage)
-			ImageList[i] = CanvasInfo[i].canvas.toDataURL(); 
-		else
-			ImageList[i] = null;
+		ImageList[i] = CanvasInfo[i].UndoList; 
 	 
 	//the update call; need to send the images from the previous pages as well
 	socket.emit('CommandToStudent', 
@@ -389,38 +415,47 @@ function Update()
 		type: SelfUpdating
 	});
 	
-	//the undo call
-	socket.emit('CommandToStudent', 
-	{
-		ToolType: "UndoUpdate",
-		PageNumber: CurrentPage,
-		ImgData: TempImgData,
-		type: SelfUpdating, 
-		//basically just sends the undolist
-		UndoList: JSON.stringify(CanvasInfo[CurrentPage].UndoList, function(key, value)
-		{
-			if(value instanceof Image)
-			{
-				return undefined;
-			}
-			
-			return value;
-		})
-	});
-	
 	SelfUpdating = false;
 }
 	
 /********************************************Handles all communication**************************************************/
 
+var PushArray = new Array(); 
+
 socket.on('CommandFromStudent', function(data) 
 {
 	if (data.ToolType == "Notification")
-	{
-		alert(data.Name + " said: " + data.PushText);
+	{	
+		
+		var PushDiv = document.createElement("div");
+		
+		PushDiv.className = "push-note";
+		
+		PushDiv.innerHTML = data.Name + " said: " + data.PushText;
+
+		document.getElementById('PushNoteList').appendChild(PushDiv);
+		
+		$(PushDiv).fadeIn(500);
+		
+		PushArray.push(PushDiv);
+					
+		window.setTimeout(function()
+		{
+			removePushNote();
+		}, 5000);
+
 	}
 });
 
+function removePushNote()
+{
+	if(PushArray.length > 0)
+	{
+		var PushDiv = PushArray.shift();
+		$(PushDiv).fadeOut(500);
+//		document.getElementById('PushNoteList').removeChild(PushDiv);
+	}
+}
 
 
 

@@ -86,7 +86,6 @@
 				//if the previous one is not an array; or if it is an array and the length is greater than 0 (i.e. exists)
 				else 
 				{
-					console.log(CanvasInfo[pageNumber] + " " + CanvasInfo[pageNumber].UndoList);
 					if(!(CanvasInfo[pageNumber].UndoList[CanvasInfo[pageNumber].UndoList.length - 1] instanceof Array) || (CanvasInfo[pageNumber].UndoList[CanvasInfo[pageNumber].UndoList.length - 1] instanceof Array && CanvasInfo[pageNumber].UndoList[CanvasInfo[pageNumber].UndoList.length - 1].length > 0))//debugging for paint events when dots dont get registered; only adds new array if previous array length != 0
 					{
 						CanvasInfo[pageNumber].UndoList.push(new Array());
@@ -557,8 +556,16 @@
 			//Memory clearing 
 			OverlayObject = null;			
 			
-			//draws the image from the temporary canvas to the main canvas, permanently 
-			context.drawImage(DrawCanvas, 0, 0);
+			if(StoreToolType == "Copy" || StoreToolType == "Pan")
+			{
+				context.save();
+				context.globalAlpha = 1.0;
+				context.drawImage(DrawCanvas, 0, 0);
+				context.restore();
+			}
+			else
+				//draws the image from the temporary canvas to the main canvas, permanently 
+				context.drawImage(DrawCanvas, 0, 0);
 					
 			//deletes/clears memory for temp canvas and resets any changed vars
 			clear(true, DrawContext);

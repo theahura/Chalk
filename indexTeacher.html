@@ -34,7 +34,7 @@ All Rights Reserved
 
                     setTimeout(function() {
                         $(storedThis).css({"background":currentBackground});
-                    }, 100);
+                    }, 50);
 
                 })
 
@@ -124,12 +124,6 @@ All Rights Reserved
                 $('#Eraser').click(function(){
                     //when eraser is clicked, removes color options
                     $('.color-list').fadeTo(250, 0.5);      
-                });
-
-                //if color, paint, or highlight is selected, removes tag on eraser and brings back color list if faded out
-                $('#Paint, #Highlight, .color-list').click(function(){
-                    $('.color-list').fadeTo(250, 1.0);
-                    $('#Eraser').css({"box-shadow":"none"});
                 });
 
             });
@@ -396,7 +390,7 @@ All Rights Reserved
             #Green      { background-color:green;   }
             #Blue       { background-color:blue;    }
             #Purple       { background-color:magenta; }
-            #Black      { background-color:black;   }
+            #Black      { background-color:#A8A8A8;   }
             
             .pen .pen-size
             {
@@ -662,11 +656,32 @@ All Rights Reserved
             }
     
             
-            .push-note
+            .push-note-list
             {
                 position: fixed;
+                left: 0px;
+                bottom:0px;
+                width:20%;
             }
 
+            .push-note
+            {
+                width: 100%;
+
+                padding: 25px 25px;
+
+                border-top-left-radius:20px;
+                border-top-right-radius:20px;
+                border-bottom-right-radius:20px;
+                border-bottom-left-radius:20px;
+
+                font-size: 18px;
+
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+                display: none;
+
+            }
 
         </style>
     </head>
@@ -872,8 +887,7 @@ All Rights Reserved
             </div>
         </div>
 
-        <div class="push-note">
-
+        <div class="push-note-list" id="PushNoteList">
         </div>
 
         <script type="text/javascript" src="JS/scriptsCommonLogin.js"></script>

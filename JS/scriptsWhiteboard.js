@@ -82,6 +82,7 @@ socket.on('CommandFromTeacher', function(data)
 			
 			draw(data.x, data.y, data.type, false, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
 		}
+		
 	}
 	else if (data.ToolType == "Extend")
 	{
@@ -93,9 +94,11 @@ socket.on('CommandFromTeacher', function(data)
 		CanvasInfoTeacher[CanvasInfoTeacher.length - 1].context = contextT; 
 		CanvasInfoTeacher[CanvasInfoTeacher.length - 1].canvas = canvasT; 
 		
-		var TotalPages = CanvasInfo.length-1;
+		var TotalPages = CanvasInfo.length;
 
-		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+		var CurrentPagesTemp = CurrentPage + 1;
+		
+		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 	}
 	else if (data.ToolType == "Update")
 	{			
@@ -105,50 +108,32 @@ socket.on('CommandFromTeacher', function(data)
 			{
 				if(!CanvasInfo[i])
 				{
-					var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+					var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -2, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
 					
 					CanvasInfoTeacher[i] = {};
-	
+					
 					CanvasInfoTeacher[i].context = canvasT.getContext("2d");
 					CanvasInfoTeacher[i].canvas = canvasT; 
 				}		
 				
 				if (data.ImgData[i])
-				{
-					var img = new Image();
-					
-					img.src = data.ImgData[i];
-					CanvasInfoTeacher[i].context.drawImage(img,0,0);
+				{		
+					redrawUndo(data.ImgData[i], CanvasInfoTeacher[i]);
 				}
 			}
 			
-			var TotalPages = CanvasInfo.length-1;
+			var TotalPages = CanvasInfo.length;
+			
+			var CurrentPagesTemp = CurrentPage + 1;
 
-			document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+			document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 		}			
 	}
-	else if (data.ToolType == "Undo" || data.ToolType == "UndoUpdate")
-	{
-		if(data.ToolType == "UndoUpdate")
-			if (!(data.type || SelfUpdating) )
-			{
-				return;
-			}
-		
+	else if (data.ToolType == "Undo")
+	{			
 		var UndoListTeacher = JSON.parse(data.UndoList);
-		
-		//if theres a previously stored image
-		if (data.ImgData)
-		{
-			var img = new Image();
-			img.src = data.ImgData;
-			CanvasInfoTeacher[data.PageNumber].image = img;
-		}
 			
 		redrawUndo(UndoListTeacher, CanvasInfoTeacher[data.PageNumber]);
-		
-		if(data.ToolType == "UndoUpdate")
-			SelfUpdating = false;
 	}
 	else //shapes
 	{
@@ -214,9 +199,14 @@ socket.on('CommandFromTeacher', function(data)
 		CurrentPage = TeacherPage;
 		document.body.appendChild(CanvasInfoTeacher[CurrentPage].canvas);
 		
-		var TotalPages = CanvasInfoTeacher.length-1;
+		CanvasInfoTeacher[CurrentPage].canvas.style.width = CanvasWidth*GlobalScale + "px";
+		CanvasInfoTeacher[CurrentPage].canvas.style.height = CanvasWidth*GlobalScale + "px";
+		
+		var TotalPages = CanvasInfoTeacher.length;
+		
+		var CurrentPagesTemp = CurrentPage + 1;
 
-		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 	}
 	
 });

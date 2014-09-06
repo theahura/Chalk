@@ -163,6 +163,36 @@
 		window.scrollTo(0, window.pageYOffset);
 	}
 	
+	/**	Colors **/
+	//Red
+	document.getElementById("Red").onclick = function(){
+		changeStyle("#cc0000", "Red");
+		};
+		
+	//Blue
+	document.getElementById("Blue").onclick = function(){
+		changeStyle("#0000cc", "Blue");};
+		
+	//Yellow
+	document.getElementById("Yellow").onclick = function(){
+		changeStyle("#cccc00", "Yellow");};
+		
+	//Green
+	document.getElementById("Green").onclick = function(){
+		changeStyle("#00cc00", "Green");};
+		
+	//Purple
+	document.getElementById("Purple").onclick = function(){
+		changeStyle("#44146f", "Purple");};
+		
+	//Orange
+	document.getElementById("Orange").onclick = function(){
+		changeStyle("#cc8400", "Orange");};
+		
+	//Black
+	document.getElementById("Black").onclick = function(){
+		changeStyle("#000000", "Black");};
+	
 /**Extend ************************************************************************/
 	
 	AddCanvas = function (IsRight)
@@ -187,9 +217,11 @@
 			document.body.appendChild(CanvasInfo[CurrentPage].canvas);
 		}
 		
-		var TotalPages = CanvasInfo.length-1;
+		var TotalPages = CanvasInfo.length;
+		
+		var CurrentPagesTemp = CurrentPage + 1;
 
-		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 	}
 	
 	document.getElementById("PageUp").onclick = function()
@@ -345,9 +377,11 @@
 		
 		CurrentPage = TeacherPage;
 		
-		var TotalPages = CanvasInfo.length-1;
+		var TotalPages = CanvasInfo.length;
+		
+		var CurrentPagesTemp = CurrentPage + 1;
 
-		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 
 		window.scrollTo(MouseTeacherX - window.innerWidth/2, MouseTeacherY - window.innerHeight/2); 
 	}
@@ -427,9 +461,11 @@
 			CanvasInfoTeacher[CanvasInfoTeacher.length - 1].context = contextT; 
 			CanvasInfoTeacher[CanvasInfoTeacher.length - 1].canvas = canvasT; 
 			
-			var TotalPages = CanvasInfo.length-1;
+			var TotalPages = CanvasInfo.length;
+			
+			var CurrentPagesTemp = CurrentPage + 1;
 
-			document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+			document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 		}
 		else if (data.ToolType == "Update")
 		{			
@@ -453,33 +489,23 @@
 					}		
 					
 					if (data.ImgData[i])
-					{
-						var img = new Image();
-						
-						img.src = data.ImgData[i];
-						CanvasInfoTeacher[i].context.drawImage(img,0,0);
+					{		
+						redrawUndo(data.ImgData[i], CanvasInfoTeacher[i]);
 					}
 				}
 				
-				var TotalPages = CanvasInfo.length-1;
+				var TotalPages = CanvasInfo.length;
+				
+				var CurrentPagesTemp = CurrentPage + 1;
 	
-				document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+				document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 			}			
 		}
-		else if (data.ToolType == "Undo" || data.ToolType == "UndoUpdate")
-		{
-			if(data.ToolType == "UndoUpdate")
-				if (!(data.type || SelfUpdating) )
-				{
-					return;
-				}
-			
+		else if (data.ToolType == "Undo")
+		{			
 			var UndoListTeacher = JSON.parse(data.UndoList);
 				
 			redrawUndo(UndoListTeacher, CanvasInfoTeacher[data.PageNumber]);
-			
-			if(data.ToolType == "UndoUpdate")
-				SelfUpdating = false;
 		}
 		else //shapes
 		{

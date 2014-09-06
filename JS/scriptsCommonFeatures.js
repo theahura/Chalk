@@ -23,35 +23,6 @@
 	}	
 	
 /*********************STYLING***********************************/
-
-	//Red
-	document.getElementById("Red").onclick = function(){
-		changeStyle("#FF0000", "Red");
-		};
-		
-	//Blue
-	document.getElementById("Blue").onclick = function(){
-		changeStyle("#0000FF", "Blue");};
-		
-	//Yellow
-	document.getElementById("Yellow").onclick = function(){
-		changeStyle("#FFFF00", "Yellow");};
-		
-	//Green
-	document.getElementById("Green").onclick = function(){
-		changeStyle("#00FF00", "Green");};
-		
-	//Purple
-	document.getElementById("Purple").onclick = function(){
-		changeStyle("#FF00FF", "Purple");};
-		
-	//Orange
-	document.getElementById("Orange").onclick = function(){
-		changeStyle("#FFA500", "Orange");};
-		
-	//Black
-	document.getElementById("Black").onclick = function(){
-		changeStyle("#A8A8A8", "Black");};
 	
 	//sizing
 	$('#FontSize').on("input", function(){
@@ -75,6 +46,13 @@
 	document.getElementById("Highlight").onclick = function() {
 		changePaintType(BackUpHighlight);
 	}	
+	
+    //if color, paint, or highlight is selected, removes tag on eraser and brings back color list if faded out
+    $('#Paint, #Highlight, .color-list').click(function(){
+		changePaintType(BackUpPen);
+        $('.color-list').fadeTo(250, 1.0);
+        $('#Eraser').css({"box-shadow":"none"});
+    });
 
 /**Copy/Paste + Pan**************************************/	
 	

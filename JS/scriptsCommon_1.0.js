@@ -492,7 +492,7 @@
 		Zoom(GlobalScale);
 		
 		//Used to write to the pageNumber div
-		var TotalPages = CanvasInfo.length-1;
+		var TotalPages = CanvasInfo.length;
 		
 		var CurrentPageTemp = CurrentPage + 1;
 		
@@ -677,8 +677,11 @@
 	function Zoom(Scale)
 	{
 		//changing the visible size of both the back canvas and the drawcanvas
-		CanvasInfo[CurrentPage].canvas.style.width = DrawCanvas.style.width = CanvasWidth*Scale + "px";
-		CanvasInfo[CurrentPage].canvas.style.height = DrawCanvas.style.height = CanvasHeight*Scale + "px";
+		if(CanvasInfo)
+		{
+			CanvasInfo[CurrentPage].canvas.style.width = DrawCanvas.style.width = CanvasWidth*Scale + "px";
+			CanvasInfo[CurrentPage].canvas.style.height = DrawCanvas.style.height = CanvasHeight*Scale + "px";
+		}
 		
 		//if a teachercanvas exists...
 		if(CanvasInfoTeacher)
