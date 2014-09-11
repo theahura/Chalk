@@ -25,7 +25,7 @@ All Rights Reserved
             $(document).ready(function(){
 
                 //Red click indicator
-                $('#ZoomOut,  #ZoomIn, #Undo, #Redo, #PageUp, #PageDown, #Scroll, #Pen, #Shapes, #Tools, #MoveToTeacher, #Left, #Right').click(function(){
+                $('#ZoomOut,  #ZoomIn, #Undo, #Redo, #PageUp, #PageDown, #Scroll, #Pen, #Shapes, #Tools, #MoveToTeacher, #Left, #Right, #toPen, #toEraser, #toHighlight').click(function(){
                     
                     var currentBackground = $(this).css('background');
                     var storedThis = this;
@@ -683,6 +683,80 @@ All Rights Reserved
 
             }
 
+            .round-pen
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                font-size: 20px;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 110px;
+                right: 110px;
+            }
+
+            .round-pen .text
+            {
+                margin-top: 4px;
+                margin-right: 3px;
+            }
+
+            .round-eraser
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                font-size: 20px;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 130px;
+                right: 70px;
+            }
+
+            .round-eraser .text
+            {
+                margin-top: 5px;
+                margin-right: 3px;
+            }
+
+            .round-highlighter
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                color: black;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 70px;
+                right: 130px;
+            }
+
+            .round-highlighter .text
+            {
+                margin-top: -19px;
+                margin-right: 6px;
+            }
+
+            .round-highlighter .text span
+            {
+                border-radius: 50%;
+            }
+
         </style>
     </head>
     
@@ -822,10 +896,25 @@ All Rights Reserved
             <div class="top-ui">
                 <div class="scroll-outline">
                 	<div class="scroll-button button" id="Scroll">
-                	Scroll 
-                	<br>
-                	<i class="fa fa-arrows"></i>
-                	</div> 
+                    	Scroll 
+                    	<br>
+                    	<i class="fa fa-arrows"></i>
+                	</div>
+                </div>
+                <div class="round-pen button" id="toPen">
+                    <div class="text">
+                        <i class="fa fa-pencil"></i>
+                    </div>
+                </div>
+                <div class="round-eraser button" id="toEraser">
+                    <div class="text">
+                        <i class="fa fa-eraser"></i>
+                    </div>
+                </div>
+                <div class="round-highlighter button" id="toHighlight">
+                    <div class="text">
+                        <span style="background-color: yellow"> ab </span>
+                    </div>
                 </div>
                 <div class="spacer-a"></div>
                 <div class="page-up-down">

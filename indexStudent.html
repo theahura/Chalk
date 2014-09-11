@@ -718,6 +718,80 @@ All Rights Reserved
                 border: 2px solid #000000;
             }
 
+            .round-pen
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                font-size: 20px;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 140px;
+                right: 140px;
+            }
+
+            .round-pen .text
+            {
+                margin-top: 4px;
+                margin-right: 3px;
+            }
+
+            .round-eraser
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                font-size: 20px;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 150px;
+                right: 90px;
+            }
+
+            .round-eraser .text
+            {
+                margin-top: 5px;
+                margin-right: 3px;
+            }
+
+            .round-highlighter
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                color: black;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 90px;
+                right: 150px;
+            }
+
+            .round-highlighter .text
+            {
+                margin-top: -19px;
+                margin-right: 6px;
+            }
+
+            .round-highlighter .text span
+            {
+                border-radius: 50%;
+            }
+
 
         </style>
     </head>
@@ -884,6 +958,21 @@ All Rights Reserved
                                 <i class="fa fa-arrows"></i>
                             </div>
                         </div> 
+                        <div class="round-pen button" id="toPen">
+                            <div class="text">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                        <div class="round-eraser button" id="toEraser">
+                            <div class="text">
+                                <i class="fa fa-eraser"></i>
+                            </div>
+                        </div>
+                        <div class="round-highlighter button" id="toHighlight">
+                            <div class="text">
+                                <span style="background-color: yellow"> ab </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="spacer-a"></div>

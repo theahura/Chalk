@@ -39,7 +39,7 @@
 
 	//color
 	CanvasInfoTeacher[0].context.strokeStyle = "#A8A8A8";
-
+	
 	//size
 	CanvasInfoTeacher[0].context.lineWidth = 5;
 
@@ -58,15 +58,13 @@
 
 	//color
 	CanvasInfo[0].context.strokeStyle = "#000000";
-	BackUpColor = CanvasInfo[0].context.strokeStyle; 
-
+	BackUpPen.color = PaintType.color = CanvasInfo[0].context.strokeStyle; 
+		
 	//size
 	CanvasInfo[0].context.lineWidth = 5;
-	BackUpSize = CanvasInfo[0].context.lineWidth;
 
 	//cap style
 	CanvasInfo[0].context.lineCap = "round";
-	BackUpCap = CanvasInfo[0].context.lineCap;
 	
 	
 	

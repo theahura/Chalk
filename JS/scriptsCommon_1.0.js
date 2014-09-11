@@ -429,6 +429,7 @@
 	 */
 	function changePaintType(BackUpObj)
 	{
+		alert(BackUpObj.color);
 		//checks which backup to save latest preferences too
 		if(PaintType.type == "Pen")
 			BackUpPen = PaintType; 

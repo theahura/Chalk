@@ -32,18 +32,18 @@
 	});  	
 	
 	//Pen
-	document.getElementById("Paint").onclick = function(){
+	document.getElementById("Paint").onclick = document.getElementById("toPen").onclick = function(){
 		changePaintType(BackUpPen);
 	};
 
 	//Erase
-	document.getElementById("Eraser").onclick = function()
+	document.getElementById("Eraser").onclick = document.getElementById("toEraser").onclick = function()
 	{
 		changePaintType(BackUpErase);
 	}; 
 
 	//Highlight
-	document.getElementById("Highlight").onclick = function() {
+	document.getElementById("Highlight").onclick = document.getElementById("toHighlight").onclick = function() {
 		changePaintType(BackUpHighlight);
 	}	
 	
