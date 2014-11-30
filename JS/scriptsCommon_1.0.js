@@ -244,7 +244,7 @@
 	 */
 	socket.on('Joined', function(data) 
 	{
-		alert("You joined: " + data.Room);
+		//alert("You joined: " + data.Room);
 	});
 
 /**End of Rooms Setup **************************************************************************/

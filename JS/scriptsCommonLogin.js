@@ -338,7 +338,7 @@ function createPicker() {
  * @Param: data; object; the data for the user-selected file 
  */
 function pickerCallback(data) {
-  if (data.action == google.picker.Action.PICKED) {
+  if (data.action == google.picker.Action.PICKED) {	  
     var fileId = data.docs[0].id;
     getFile(fileId);
   }
@@ -365,44 +365,53 @@ function getFile(fileId) {
  * @param {File} file Drive File instance.
  */
 function downloadFile(file) {
-  if (file.downloadUrl) {
-    var accessToken = gapi.auth.getToken().access_token;
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', file.downloadUrl);
-    xhr.responseType =  'blob' ;
-    xhr.setRequestHeader('Authorization', 'Bearer ' + OauthToken);
-    xhr.onload = function() 
-    {	
-    	//creates a blob (a variable data struct) from the content
-    	var blob =  this.response;
+  if (file.downloadUrl) 
+  {
+  	if(file.imageMediaMetadata.width < 1000 && file.imageMediaMetadata.height < 1000)
+  	{
+  		var accessToken = gapi.auth.getToken().access_token;
+	    var xhr = new XMLHttpRequest();
+	    xhr.open('GET', file.downloadUrl);
+	    xhr.responseType =  'blob' ;
+	    xhr.setRequestHeader('Authorization', 'Bearer ' + OauthToken);
+	    xhr.onload = function() 
+	    {	
+	    	//creates a blob (a variable data struct) from the content
+	    	var blob =  this.response;
 
-        var img = new Image();
+	        var img = new Image();
 
-        //uses the blob to create the url for the img
-        img.src =  URL.createObjectURL ( blob ); 
-        
-        img.onload =  function ()  
-        {
-        	//stores the storage overlay
-        	OverlayObject = img;
+	        //uses the blob to create the url for the img
+	        img.src =  URL.createObjectURL ( blob ); 
+	        
+	        img.onload =  function ()  
+	        {
+	        	//stores the storage overlay
+	        	OverlayObject = img;
 
-        	//draws the image to temp canvas
-        	DrawCanvas.getContext("2d").drawImage( img, document.body.scrollLeft,  document.body.scrollTop ); 
-        	
-        	//saves location for redrawing
-        	ImageScrollX = document.body.scrollLeft;
-        	ImageScrollY = document.body.scrollTop;
-        	
-        	StoreToolType = "Image";
-        	
-        	//prepares to move the image around
-        	ShapeAdjust = true;
-        }; 
-    };
-    xhr.onerror = function() {
-    	alert("There was an error");
-    };
-    xhr.send();
+	        	//draws the image to temp canvas
+	        	DrawCanvas.getContext("2d").drawImage( img, document.body.scrollLeft,  document.body.scrollTop ); 
+	        	
+	        	//saves location for redrawing
+	        	ImageScrollX = document.body.scrollLeft;
+	        	ImageScrollY = document.body.scrollTop;
+	        	
+	        	StoreToolType = "Image";
+	        	
+	        	//prepares to move the image around
+	        	ShapeAdjust = true;
+	        }; 
+	    };
+	    xhr.onerror = function() {
+	    	alert("There was an error");
+	    };
+	    xhr.send();
+  	}
+  	else
+  	{
+  		alert("File size too big");
+  	}
+    
   } else {
   	alert("There was an error");
   }

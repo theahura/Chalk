@@ -144,17 +144,17 @@
 	};
 
 	
-//	document.getElementById('Open').onclick = function () 
-//	{
-//		if (Auth == false) //if not already logged in
-//		{
-//			//requests login
-//			gapi.auth.authorize(
-//			           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
-//			           login);
-//		}
-//		else
-//			createPicker(); 
-//
-//	}
+	document.getElementById('Open').onclick = function () 
+	{
+		if (Auth == false) //if not already logged in
+		{
+			//requests login
+			gapi.auth.authorize(
+			           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+			           login);
+		}
+		else
+			createPicker(); 
+
+	}
 	

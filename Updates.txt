@@ -1,34 +1,4 @@
-Push notifications username add in
-
-Username sign in + modify login *page*
-
-Update whiteboard client
-
-Fixed bug in rooms code
-
-Fixed fast button click issue
-
-Fixed update glitch canvas layering on student side
-
-Fixed css positioning of 'updating' div
-
-Fixed undo/redo highlighter coloring glitch
-
-Made highlighter default bigger + yellow
-
-Changed undo/redo system so that it contains separate lists per page instead of images per page
-
-Removed Debug tool + Open tool to fix memory bugs
-
-Fixed update tool and whiteboard client
-
-Updated Pagenumbers
-
-Fixed many glitches (highlight - copypaste; eraser coloring; colors in general)
-
-Updated push notifications
-
-Added buttons to easily switch between pen types
+Added restriction on filesize in google drive picker
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images? 
 Note: push notifications from student to teacher   
@@ -55,19 +25,21 @@ Note: Add in google drive opening again
 Note: Storing Chat logs
 Note: Undo/Redo locks/unlocks images 
 Note: Copy paste selecting specific 'objects' instead of areas (or layering?)
+Note: Pointer for whiteboard
 
-Glitch: Background touching isn't registered in background
+Glitch: Background touching isn't registered in background on submenus
 Glitch: Draw through cover css layer when scrolling
 Glitch: bottom pull up menu kills app function on second+ page
 Glitch: Pageup/down memory leak + image storage/Google Picker memory leak with image previews
 Glitch: ZoomIn doesn't lose red css click/clicking too fast makes red background permanent
-Glicth: Highlighting -> shapes -> highlight loses highlighter 
+ 
 
 Next update: 
-Lock in shapes if another button is clicked
-Fix highlighter glitch
+Lock in shapes if another button is clicked 
+Clean up alert/prompts to css/html inputs instead of js
 
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw
 Random copy issue with dotted line saving and replicating over
 Update failed to work, possibly sent whiteboard into negative pages
+Highlighting -> shapes -> highlight loses highlighter

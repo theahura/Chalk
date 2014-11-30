@@ -15,9 +15,9 @@
 //checks hand
 	
 	var loopcheck = true; 
-	var handinput; 
+	var handinput = true; 
 	
-	while (loopcheck)
+/*	while (loopcheck)
 	{
 		handinput = prompt("Are you right handed? (Y/N)", "Y");
 
@@ -35,8 +35,8 @@
 			}
 		}
 		
-	}	
-	
+	} */	
+
 	var lastX; 
 	var lastY;
 	var CurrentId;
