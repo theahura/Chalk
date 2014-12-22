@@ -62,12 +62,13 @@ All Rights Reserved
                     $('.scroll').fadeIn(250);
                 });
 
-                //Fadeout mech for background taps
-                $('.cover').click(function(){
-                	$('.help-text').fadeTo(125, 0.0);   	
+                //fadeout for background touches
+                $('.cover, .cover-exit').click(function(){
+                    $('.help-text').fadeTo(125, 0.0);       
+                    $('.cover').children().click(function(e){
+                        return false;
+                    });
                     $('.cover').fadeOut(125);
-                }).children().click(function(e){
-                    return false; 
                 });
 
                 //Seletion styling
@@ -441,7 +442,7 @@ All Rights Reserved
             .pen .color-list ul li
             {
                 float:left;
-                margin:0px 16px;
+                margin:0px 12px;
                 width:70px;
                 height:70px;
                 background-color:green;
@@ -588,6 +589,16 @@ All Rights Reserved
                 left:5px;
                 font-size:20px;
             }
+
+            .cover-exit
+            {
+                position:fixed;
+                width:30px;
+                height:30px;
+                top:5px;
+                left:5px;
+                font-size:20px;
+            }
             /* Spacers CSS */
             .spacer-a /* Spacer used in top ui */
             {
@@ -661,6 +672,7 @@ All Rights Reserved
 			.help-text
             {
             	opacity: 0.0;
+                display: inline-block;
             }
 
             #PageNumber
@@ -808,6 +820,7 @@ All Rights Reserved
         <div class="cover pen">
             <div class="spacer-40"></div>
             <h1> Pen Styling </h1>
+            <div class="spacer-10"></div>
             <div class="help-text">Click anywhere in the background to close the pen tab</div>
             <div class="spacer-10"></div>
             <h2> Pen Color </h2>
@@ -844,6 +857,8 @@ All Rights Reserved
             <div class="spacer-10"></div>
             <div class="help-text"> Click these buttons to change what each stroke does: make it a pen, eraser, or highlighter </div>
             <div class="cover-help help button"><i class="fa fa-question-circle"></i></div>
+            <div class="cover-exit exit button"><i class="fa fa-times-circle"></i></div>
+
         </div>
         
         
@@ -863,11 +878,14 @@ All Rights Reserved
             <div class="help-text">Click any Shape to close the Shapes tab. <br> Then click and drag to draw the selected shape, and click and drag again to move the shape</div>
             <div class="spacer-70"></div>
             <div class="cover-help help button"><i class="fa fa-question-circle"></i></div>
+            <div class="cover-exit exit button"><i class="fa fa-times-circle"></i></div>
         </div>
         <div class="cover tools">
             <div class="spacer-40"></div>
             <h1> Tools </h1>
             <div class="help-text">Click anywhere in the background to close the tools tab</div>
+            <div class="spacer-10"></div>
+
             <h2> Drawing Tools </h2>
             <div class="item-holder tool-picker">
                 <ul>
@@ -887,6 +905,7 @@ All Rights Reserved
             </div>
             <div class="spacer-20"></div>
             <div class="help-text"> These buttons use Google Drive: change your account and save your work under a new name </div>
+            <div class="spacer-10"></div>           
             <h2> App Tools </h2>
             <div class="item-holder tool-picker">
                 <ul>
@@ -899,6 +918,7 @@ All Rights Reserved
             <div class="help-text"> Use Update to make sync presenter information, and use Message to send a private note to the presenter </div>
 
             <div class="cover-help help button"><i class="fa fa-question-circle"></i></div>
+            <div class="cover-exit exit button"><i class="fa fa-times-circle"></i></div>
         </div>
         <div class="cover scroll">
             Swipe to Scroll
