@@ -8,6 +8,8 @@
  * Needs: scriptsCommon, jquery.event.drag-2.2, scriptsCommonPen, scriptsLogin
  */
 
+	IsTeacher = true; 
+
 	/**
 	 * Starts the save counter, to be used after the last edit on the page
 	 */
@@ -56,65 +58,6 @@ CanvasInfo[0].context.lineWidth = BackUpPen.size;
 CanvasInfo[0].context.lineCap = "round";
 
 
-
-/**
- * $(document).on is a jquery command looking for an event defined in the first parameter, on a DOM object (read: an html object)
- * with class defined in parameter two. Parameter three is the callback function/handler. These events are called from the plugin 
- * (jquery.event.drag-2.2). These commands invariably call the draw command or shapeadjust command in some shape or form. 
- * 
- * @Param: "dragstart"; String; name of event being called
- * @Param: ".drag"; String; name of class of event target. Used to differentiate between objects that need to be drawn on (i.e. canvas) and those that don't (i.e. toolbar, dragpad)
- * @Param: function; function; call back operation
- * 		@Param: ev; event; event information from ipad or computer registration
- * 		@Param: dd; data pulled from plugin (not currently used) 
- */
-$(document).on("dragstart", ".drag", function(ev, dd){
-	//the x/y location of the event hit
-	x = (ev.pageX)*MaxZoom/GlobalScale; 
-	y = (ev.pageY)*MaxZoom/GlobalScale; 
-	
-	if(!ShapeAdjust)
-		//calls the drag start event
-		draw(x, y, "dragstart", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, true);		
-	else
-		adjustShape(x, y, "dragstart", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, true);		
-
-		
-	//Sets last mouse location 
-	MouseX = x;
-	MouseY = y; 
-});
-
-$(document).on("drag", ".drag", function(ev, dd){
-	//the x/y location of the event hit
-	x = (ev.pageX)*MaxZoom/GlobalScale; 
-	y = (ev.pageY)*MaxZoom/GlobalScale;   
-	
-	
-	if(!ShapeAdjust)
-		//calls the drag start event
-		draw(x, y, "drag", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, true);		
-	else
-		adjustShape(x, y, "drag", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, true);		
-	
-	MouseX = x;
-	MouseY = y; 
-});
-
-$(document).on("dragend",".drag",function(ev, dd){
-	//the x/y location of the event hit
-	x = (ev.pageX)*MaxZoom/GlobalScale; 
-	y = (ev.pageY)*MaxZoom/GlobalScale; 
-	
-	if(!ShapeAdjust)
-		//calls the drag start event
-		draw(x, y, "dragend", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, true);		
-	else
-		adjustShape(x, y, "dragend", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, true);		
-	
-	MouseX = x;
-	MouseY = y; 
-});
 
 /**
  * The dragcanceled event is fired if the computer decides that the input is bad (i.e. from a wrist). It then 

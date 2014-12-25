@@ -1,10 +1,16 @@
 Added restriction on filesize in google drive picker
+
+Added exit buttons at the top left of each panel
+
+Cleaned up all of the css/html on the panels so its easier to click the background of the panel
+
+Move the CSS to another file, combine between student/teacher
+
+Move the UI JS to another file, combine between student/teacher
 __________________________________________________________________________________________________________________________
-Note: Static vs. nonstatic images? 
-Note: push notifications from student to teacher   
-Note: Collab -> both by grabbing images and by letting them draw
+Note: Static vs. nonstatic images?  
+Note: Collab mode -> both by grabbing images and by letting them draw
 Note: Scaling images
-Note: CSS updates to alerts, storing names, and general user friendliness (including image moving icons)
 Note: Private notes bar for typed notes that is made to look like a document? on sidebar for desktop only
 Note: login integration system
 Note: Diagnostics (sorta like push notifications, but simpler for only thumbs up, down, or middle; + who is on the active
@@ -25,7 +31,8 @@ Note: Add in google drive opening again
 Note: Storing Chat logs
 Note: Undo/Redo locks/unlocks images 
 Note: Copy paste selecting specific 'objects' instead of areas (or layering?)
-Note: Pointer for whiteboard
+Note: Pointer for whiteboard for teacher
+Note: Lock in shapes if another button is clicked
 
 Glitch: Background touching isn't registered in background on submenus
 Glitch: Draw through cover css layer when scrolling
@@ -35,8 +42,9 @@ Glitch: ZoomIn doesn't lose red css click/clicking too fast makes red background
  
 
 Next update: 
-Lock in shapes if another button is clicked 
-Clean up alert/prompts to css/html inputs instead of js
+Textboxes
+Clean up alert/prompts to css/html inputs instead of js (specifically push notes, alert for google drive)
+Change drawing function so that paint/nonpaint functions are separated
 
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw

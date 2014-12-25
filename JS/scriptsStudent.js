@@ -83,68 +83,6 @@
 		}	
 	}
 	
-	
-	/***Draw Events; binds mouse click to dragstart (click), drag (click+move), and dragend (release)*********************/
-	//uses plugin
-	$(document).on("dragstart", ".drag", function(ev, dd){
-		
-		x = (ev.pageX)*MaxZoom/GlobalScale; 
-		y = (ev.pageY)*MaxZoom/GlobalScale; 
-				
-		if(!ShapeAdjust)
-			//calls the drag start event
-			draw(x, y, "dragstart", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		else
-			adjustShape(x, y, "dragstart", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-
-		MouseX = x;
-		MouseY = y; 
-	});
-	
-	$(document).on("drag", ".drag", function(ev, dd){
-				
-		x = (ev.pageX)*MaxZoom/GlobalScale; 
-		y = (ev.pageY)*MaxZoom/GlobalScale; 
-
-		if(!ShapeAdjust)
-			//calls the drag start event
-			draw(x, y, "drag", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		else
-			adjustShape(x, y, "drag", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		
-		MouseX = x;
-		MouseY = y; 
-	});
-	
-	$(document).on("dragend",".drag",function(ev, dd){
-
-		x = (ev.pageX)*MaxZoom/GlobalScale; 
-		y = (ev.pageY)*MaxZoom/GlobalScale; 
-		
-		if(!ShapeAdjust)
-			//calls the drag start event
-			draw(x, y, "dragend", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		else
-			adjustShape(x, y, "dragend", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		
-		MouseX = x;
-		MouseY = y; 
-	});
-	
-/****************************MODES***********************************/
-
-	//document.getElementById("Drag").onclick = function()
-	//{
-	//	dragMode();
-	//}
-	
-	//document.getElementById("toolbar").onclick = function()
-	//{
-	//	if (DragMode)
-	//	{
-	//		dragMode();
-	//	}
-	//}
 
 /********************************************************************************************
   Random Tools 
@@ -422,7 +360,9 @@
 				HighlightCanvas.getContext("2d").strokeStyle = data.color; 
 				HighlightCanvas.getContext("2d").lineWidth = data.size;
 				
-				draw(data.x, data.y, data.type, false, data.lastX, data.lastY, HighlightCanvas.getContext("2d"), TeacherPage);
+
+				//not_self(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
+				not_self(data.x, data.y, data.type, data.lastX, data.lastY, HighlightCanvas.getContext("2d"), TeacherPage, IsTeacher);
 				
 				if(data.type == "dragend")
 				{
@@ -438,7 +378,7 @@
 				CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
 				CanvasInfoTeacher[TeacherPage].context.globalAlpha = 1.0;
 
-				draw(data.x, data.y, data.type, false, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
+				not_self(data.x, data.y, data.type, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage, IsTeacher);
 			}
 		}
 		else if (data.ToolType == "Extend")

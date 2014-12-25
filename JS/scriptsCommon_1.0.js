@@ -14,6 +14,9 @@
 	
 	//Type: bool; Defines whether dragging is on or not
 	var DragMode = false
+
+	//Type: bool; defines if in textbox mode or not
+	var TextMode = false; 
 	
 	//Type: canvas; the overlay to prevent user drawing while in dragmode
 	var DragCanv;
@@ -161,7 +164,9 @@
 	socket = io('http://54.86.173.127:3000');
 	//socket = io();
 	
-	var IsWhiteboard = false; 
+	var IsWhiteboard = false;
+
+	var IsTeacher = false; 
 	
 /**Rooms Setup ************************************************************************
  * Analyzes URL for room name and joins corresponding room
@@ -429,7 +434,6 @@
 	 */
 	function changePaintType(BackUpObj)
 	{
-		alert(BackUpObj.color);
 		//checks which backup to save latest preferences too
 		if(PaintType.type == "Pen")
 			BackUpPen = PaintType; 
@@ -693,6 +697,69 @@
 		}
 	}
 	
+/***********************Drawing click handler***************************/
+
+
+/**
+ * $(document).on is a jquery command looking for an event defined in the first parameter, on a DOM object (read: an html object)
+ * with class defined in parameter two. Parameter three is the callback function/handler. These events are called from the plugin 
+ * (jquery.event.drag-2.2). These commands invariably call the draw command or shapeadjust command in some shape or form. 
+ * 
+ * @Param: "dragstart"; String; name of event being called
+ * @Param: ".drag"; String; name of class of event target. Used to differentiate between objects that need to be drawn on (i.e. canvas) and those that don't (i.e. toolbar, dragpad)
+ * @Param: function; function; call back operation
+ * 		@Param: ev; event; event information from ipad or computer registration
+ * 		@Param: dd; data pulled from plugin (not currently used) 
+ */
+$(document).on("dragstart", ".drag", function(ev, dd){
+	clickHandler(ev.pageX, ev.pageY, "dragstart");
+});
+
+$(document).on("drag", ".drag", function(ev, dd){
+	clickHandler(ev.pageX, ev.pageY, "drag");
+});
+
+$(document).on("dragend",".drag",function(ev, dd){
+	clickHandler(ev.pageX, ev.pageY, "dragend");
+});
+
+/*
+	clickHandler handles incoming events from the jquery drag plugin and passes input along to the functions that control what a pen click does in 
+	specific scenarios. 
+
+	@param: pageX; int; x location of the event call
+	@param: pageY; int; y location of the event call
+	@param: type; String; dragstart, drag, or dragend
+*/
+function clickHandler(pageX, pageY, type)
+{
+	x = (pageX)*MaxZoom/GlobalScale; 
+	y = (pageY)*MaxZoom/GlobalScale; 
+	
+	if(ShapeAdjust)
+		adjustShape(x, y, type, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);	
+	else
+	{
+		setup_click(CanvasInfo[CurrentPage].context, CurrentPage);
+
+		if(ToolType === "Paint")		
+			paint(x, y, type, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+		else if (ToolType !== "Paint")
+			other_tools(x, y, type, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+		else
+			alert("There was an Error");
+
+		if(type === "dragend")
+			cleanup_click();
+	}
+
+	MouseX = x;
+	MouseY = y; 
+}
+
+/***************End Drawing Click Handler****************************/
+
+
 	//weird window refresh glitch, scrolls to 0,0 on refresh
 	$(window).on('beforeunload', function() {
 	    $(window).scrollTop(0, 0);

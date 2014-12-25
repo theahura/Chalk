@@ -1,4 +1,4 @@
-           /* Gen CSS */
+/* Gen CSS */
             body,html
             {
                 margin:0px;
@@ -24,17 +24,6 @@
                 float:right;   
                 line-height: 70px;
                 text-align: center;
-            }
-            .scroll-outline
-            {
-                height:120px;
-                background-color:rgba(223,223,223, 0.25);
-                width:120px;
-
-                border-top-left-radius:20px;
-                border-top-right-radius:20px;
-                border-bottom-right-radius:20px;
-                border-bottom-left-radius:20px;
             }
             .scroll-outline
             {
@@ -74,6 +63,33 @@
                 line-height: 30px;
                 float: none;
             }
+
+            .scroll-outline-teacher
+            {
+                height:120px;
+                background-color:rgba(223,223,223, 0.25);
+                width:120px;
+
+                border-top-left-radius:20px;
+                border-top-right-radius:20px;
+                border-bottom-right-radius:20px;
+                border-bottom-left-radius:20px;
+            }
+            .scroll-button-teacher
+            {
+                border-top-left-radius:20px;
+                border-top-right-radius:20px;
+                border-bottom-right-radius:20px;
+                border-bottom-left-radius:20px;
+
+                height:100px;
+                background-color: #a8a8a8;
+                width:100px;
+
+                margin: 10px 10px;
+            }
+
+
             .left-right-button
             {
                 border-bottom-right-radius:10px;
@@ -115,7 +131,6 @@
                 float: none;
                 line-height: 60px;
             }
-
             .page-up-down
             {
                 margin-top: 10px;
@@ -250,7 +265,7 @@
                 text-align: center;       
                 color:#777777;
 
-                margin-top: 60px;
+                margin-top: 40px;
             }
             .side-ui .text
             {
@@ -314,18 +329,18 @@
             .pen .color-list ul li
             {
                 float:left;
-                margin:0px 16px;
+                margin:0px 12px;
                 width:70px;
                 height:70px;
                 background-color:green;
                 border-radius:20%;
             }
-            #Red        { background-color:red;     }
-            #Orange     { background-color:orange;  }
-            #Yellow     { background-color:yellow;  }
-            #Green      { background-color:green;   }
-            #Blue       { background-color:blue;    }
-            #Purple       { background-color:magenta; }
+            #Red        { background-color:#cc0000;     }
+            #Orange     { background-color:#cc8400;  }
+            #Yellow     { background-color:#cccc00;  }
+            #Green      { background-color:#00cc00;   }
+            #Blue       { background-color:#0000cc;    }
+            #Purple       { background-color:#44146f; }
             #Black      { background-color:black;   }
             
             .pen .pen-size
@@ -340,7 +355,6 @@
                 height:10px;
                 background-color:#fff;
                 box-shadow: inset 0 0 5px #aaa;
-                background-color:
             }
             .pen .pen-size input[type='range']::-moz-range-track {
                  -moz-appearance: none;
@@ -462,18 +476,29 @@
                 left:5px;
                 font-size:20px;
             }
+
+            .cover-exit
+            {
+                position:fixed;
+                width:30px;
+                height:30px;
+                top:5px;
+                left:5px;
+                font-size:20px;
+            }
             /* Spacers CSS */
             .spacer-a /* Spacer used in top ui */
             {
-                width:70px;
+                width:50px;
                 height:100%;
             }
             
             .spacer-b /* Spacer used to hide scroll */
             {
                 width:100%;
-                height:120px;
+                height:170px;
             }
+
             .spacer-10
             {
                 width:1px;
@@ -486,7 +511,7 @@
                 margin:0 auto;
                 height:20px;
             }
-             .spacer-40
+            .spacer-40
             {
                 width:1px;
                 height:40px;
@@ -534,12 +559,13 @@
             .help-text
             {
                 opacity: 0.0;
+                display: inline-block;
             }
 
             #PageNumber
             {
                 text-align: center;
-                margin-top: 20px;
+                margin-top: 10px;
             }
 
             #Updating 
@@ -591,15 +617,159 @@
                 border: 2px solid #000000;
             }
 
-
-             #ZoomOut:active,  #ZoomIn:active, #Undo:active, #Redo:active, #PageUp:active, #PageDown:active, #Scroll:active, #Pen:active, #Shapes:active, #Tools:active, #MoveToTeacher:active, #Left:active, #Right:active
+            .round-pen
             {
-                background: red;
-            }
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                font-size: 20px;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
 
-    
-            
-            .push-note
-            {
                 position: fixed;
+                top: 140px;
+                right: 140px;
             }
+
+            .round-pen .text
+            {
+                margin-top: 4px;
+                margin-right: 3px;
+            }
+
+            .round-eraser
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                font-size: 20px;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 150px;
+                right: 90px;
+            }
+
+            .round-eraser .text
+            {
+                margin-top: 5px;
+                margin-right: 3px;
+            }
+
+            .round-highlighter
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                color: black;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 90px;
+                right: 150px;
+            }
+
+            .round-highlighter .text
+            {
+                margin-top: -19px;
+                margin-right: 6px;
+            }
+
+            .round-highlighter .text span
+            {
+                border-radius: 50%;
+            }
+
+
+
+
+
+
+
+            .round-pen-teacher
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                font-size: 20px;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 110px;
+                right: 110px;
+            }
+
+            .round-pen-teacher .text
+            {
+                margin-top: 4px;
+                margin-right: 3px;
+            }
+
+            .round-eraser-teacher
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                font-size: 20px;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 130px;
+                right: 70px;
+            }
+
+            .round-eraser-teacher .text
+            {
+                margin-top: 5px;
+                margin-right: 3px;
+            }
+
+            .round-highlighter-teacher
+            {
+                display:block;
+                width:30px;
+                height:30px;
+                border-radius: 50%;
+                color: black;
+                text-align:center;
+                text-decoration:none;
+                background: #a8a8a8;
+                box-shadow: 0 0 5px black;
+
+                position: fixed;
+                top: 70px;
+                right: 130px;
+            }
+
+            .round-highlighter-teacher .text
+            {
+                margin-top: -19px;
+                margin-right: 6px;
+            }
+
+            .round-highlighter-teacher .text span
+            {
+                border-radius: 50%;
+            }
+
+
+
