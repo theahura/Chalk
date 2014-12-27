@@ -362,7 +362,7 @@
 				
 
 				//not_self(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
-				not_self(data.x, data.y, data.type, data.lastX, data.lastY, HighlightCanvas.getContext("2d"), TeacherPage, IsTeacher);
+				not_self(data.x, data.y, data.type, data.lastX, data.lastY, HighlightCanvas.getContext("2d"), TeacherPage);
 				
 				if(data.type == "dragend")
 				{
@@ -378,7 +378,7 @@
 				CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
 				CanvasInfoTeacher[TeacherPage].context.globalAlpha = 1.0;
 
-				not_self(data.x, data.y, data.type, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage, IsTeacher);
+				not_self(data.x, data.y, data.type, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
 			}
 		}
 		else if (data.ToolType == "Extend")

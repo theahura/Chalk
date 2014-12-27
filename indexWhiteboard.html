@@ -6,16 +6,26 @@
 	<title>Pingry Whiteboard</title>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+
+
 	<script src="http://54.86.173.127:3000/socket.io/socket.io.js"></script>
 	
-        <link rel="stylesheet" href="css/v2_ipad_UI.css" />
+        <link rel="stylesheet" href="css/UI.css" />
     </head>
     
     <body>
 
     	<canvas id="TeacherLayer" class="drag" width="2000" height="2000"  tabindex="1" style="position: absolute; left: 0px; top: 0px; z-index: -2;"></canvas>
 
-    	<a class="guy" id="PageNumber">Page 0</a> 
+
+         <div class="ui">
+            <div class="side-ui">
+    	       <div class="whiteboard-number">
+                    1 of 1
+                </div>
+            </div>
+        </div> 
 
     <script type="text/javascript" src="JS/scriptsCommon_1.0.js"></script>
     <script type="text/javascript" src="JS/scriptsCommonPen.js"></script>

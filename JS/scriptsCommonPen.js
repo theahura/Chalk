@@ -356,9 +356,8 @@ Handles all calls for paint/pen type functions when the person making the event 
 @param: lastY; int; the y location of the last event
 @param: context; canvas.drawcontext(2d); the context on which the event is called on
 @param: pageNumber; int; where the event is being drawn
-@param: isTeacher; bool; whether or not a teacher called the event
 */
-function not_self(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
+function not_self(x, y, type, lastX, lastY, context, pageNumber)
 {
 	if (type == "dragstart")
 	{

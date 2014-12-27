@@ -17,6 +17,10 @@ Fixed css so that helptext doesn't over extend on an ipad
 Locks in shapes if another button is clicked
 
 Textboxes 
+
+Made textboxes work on whiteboard
+
+Cleaned up whiteboard css/html
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images?  
 Note: Collab mode -> both by grabbing images and by letting them draw

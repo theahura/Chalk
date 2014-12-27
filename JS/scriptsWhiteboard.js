@@ -45,7 +45,7 @@ IsWhiteboard = true;
 socket.on('CommandFromTeacher', function(data) 
 {				
 	TeacherPage = data.PageNumber;
-				
+
 	if (data.ToolType == "Paint")
 	{
 		MouseTeacherX = data.x; 
@@ -63,8 +63,8 @@ socket.on('CommandFromTeacher', function(data)
 
 			HighlightCanvas.getContext("2d").strokeStyle = data.color; 
 			HighlightCanvas.getContext("2d").lineWidth = data.size;
-			
-			draw(data.x, data.y, data.type, false, data.lastX, data.lastY, HighlightCanvas.getContext("2d"), TeacherPage);
+
+			not_self(data.x, data.y, data.type, data.lastX, data.lastY, HighlightCanvas.getContext("2d"), TeacherPage);
 			
 			if(data.type == "dragend")
 			{
@@ -79,8 +79,8 @@ socket.on('CommandFromTeacher', function(data)
 			CanvasInfoTeacher[TeacherPage].context.lineWidth = data.size;
 			CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
 			CanvasInfoTeacher[TeacherPage].context.globalAlpha = 1.0;
-			
-			draw(data.x, data.y, data.type, false, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
+
+			not_self(data.x, data.y, data.type, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
 		}
 		
 	}
@@ -191,9 +191,18 @@ socket.on('CommandFromTeacher', function(data)
 				CanvasInfoTeacher[TeacherPage].context.drawImage(img, 0, 0);
 			}
 		}
+		else if (data.ToolType === "TextMode")
+		{
+			data.StartPositionX = data.ShapeStartX;
+			data.StartPositionY = data.ShapeStartY;
+			data.EndPositionX = data.Panx;
+			data.EndPositionY = data.Pany; 
+			
+			wrapTextObj(data, CanvasInfoTeacher[TeacherPage].context);
+		}
 	}
 	
-	if (TeacherPage && TeacherPage != CurrentPage);
+	if (data.PageNumber !== CurrentPage)
 	{
 		document.body.removeChild(CanvasInfoTeacher[CurrentPage].canvas);
 		CurrentPage = TeacherPage;
@@ -206,7 +215,7 @@ socket.on('CommandFromTeacher', function(data)
 		
 		var CurrentPagesTemp = CurrentPage + 1;
 
-		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
+		$(".whiteboard-number").html(CurrentPagesTemp + " of " + TotalPages);
 	}
 	
 });
