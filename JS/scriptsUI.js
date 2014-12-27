@@ -66,6 +66,12 @@ $('.tool-picker ul li').click(function(){
     //auto closes the tab when a tool is clicked - assumes the need to return to the canvas due to single click functions 
     $('.cover.tools').fadeOut(250);
     $('.help-text').fadeTo(250, 0.0);
+
+    var storedThis = this;
+
+    setTimeout(function() {
+        $(storedThis).css({"box-shadow":"none"});
+    }, 250);
 });
 
  $('.shapes-list ul li').click(function(){
@@ -75,6 +81,12 @@ $('.tool-picker ul li').click(function(){
     //auto closes the tab when a shape is clicked - assumes the need to return to the canvas due to single click functions ; will change as features get added
     $('.cover.shapes').fadeOut(250);
     $('.help-text').fadeTo(250, 0.0); 
+    
+    var storedThis = this;
+
+    setTimeout(function() {
+        $(storedThis).css({"box-shadow":"none"});
+    }, 250);
 });  
 
 //Help text

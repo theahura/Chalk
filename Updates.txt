@@ -23,6 +23,8 @@ Made textboxes work on whiteboard
 Cleaned up whiteboard css/html
 
 Re-Added CSS for pushnotes on the teacher end
+
+Updated UI so that black outline fades out for tools and shapes 
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images?  
 Note: Collab mode -> both by grabbing images and by letting them draw
