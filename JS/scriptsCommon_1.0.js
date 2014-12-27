@@ -11,15 +11,13 @@
 
 	//Type: bool; Defines whether collaboration mode is on (not currently implemented)
 	var IsCollaborating = false;
-	
-	//Type: bool; Defines whether dragging is on or not
-	var DragMode = false
 
-	//Type: bool; defines if in textbox mode or not
-	var TextMode = false; 
-	
-	//Type: canvas; the overlay to prevent user drawing while in dragmode
-	var DragCanv;
+	//Type: textarea; defines whether there is an active textbox available
+	var ActiveBox;
+
+	//Type: int; defines the height and width of a textbox
+	var BoxHeight = 0;
+	var BoxWidth = 0;
 	
 	//Type: String; stores what tool the user is currently using, modifies users stroke and click
 	var ToolType = "Paint";
@@ -146,9 +144,6 @@
 		
 	//Type: Int; Keeps track of X/Y positioning for user selection of drawing area that needs to be panned/copied
 	var CopyPanX, CopyPanY, CopyPanWidth, CopyPanHeight;
-	
-	//Type: Boolean; Checks whether the user has just drawn a shape and is now in shape maneuvering mode
-	var ShapeAdjust = false; 
 
 /*Misc*/
 
@@ -434,7 +429,7 @@
 	 */
 	function changePaintType(BackUpObj)
 	{
-		//checks which backup to save latest preferences too
+		//checks which backup to save latest preferences to
 		if(PaintType.type == "Pen")
 			BackUpPen = PaintType; 
 		else if (PaintType.type == "Highlight")
@@ -600,7 +595,7 @@
 	        	    clear(true, canvasctx); 
 	        	}
 	        }
-	    	else //not paint; shapes
+	    	else //not paint; shapes and others
 	    	{	
 	    		/*pt has x, y, StartPositionX, StartPositionY, PageNumber, ToolType, Color, Size, Erase*/
 	    		
@@ -665,6 +660,10 @@
 	        			img.src = pt.ImgData; 
 	        			canvasListObject.context.drawImage(img, 0, 0);
 	        		}
+	        	}
+	        	else if (pt.ToolType === "TextMode")
+	        	{
+	        		wrapTextObj(pt, canvasListObject.context);
 	        	}
 	        }	       
 	    }
@@ -736,7 +735,13 @@ function clickHandler(pageX, pageY, type)
 	x = (pageX)*MaxZoom/GlobalScale; 
 	y = (pageY)*MaxZoom/GlobalScale; 
 	
-	if(ShapeAdjust)
+
+	if(ToolType === "TextMode")
+	{
+		setup_click(CanvasInfo[CurrentPage].context, CurrentPage);
+		ActiveBox = drawBox(x, y, type, MouseX, MouseY, ActiveBox);
+	}
+	else if(ToolType === "ShapeAdjust")
 		adjustShape(x, y, type, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);	
 	else
 	{
@@ -756,6 +761,27 @@ function clickHandler(pageX, pageY, type)
 	MouseX = x;
 	MouseY = y; 
 }
+
+
+//locks a shape into place if another button is pressed
+//Disables text mode if another button is pressed
+$(".button").click(function(){
+	if(ToolType === "ShapeAdjust")
+	{
+		adjustShape(MouseX, MouseY, "drag", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+
+		adjustShape(MouseX, MouseY, "dragend", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+	}
+	else if (ToolType === "TextMode")
+	{
+		$("#TextMode").css({"background":"-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) )"});
+
+		if(ActiveBox)
+			saveBox(ActiveBox, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+
+		ToolType = "Paint";
+	}
+});
 
 /***************End Drawing Click Handler****************************/
 

@@ -1,5 +1,5 @@
 
-//Red click indicator
+//Red click indicator (note, the red click for textmode is in scriptsCommonFeatures)
 $('#ZoomOut,  #ZoomIn, #Undo, #Redo, #PageUp, #PageDown, #Scroll, #Pen, #Shapes, #Tools, #MoveToTeacher, #Left, #Right, #toPen, #toEraser, #toHighlight').click(function(){
     
     var currentBackground = $(this).css('background');
@@ -11,7 +11,7 @@ $('#ZoomOut,  #ZoomIn, #Undo, #Redo, #PageUp, #PageDown, #Scroll, #Pen, #Shapes,
         $(storedThis).css({"background":currentBackground});
     }, 50);
 
-})
+});
 
 //Tabs
 $('#Pen').click(function(){

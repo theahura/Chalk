@@ -252,15 +252,10 @@ function other_tools(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
 	}
 	else if (type === "dragend")
 	{
-		//sets to shape adjust mode for editing shape position once drawn
-		ShapeAdjust = true;
 		
 		//storing final key points for replication in undo lists and student transmission 
 		EndPositionX = lastX;
 		EndPositionY = lastY; 
-		
-		//Tracks/Backs-up the tooltype to prevent conflicts from collaboration mode (not currently implemented)
-		StoreToolType = ToolType;
 
 		
 		/*For copy and pan maneuvering, it has to constantly capture the image data from a fixed position later on. 
@@ -343,6 +338,12 @@ function other_tools(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
 				 CanvasInfo[pageNumber].context.clearRect(StartPositionX, StartPositionY, Width, Height);
 			}
 		}
+
+
+		//Tracks/Backs-up the tooltype to prevent conflicts from collaboration mode (not currently implemented)
+		StoreToolType = ToolType;
+		//sets to shape adjust mode for editing shape position once drawn
+		ToolType = "ShapeAdjust";
 	}
 }	
 
@@ -563,13 +564,15 @@ function adjustShape(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
 			context.restore();
 		}
 		else
-			//draws the image from the temporary canvas to the main canvas, permanently 
+		{
 			context.drawImage(DrawCanvas, 0, 0);
-				
+		}
+
 		//deletes/clears memory for temp canvas and resets any changed vars
 		clear(true, DrawContext);
 		CanvasPositionX = CanvasPositionY = 0;
-		ShapeAdjust = false; 
+		
+		ToolType = StoreToolType; 
 	
 		startSave();
 		
@@ -579,4 +582,183 @@ function adjustShape(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
 		return changeStyle(PaintType.color, null, PaintType.size, PaintType.opacity);
 	}		
 }
+
+
+/*
+	draws an empty box at the position specified by x/y
+	@param: x; int; x location of the new textbox
+	@param: y; int; y location of the new textbox
+	@return: the textbox that gets created
+*/
+ function drawBox (x, y, type, lastX, lastY, box)
+{
+	if(type === "dragstart")
+	{
+		if (box)
+			saveBox(box, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+
+		box = document.createElement('textarea'); // creates the element
+	    box.id = "activeBox";
+
+	   //places box at user's where the user clicked
+	    box.style.position = 'absolute'; // position it
+	    box.style.left = x + 'px';
+	    box.style.top = y + 'px';
+	    box.rows = 5;
+
+	    //styles box
+	    box.style.color = PaintType.color;
+	    //some magic numbers
+	    box.style.fontSize = PaintType.size*30/70 + 12;
+
+	    BoxHeight = BoxWidth = 0; 
+
+	   	document.body.appendChild(box); // add it as last child of body elemnt
+	}
+	else if (type === "drag")
+	{
+		//finds distance changed
+		var OffsetX = x - lastX; 
+		var OffsetY = y - lastY; 
+
+		BoxHeight += OffsetY;
+		BoxWidth += OffsetX;
+
+		$(box).css({"height":BoxHeight+"px"});
+		$(box).css({"width":BoxWidth+"px"});
+	}
+	else
+	{
+	    //places cursor in box
+	    box.focus();
+	}
+	return box; 
+}
+
+/** 
+*converts a textarea to writing on the canvas
+*if the textarea is empty removes the box without saving
+*if not, pushes the textarea onto context and draws
+*removes the box afterwards
+*
+*/
+function saveBox(box, context, pageNumber, isTeacher)
+{
+	var box = document.getElementById("activeBox");
+ 	if (box.value == "")
+    {
+        $("#activeBox").remove();
+        ActiveBox = null;
+    }
+    else
+    {
+        var textObj= {
+        	ToolType: ToolType,
+        	PageNumber: pageNumber,
+            color: box.style.color,
+            StartPositionX: box.style.left,
+            StartPositionY: box.style.top,
+            EndPositionX: parseInt(box.style.left) + parseInt(box.style.width) + "px",
+            EndPositionY: parseInt(box.style.top) - parseInt(box.style.height) + "px",
+            ImgData: box.value,
+            size: box.style.fontSize
+        }        
+        
+        if(isTeacher)
+		{
+			/**
+			 * Emits shape display to student such that the image created on the student side 
+			 * is the shape in its final position
+			 * 
+			 * @Param: 'CommandToStudent'; name of command being sent to student clients
+			 * @Param: {}; object with data that will be handled on the student end
+			 */				
+			socket.emit('CommandToStudent', {
+				ToolType: ToolType,
+	        	PageNumber: pageNumber,
+	            color: box.style.color,
+	            StartPositionX: box.style.left,
+	            StartPositionY: box.style.top,
+	            PanX: parseInt(box.style.left) + parseInt(box.style.width) + "px",
+	            PanY: parseInt(box.style.top) - parseInt(box.style.height) + "px",
+	            ImgData: box.value,
+	            size: box.style.fontSize
+			});
+		}
+
+		CanvasInfo[pageNumber].UndoList.push(textObj);
+
+        wrapTextObj(textObj, context);
+
+        $("#activeBox").remove();
+
+        ActiveBox = null;
+    }
+}
+
+/**
+ *Writes the text from the passed object t onto the passed canvas
+ *@param t the text object to be drawn
+ *@param context the canvas context where the text will be writted
+ *@precondition t.style == "text"
+ */
+function wrapTextObj(t, context)
+{
+	context.fillStyle = t.color;
+	context.font = t.size + " Arial";
+    var lineHeight= parseInt(t.size);
+
+    //normalizes line breaks
+    t.ImgData.replace(/\r\n/g, "\n");
+    //splits the words by lines
+    var lines = t.ImgData.split("\n");
+    //represents the line to be added
+    var line = '';
+    //various magic numbers for making text look exactly like it did in the box
+    //boxY+=(parseInt(inputSize) * 1.4);
+    var bX= parseInt(t.StartPositionX);
+    var bY= parseInt(t.StartPositionY);
+    bY+=0.9295 * (parseInt(t.size)) + 4.86
+    bX+=3;
+
+    var maxWidth= parseInt(t.EndPositionX) - parseInt(t.StartPositionX);
+
+    //looks at each line
+    for(var n = 0; n < lines.length; n++) 
+    {
+    	//looks at each word, checks the width of the line and adds to a new line if the width is over 
+    	var words = lines[n].split(' ');
+    	for (var i = 0; i < words.length; i++)
+    	{
+    		var testline = line + words[i] + ' ';
+	        var metrics = context.measureText(testline);
+	        var testWidth = metrics.width;
+
+	        if (testWidth > maxWidth && i > 0) 
+	        {
+	            context.fillText(line, bX, bY);
+	            line = words[i] + ' ';
+	            bY += lineHeight;
+	        }
+	        else 
+	        {
+	            line = testline;
+	        }
+    	}
+	    context.fillText(line, bX, bY);
+	    line = '';
+    	bY += lineHeight;       
+    }
+
+    context.fillText(line, bX, bY);
+    context.stroke();
+    context.closePath();
+}
 	
+//automatically expands textareas that are dynamically generated
+$(document).on('input.textarea', '#activeBox', function(e) 
+{
+    while($("#activeBox").outerHeight() < document.getElementById("activeBox").scrollHeight + parseFloat($("#activeBox").css("borderTopWidth")) + parseFloat($("#activeBox").css("borderBottomWidth"))) {
+        $("#activeBox").height($("#activeBox").height()+20);
+    };
+});

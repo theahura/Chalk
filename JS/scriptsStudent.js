@@ -501,6 +501,15 @@
 					CanvasInfoTeacher[TeacherPage].context.drawImage(img, 0, 0);
 				}
 			}
+			else if (data.ToolType === "TextMode")
+			{
+				data.StartPositionX = data.ShapeStartX;
+				data.StartPositionY = data.ShapeStartY;
+				data.EndPositionX = data.Panx;
+				data.EndPositionY = data.Pany; 
+				
+				wrapTextObj(data, CanvasInfoTeacher[TeacherPage].context);
+			}
 		}
 		
 	});
