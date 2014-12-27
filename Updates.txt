@@ -21,6 +21,8 @@ Textboxes
 Made textboxes work on whiteboard
 
 Cleaned up whiteboard css/html
+
+Re-Added CSS for pushnotes on the teacher end
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images?  
 Note: Collab mode -> both by grabbing images and by letting them draw
@@ -52,7 +54,6 @@ Glitch: bottom pull up menu kills app function on second+ page
 Glitch: Pageup/down memory leak + image storage/Google Picker memory leak with image previews
 Glitch: ZoomIn doesn't lose red css click/clicking too fast makes red background permanent
  
-
 Next update: 
 Clean up alert/prompts to css/html inputs instead of js (specifically push notes, alert for google drive)
 Check size limits on google drive
