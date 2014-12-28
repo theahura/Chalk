@@ -68,6 +68,12 @@ function login(authResult)
 		   	  $("#AlertBox").fadeIn(250);
 	    	 // alert("Logged in to Google Drive as: " + User);
 	    	  
+	    	 document.getElementById("Accept").onclick = function()
+			{
+				document.getElementById("Save").onclick();
+				 document.getElementById("Accept").onclick = null;
+			};
+
 	    	  //loading div
 	    	  document.getElementById("LoadingColor").style.display = "none";
 

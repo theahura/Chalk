@@ -27,6 +27,8 @@ Re-Added CSS for pushnotes on the teacher end
 Updated UI so that black outline fades out for tools and shapes 
 
 Made alerts/prompts sexy (and custom)
+
+Name document on login to drive
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images?  
 Note: Collab mode -> both by grabbing images and by letting them draw
@@ -58,9 +60,9 @@ Glitch: Draw through cover css layer when scrolling
 Glitch: bottom pull up menu kills app function on second+ page
 Glitch: Pageup/down memory leak + image storage/Google Picker memory leak with image previews
 Glitch: ZoomIn doesn't lose red css click/clicking too fast makes red background permanent
+Glitch: Fix zooming/scrolling for textboxes on iPads
  
 Next update: 
-Name document on login to drive
 Check size limits on google drive image inputs
 	go with actual data amount instead of width/height and send actual image (the blob) instead of how it is sent now to decrease file size
 
