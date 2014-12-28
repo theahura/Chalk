@@ -781,6 +781,8 @@ $(".button").click(function(){
 
 		ToolType = "Paint";
 	}
+
+	$("#AlertBox, #AlertBox_2").fadeOut(250);
 });
 
 /***************End Drawing Click Handler****************************/

@@ -113,3 +113,16 @@ $('#Eraser').click(function(){
     $('.color-list').fadeTo(250, 0.5);      
 });
 
+
+//alert stuff
+$("#Cancel_2, #Accept_2").click(function(){
+    $("#AlertBox_2").fadeOut(250);
+});
+
+$("#Accept").click(function(){
+    $("#AlertBox").fadeOut(250);
+});
+
+$("#Prompt_Accept").click(function(){
+    $("#PromptBox").fadeOut(250);   
+});

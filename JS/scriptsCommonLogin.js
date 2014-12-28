@@ -63,7 +63,10 @@ function login(authResult)
 	   request.execute(function(resp) 
 	   {
 		   	  User = resp.name;
-	    	  alert("Logged in to Google Drive as: " + User);
+
+		   	  $("#AlertText").html("Logged in to Google Drive as: " + User);
+		   	  $("#AlertBox").fadeIn(250);
+	    	 // alert("Logged in to Google Drive as: " + User);
 	    	  
 	    	  //loading div
 	    	  document.getElementById("LoadingColor").style.display = "none";
@@ -82,7 +85,9 @@ function login(authResult)
    {
 	   if (authResult.error === "immediate_failed" || authResult.error === "access_denied")
 	   {
-		   alert("Not logged in to Google Drive");
+	   	   $("#AlertText").html("Not logged in to Google Drive");
+		   $("#AlertBox").fadeIn(250);
+		   //alert("Not logged in to Google Drive");
 		   document.getElementById("LoadingColor").style.display = "none";
 	   }
 	   else
@@ -94,8 +99,10 @@ function login(authResult)
    }
    else
    {
-	   alert("Not logged in to Google Drive");
-	   document.getElementById("LoadingColor").style.display = "none";
+	   	$("#AlertText").html("Not logged in to Google Drive");
+		$("#AlertBox").fadeIn(250);
+		//alert("Not logged in to Google Drive");
+		document.getElementById("LoadingColor").style.display = "none";
 	   return false;
    }
 }
@@ -130,7 +137,9 @@ function logout()
 	    		CanvasInfo[i].id = null; 
 	    		
 	    	  
-	    	  alert("Logged Out");
+	    	    $("#AlertText").html("Logged Out of Google Drive");
+			   $("#AlertBox").fadeIn(250);
+			   //alert("Logged Out");
 	    	  
 	    	  document.getElementById("LogIn").innerHTML = "Log In";
 	    	  document.getElementById("LoginName").innerHTML = "Cloud Tools - Not Logged In";
@@ -409,7 +418,9 @@ function downloadFile(file) {
   	}
   	else
   	{
-  		alert("File size too big");
+  		$("#AlertText").html("File Size Too Big");
+		$("#AlertBox").fadeIn(250);
+		//alert("File Size Too Big");
   	}
     
   } else {

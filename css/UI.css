@@ -10,6 +10,11 @@ body,html
     z-index: 4;   
 }
 
+.button
+{
+    cursor: pointer;
+}
+
 /* Top UI CSS */
 .top-ui
 {        
@@ -481,6 +486,8 @@ h2
     font-size:20px;
 }
 
+/*Covers*/
+
 .cover-close
 {
     position:fixed;
@@ -585,17 +592,23 @@ h2
            rgba(0,0,0,0) 100%);
 }
 
+/*all help text*/
+
 .help-text
 {
     opacity: 0.0;
     display: inline-block;
 }
 
+/*page number on main UI*/
+
 #PageNumber
 {
     text-align: center;
     margin-top: 10px;
 }
+
+/*google drive saving*/
 
 #Updating 
 {
@@ -611,6 +624,8 @@ h2
     left:10px;
     top:80px;
 }
+
+/*loading pages/image*/
 
 #LoadingColor 
 {
@@ -645,6 +660,8 @@ canvas
 {
     border: 2px solid #000000;
 }
+
+/*rounded easy-buttons for student*/
 
 .round-pen
 {
@@ -724,7 +741,7 @@ canvas
 
 
 
-
+/*Rounded easy-buttons for teacher*/
 
 .round-pen-teacher
 {
@@ -800,6 +817,7 @@ canvas
     border-radius: 50%;
 }
 
+/*push notes*/
 
 .push-note-list
 {
@@ -828,6 +846,7 @@ canvas
 
 }
 
+/*textboxes*/
 
 textarea {
     font-family : Arial;
@@ -837,6 +856,107 @@ textarea {
       border:6px solid #556677;
 }
 
+/*Custom Alerts and Prompts*/
+
+.alert-box, .alert-box-2, .prompt-box
+{
+    position: fixed;
+
+     display: none;
+
+    top: 20%;
+    left:40%;
+
+    width: 25%;
+    height: 25%;
+    background-color: rgba(223,223,223, 0.25);
+
+    border-top-left-radius:20px;
+    border-top-right-radius:20px;
+    border-bottom-right-radius:20px;
+    border-bottom-left-radius:20px;
+}
+
+.main-text
+{
+    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
+    margin-top: 10%;
+
+    text-align: center;
+}
+
+.accept-container
+{
+    display: inline-block;
+
+    position: absolute;
+    bottom: 10%;
+    left: 32.5%;
+
+    width: 35%;
+    height: 20%;
+
+    text-align: center;
+
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+    border-top-left-radius:20px;
+    border-top-right-radius:20px;
+    border-bottom-right-radius:20px;
+    border-bottom-left-radius:20px;
+}
+
+.alert-options
+{
+    list-style: none;
+    position: absolute;
+    bottom: 10%;
+
+    width: 100%;
+    height: 20%;
+
+    padding-right: 0;
+    padding-left: 1%;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0 0;
+}
+
+.alert-options li
+{
+    display: inline-block;
+
+    width: 35%;
+    height: 100%;
+
+    margin-left: 10%;
+
+    text-align: center;
+
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+
+    border-top-left-radius:20px;
+    border-top-right-radius:20px;
+    border-bottom-right-radius:20px;
+    border-bottom-left-radius:20px;
+}
+
+.alert-options li .text, .accept-container .text
+{
+    margin-top: 6%;
+}
+
+.prompt-input
+{
+    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+
+/*whiteboard stuff*/
 
 .whiteboard-number
 {

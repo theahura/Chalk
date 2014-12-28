@@ -73,16 +73,13 @@ document.getElementById("LogIn").onclick = function()
 	if(Auth)	
 	{
 		//confirm logout intent
-		var check = prompt("Are you sure you want to log out? (Y/N)", "N");
-		
-		if (check.toLowerCase() == "n")
-		{
-			return;
-		}
-		else //Could be risky if its not a direct yes
-		{
+		$("#AlertText_2").html("Are you sure you want to log out?");
+
+		document.getElementById("Accept_2").onclick = function(){
 			logout();
-		}
+		};
+
+		$("#AlertBox_2").fadeIn(250);
 	}
 	//if not already logged in...
 	else
@@ -127,20 +124,28 @@ document.getElementById("ZoomOut").onclick = function()
 document.getElementById("Save").onclick = function()
 {
 	//gets the save file name from the user if they want a different one; pastname is the previous save name
-	var name = prompt("Please enter the name of the file (note: only saves current page)", PastName);
-	
-	if (name != null)
-		PastName = name;
-	
-	if (Auth == false) //if not already logged in
+	$("#PromptText").html("Please enter the name of the file (note: only saves current page)");
+	document.getElementById("PromptInput").value = PastName;
+
+	document.getElementById("Prompt_Accept").onclick = function()
 	{
-		//requests login
-		gapi.auth.authorize(
+		var name = document.getElementById("PromptInput").value;
+
+		if (name != null)
+			PastName = name;
+	
+		if (Auth == false) //if not already logged in
+		{
+			//requests login
+			gapi.auth.authorize(
 		           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
 		           login);
-	}
-	else
-		Save(true, null,CanvasInfo[CurrentPage].canvas);
+		}
+		else
+			Save(true, null,CanvasInfo[CurrentPage].canvas);
+	};
+
+	$("#PromptBox").fadeIn(250);
 };
 
 

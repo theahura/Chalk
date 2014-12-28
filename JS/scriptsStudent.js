@@ -329,15 +329,23 @@
 		
 		document.getElementById("Push").onclick = function()
 		{
-			var note = prompt("Write what you want to send to the presenter here:");
-			
-			socket.emit('CommandToTeacher', 
+			$("#PromptText").html("Write what you want to send to the presenter here:");
+			document.getElementById("PromptInput").value = "";
+
+			document.getElementById("Prompt_Accept").onclick = function()
 			{
-				ToolType: "Notification",
-				PushText: note,
-				Name: Name
-			});
+				var note = document.getElementById("PromptInput").value;
+				socket.emit('CommandToTeacher', 
+				{
+					ToolType: "Notification",
+					PushText: note,
+					Name: Name
+				});
+			};
+
+			$("#PromptBox").fadeIn(250);
 		}	
+
 	
 	
 /********************************************Handles all communication**************************************************/

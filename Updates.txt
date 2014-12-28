@@ -25,6 +25,8 @@ Cleaned up whiteboard css/html
 Re-Added CSS for pushnotes on the teacher end
 
 Updated UI so that black outline fades out for tools and shapes 
+
+Made alerts/prompts sexy (and custom)
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images?  
 Note: Collab mode -> both by grabbing images and by letting them draw
@@ -41,14 +43,15 @@ Note: Teacher non-transfer option
 
 Note: min code so that random users cannot view all of it through the web browser (how?)
 Note: changing pages decreases image quality
-Note: Div to store username + div to store google drive login account name
+Note: Div to store username
 Note: indexedDB
 Note: wrist protection
 Note: change loading image
-Note: Storing Chat logs
+Note: Storing Chat logs (teacher messages)
 Note: Undo/Redo locks/unlocks images 
 Note: Copy paste selecting specific 'objects' instead of areas (or layering?)
 Note: Pointer for whiteboard for teacher
+Note: Right and Left handed UIs
 
 Glitch: Background touching isn't registered in background on submenus
 Glitch: Draw through cover css layer when scrolling
@@ -57,10 +60,9 @@ Glitch: Pageup/down memory leak + image storage/Google Picker memory leak with i
 Glitch: ZoomIn doesn't lose red css click/clicking too fast makes red background permanent
  
 Next update: 
-Clean up alert/prompts to css/html inputs instead of js (specifically push notes, alert for google drive)
-Check size limits on google drive
-	go with actual data amount instead of width/height and send actual image (the blob) instead of how it is sent now to decrease file size
 Name document on login to drive
+Check size limits on google drive image inputs
+	go with actual data amount instead of width/height and send actual image (the blob) instead of how it is sent now to decrease file size
 
 
 Unreplicated glitches: 
