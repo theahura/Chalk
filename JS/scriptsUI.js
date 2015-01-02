@@ -49,14 +49,10 @@ $('.color-list ul li').click(function(){
     $(this).css({"box-shadow":"0px 0px 0px 4px white inset"});
 });
 
-$('#Black').css({"box-shadow":"0px 0px 0px 4px white inset"});
-
 $('.pen-type ul li').click(function(){
     $('.pen-type ul li').css({"box-shadow":"none"});
     $(this).css({"box-shadow":"0px 0px 0px 3px black inset"});
 });
-
-$('#Paint').css({"box-shadow":"0px 0px 0px 3px black inset"});
 
 
 $('.tool-picker ul li').click(function(){
@@ -76,6 +72,7 @@ $('.tool-picker ul li').click(function(){
 
  $('.shapes-list ul li').click(function(){
     $('.shapes-list ul li').css({"box-shadow":"none"});
+
     $(this).css({"box-shadow":"0px 0px 0px 3px black inset"});
 
     //auto closes the tab when a shape is clicked - assumes the need to return to the canvas due to single click functions ; will change as features get added
@@ -88,6 +85,30 @@ $('.tool-picker ul li').click(function(){
         $(storedThis).css({"box-shadow":"none"});
     }, 250);
 });  
+
+//if paint or highlight is selected, brings back color list if faded out
+$('#Paint, #Highlight').click(function(){
+    $('.color-list').fadeTo(250, 1.0);
+});
+
+//Styling for the mini-pen change buttons
+$('#toPen').click(function(){
+    $('.pen-type ul li').css({"box-shadow":"none"});
+    $('.color-list').fadeTo(250, 1.0);      
+    $("#Paint").css({"box-shadow":"0px 0px 0px 3px black inset"});
+});
+
+$('#toEraser').click(function(){
+    $('.pen-type ul li').css({"box-shadow":"none"});
+    $('.color-list').fadeTo(250, 0.5);      
+    $("#Eraser").css({"box-shadow":"0px 0px 0px 3px black inset"});
+});
+
+$('#toHighlight').click(function(){
+    $('.pen-type ul li').css({"box-shadow":"none"});
+    $('.color-list').fadeTo(250, 1.0);      
+    $("#Highlight").css({"box-shadow":"0px 0px 0px 3px black inset"});
+});
 
 //Help text
  $('.pen .help').click(function(){
@@ -125,4 +146,12 @@ $("#Accept").click(function(){
 
 $("#Prompt_Accept").click(function(){
     $("#PromptBox").fadeOut(250);   
+});
+
+//automatically expands textareas that are dynamically generated
+$(document).on('input.textarea', '#activeBox', function(e) 
+{
+    while($("#activeBox").outerHeight() < document.getElementById("activeBox").scrollHeight + parseFloat($("#activeBox").css("borderTopWidth")) + parseFloat($("#activeBox").css("borderBottomWidth"))) {
+        $("#activeBox").height($("#activeBox").height()+20);
+    };
 });

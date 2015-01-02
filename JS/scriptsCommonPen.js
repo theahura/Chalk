@@ -25,7 +25,7 @@ function setup_click(context, pageNumber)
 	clearSaveTimer(); 
 		
 	//closes css/submenu tabs
-	CanvasInfo[pageNumber].canvas.focus();
+	//CanvasInfo[pageNumber].canvas.focus();
 
 	//settings for user in case of collaboration/change
 	context.globalCompositeOperation = PaintType.erase; 
@@ -571,7 +571,7 @@ function adjustShape(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
 		clear(true, DrawContext);
 		CanvasPositionX = CanvasPositionY = 0;
 		
-		ToolType = StoreToolType; 
+		ToolType = StoreToolType = "Paint"; 
 	
 		startSave();
 		
@@ -754,10 +754,3 @@ function wrapTextObj(t, context)
     context.closePath();
 }
 	
-//automatically expands textareas that are dynamically generated
-$(document).on('input.textarea', '#activeBox', function(e) 
-{
-    while($("#activeBox").outerHeight() < document.getElementById("activeBox").scrollHeight + parseFloat($("#activeBox").css("borderTopWidth")) + parseFloat($("#activeBox").css("borderBottomWidth"))) {
-        $("#activeBox").height($("#activeBox").height()+20);
-    };
-});

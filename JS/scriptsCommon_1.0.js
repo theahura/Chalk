@@ -322,9 +322,9 @@
 		canvas.style.position = "absolute";
 		
 		if (top)
-			canvas.style.top =  top + "px";
+			canvas.style.top =  top + 70 + "px";
 		else 
-			canvas.style.top = "0px";
+			canvas.style.top = "70px";
 		
 		if (left)
 			canvas.style.left = left + "px";
@@ -397,8 +397,7 @@
 	/**
 	 *  Used to change preferences in the PaintType object that are later stored into backups
 	 *  
-	 *  If changeStyle is being used, it automatically sets the tooltype to Paint; only is called by 
-	 *  pen related functions
+	 *  If changeStyle is being used, it automatically sets the tooltype to Paint unless called by color/size changes
 	 *  
 	 *  @Param: color; Hex/RGB; the color the pen needs to become
 	 *  @Param: colorElementID; the element used to change the color, used to set CSS settings in the UI
@@ -406,9 +405,10 @@
 	 *  @Param: opacity; double; tracks how transparent the pen stroke is
 	 */
 	function changeStyle(color, colorElementID, size, opacity)
-	{
-		ToolType = "Paint";
-		
+	{		
+		if(PaintType.type === "Erase")
+			return;
+
 		if (color)
 			PaintType.color = color; 
 		
@@ -711,15 +711,15 @@
  * 		@Param: dd; data pulled from plugin (not currently used) 
  */
 $(document).on("dragstart", ".drag", function(ev, dd){
-	clickHandler(ev.pageX, ev.pageY, "dragstart");
+	clickHandler(ev.pageX, ev.pageY - 70, "dragstart");
 });
 
 $(document).on("drag", ".drag", function(ev, dd){
-	clickHandler(ev.pageX, ev.pageY, "drag");
+	clickHandler(ev.pageX, ev.pageY - 70, "drag");
 });
 
 $(document).on("dragend",".drag",function(ev, dd){
-	clickHandler(ev.pageX, ev.pageY, "dragend");
+	clickHandler(ev.pageX, ev.pageY - 70, "dragend");
 });
 
 /*
@@ -765,14 +765,15 @@ function clickHandler(pageX, pageY, type)
 
 //locks a shape into place if another button is pressed
 //Disables text mode if another button is pressed
-$(".button").click(function(){
+$(".button").click(function()
+{
 	if(ToolType === "ShapeAdjust")
 	{
 		adjustShape(MouseX, MouseY, "drag", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
 
 		adjustShape(MouseX, MouseY, "dragend", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
 	}
-	else if (ToolType === "TextMode")
+	else if (ToolType === "TextMode" && !$(this).is("#TextMode"))
 	{
 		$("#TextMode").css({"background":"-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) )"});
 
@@ -781,8 +782,6 @@ $(".button").click(function(){
 
 		ToolType = "Paint";
 	}
-
-	$("#AlertBox, #AlertBox_2").fadeOut(250);
 });
 
 /***************End Drawing Click Handler****************************/

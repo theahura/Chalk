@@ -382,7 +382,7 @@ function getFile(fileId) {
 function downloadFile(file) {
   if (file.downloadUrl) 
   {
-  	if(file.imageMediaMetadata.width < 1000 && file.imageMediaMetadata.height < 1000)
+  	if(file.fileSize < 5000000)
   	{
   		var accessToken = gapi.auth.getToken().access_token;
 	    var xhr = new XMLHttpRequest();
@@ -395,9 +395,6 @@ function downloadFile(file) {
 	    	var blob =  this.response;
 
 	        var img = new Image();
-
-	        //uses the blob to create the url for the img
-	        img.src =  URL.createObjectURL ( blob ); 
 	        
 	        img.onload =  function ()  
 	        {
@@ -411,11 +408,12 @@ function downloadFile(file) {
 	        	ImageScrollX = document.body.scrollLeft;
 	        	ImageScrollY = document.body.scrollTop;
 	        	
+	        	ToolType = "ShapeAdjust";
 	        	StoreToolType = "Image";
-	        	
-	        	//prepares to move the image around
-	        	ShapeAdjust = true;
 	        }; 
+
+	        //uses the blob to create the url for the img
+	        img.src =  URL.createObjectURL ( blob ); 
 	    };
 	    xhr.onerror = function() {
 	    	alert("There was an error");

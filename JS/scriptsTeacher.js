@@ -37,8 +37,6 @@ var TeacherLayer = document.getElementById('TeacherLayer');
 
 /*sets up CanvasInfo list*/
 
-var CanvasSize = 2000; //remove later
-
 //adds the first canvas context info and the canvas itself
 CanvasInfo[0].context = TeacherLayer.getContext("2d");
 CanvasInfo[0].canvas = TeacherLayer;
@@ -71,7 +69,7 @@ CanvasInfo[0].context.lineCap = "round";
  */
 $(document).on("dragcanceled",".drag",function(ev, dd){
 	if(ToolType == "Paint")
-		DrawCanvas.getContext("2d").clearRect(0, 0, CanvasSize, CanvasSize);
+		DrawCanvas.getContext("2d").clearRect(0, 0, CanvasPixelWidth, CanvasPixelHeight);
 });
 
 

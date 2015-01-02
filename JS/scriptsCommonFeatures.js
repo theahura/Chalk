@@ -47,11 +47,13 @@ document.getElementById("Highlight").onclick = document.getElementById("toHighli
 	changePaintType(BackUpHighlight);
 }	
 
-//if color, paint, or highlight is selected, removes tag on eraser and brings back color list if faded out
-$('#Paint, #Highlight, .color-list').click(function(){
-	changePaintType(BackUpPen);
-    $('.color-list').fadeTo(250, 1.0);
-    $('#Eraser').css({"box-shadow":"none"});
+$('.color-list').click(function(){
+	if(PaintType.type === "Erase")
+	{
+    	$('.color-list').fadeTo(250, 1.0);
+    	$('#Eraser').css({"box-shadow":"none"});
+    	changePaintType(BackUpPen);
+	}
 });
 
 /**Copy/Paste + Pan**************************************/	
@@ -166,7 +168,20 @@ document.getElementById('Open').onclick = function ()
 /**Text Boxes****************************************************/
 document.getElementById("TextMode").onclick = function()
 {
-	changePaintType(BackUpPen);
-	ToolType = "TextMode";
-	$("#TextMode").css({"background":"red"});
+	if(ToolType !== "TextMode")
+	{
+		changePaintType(BackUpPen);
+		StoreToolType = ToolType; 
+		ToolType = "TextMode";
+		$("#TextMode").css({"background":"red"});
+	}
+	else
+	{
+		$("#TextMode").css({"background":"-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) )"});
+
+		if(ActiveBox)
+			saveBox(ActiveBox, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+
+		ToolType = StoreToolType;
+	}
 }

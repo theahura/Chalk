@@ -330,7 +330,7 @@
 		document.getElementById("Push").onclick = function()
 		{
 			$("#PromptText").html("Write what you want to send to the presenter here:");
-			document.getElementById("PromptInput").value = "";
+			document.getElementById("promptInput").value = "";
 
 			document.getElementById("Prompt_Accept").onclick = function()
 			{
@@ -503,11 +503,11 @@
 			else if (data.ToolType == "Image")
 			{
 				var img = new Image();
-				img.src = data.ImgData;
 				img.onload = function()
 				{
 					CanvasInfoTeacher[TeacherPage].context.drawImage(img, 0, 0);
 				}
+				img.src = data.ImgData;
 			}
 			else if (data.ToolType === "TextMode")
 			{
