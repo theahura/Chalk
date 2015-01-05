@@ -16,26 +16,26 @@ $('#ZoomOut,  #ZoomIn, #Undo, #Redo, #PageUp, #PageDown, #Scroll, #Pen, #Shapes,
 //Tabs
 $('#Pen').click(function(){
     $('.pen').fadeIn(250); 
+    DragMode = true; 
 });
 
 $('#Shapes').click(function(){
     $('.shapes').fadeIn(250); 
+    DragMode = true; 
 });
 
 $('#Tools').click(function(){
     $('.tools').fadeIn(250); 
-});
-
-$('#Settings').click(function(){              
-    $('.settings').fadeIn(250);
+    DragMode = true; 
 });
 
 $('#Scroll').click(function(){
-    
     $('.scroll').fadeIn(250);
+    DragMode = true; 
 });
 
 $('.cover, .cover-exit').click(function(){
+    DragMode = false;
 	$('.help-text').fadeTo(125, 0.0);   	
     $('.cover').children().click(function(e){
     	return false;

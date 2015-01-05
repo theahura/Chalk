@@ -29,6 +29,9 @@
 	//keeps track of the zoom levels
 	var GlobalScale = 4;
 	var MaxZoom = 4;
+
+	//glitch fix: avoid drawing on scroll by accident
+	var DragMode; 
 		
 /*Storage of preferences for canvas; used for resetting properties on drag resizing or for multiple drawers */
 	
@@ -71,10 +74,23 @@
 /*Saving vars*/ 
 
 	//used to save an image as the same name as previously given
-	var PastName = "notes";
+	var d = new Date();
+	var day = d.getDate(); 
+	var month = d.getMonth() + 1; 
+	var year = d.getFullYear();
+	var PastName = month + "_" + day + "_" + year;
 	
 	//Type: TimeOut; sets a counter for the amount of time since the last action to trigger google drive saving
 	var UpdateTimeOut;
+
+	//Type: Boolean; stores the save-as variable IsSaveAs (generally true)
+	var SaveAs_TempStore_IsSaveAs;
+
+	//Type: int; stores the page number that is being saved-as
+  	var SaveAs_TempStore_PageNumber;
+
+  	//Type: Canvas; stores the canvas that is being saved-as
+  	var SaveAs_TempStore_Canvas;
 
 /*Canvas/Drawing vars*/
 	
@@ -732,6 +748,10 @@ $(document).on("dragend",".drag",function(ev, dd){
 */
 function clickHandler(pageX, pageY, type)
 {
+	//Glitch fix for dragmode accidental drawing
+	if(DragMode)
+		return;
+
 	x = (pageX)*MaxZoom/GlobalScale; 
 	y = (pageY)*MaxZoom/GlobalScale; 
 	

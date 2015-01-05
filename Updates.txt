@@ -39,6 +39,16 @@ UI Fixes: made it so that black borders match current usage, made sure eraser ca
 Made it so that the canvases line up with the bottom of the topui bar
 
 Updated the saving div UI
+
+Fixed drawing through cover layer when scrolling with DragMode var
+
+Made google picker folder view
+
+Drive save-to-folder with Google Picker
+	Created a savetodrive folder picker chain, complete with callbacks
+	Created temp global vars to help with the saving
+	Moved most of the saving work to createMetaData()
+	Added savedfolderID addition to metadata to save parent folders
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images?  
 Note: Collab mode -> both by grabbing images and by letting them draw
@@ -64,10 +74,10 @@ Note: Undo/Redo locks/unlocks images
 Note: Copy paste selecting specific 'objects' instead of areas (or layering?)
 Note: Email to- button
 Note: Templates
-Note: Google drive save-to-folder button
 Note: Pointer for whiteboard for teacher
 Note: Right and left handed UI
 Note: get rid of 70 magic number for top of ui- thing 
+Note: Google Imagesearch in picker
 
 Glitch: Background touching isn't registered in background on submenus
 Glitch: Draw through cover css layer when scrolling

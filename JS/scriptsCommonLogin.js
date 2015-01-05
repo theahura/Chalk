@@ -12,6 +12,20 @@
 var CLIENT_ID = '1019578559045-6alrhfpff3iqauja90gucjr3sccn1f5f.apps.googleusercontent.com';
 var SCOPES = 'https://www.googleapis.com/auth/drive';
 
+/*General login*/
+
+//Type: String; the id of the folder to save to
+var SaveFolderID;
+
+//Type: String; the name of the current user logged into gDrive
+var User;
+
+//Type: Token; the string used by google to authorize calls to a user's drive
+var OauthToken = null;
+
+//Type: Bool; tracks whether someone is logged in currently
+var Auth = false;
+
 /*First time login*/
 
 /**
@@ -39,17 +53,6 @@ function checkAuth() {
 	           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
 	           login);
 }
-
-/*General login*/
-
-//Type: String; the name of the current user logged into gDrive
-var User;
-
-//Type: Token; the string used by google to authorize calls to a user's drive
-var OauthToken = null;
-
-//Type: Bool; tracks whether someone is logged in currently
-var Auth = false;
 
 /**
  * Called when authorization server replies. Sets login vars, manipulates loading vars
@@ -181,14 +184,75 @@ function Save(IsSaveAs, PageNumber, Canvas)
     	//styles for updating tag
     	document.getElementById("Updating").innerHTML = "Saving " + PastName + "_" + PageNumber + "...";
     	document.getElementById("Updating").style.display = "block";
+
+    	//Gets the save folder location; save is called on picker callbaack
+    	createPicker_Folder(IsSaveAs, PageNumber, Canvas);
     }
     else
     {
     	//styles for updating tag
     	document.getElementById("Updating").innerHTML = "Updating " + PastName + "_" + PageNumber + "...";
     	document.getElementById("Updating").style.display = "block";
-    }		
 
+    	//save without getting a picker folder
+    	createMetaData(IsSaveAs, PageNumber, Canvas);
+    }		
+}
+
+/**
+ * Called when saving-as, the create picker opens a google open UI that allows users
+ * to select information from their google drive. That info is then sent through the pickerCallback_Folder
+ * function, from which we can strip the selected file ID. 
+ */
+function createPicker_Folder(IsSaveAs, PageNumber, Canvas) {
+
+  SaveAs_TempStore_IsSaveAs = IsSaveAs;
+  SaveAs_TempStore_PageNumber = PageNumber;
+  SaveAs_TempStore_Canvas = Canvas;
+
+  var view = new google.picker.DocsView()
+  //only allow them to open images
+  		.setIncludeFolders(true) 
+        .setMimeTypes('application/vnd.google-apps.folder')
+        .setSelectFolderEnabled(true);
+  
+  var picker = new google.picker.PickerBuilder()
+      //.enableFeature(google.picker.Feature.NAV_HIDDEN)
+      .setAppId(1019578559045) //project number
+      .setOAuthToken(OauthToken)
+      .addView(view)
+      .setDeveloperKey(developerKey)
+      .setCallback(pickerCallback_Folder)
+      .build();
+   picker.setVisible(true);
+}
+
+/**
+ * Callback for the picker object, used to get the fileID from the file selected by the user in the
+ * createPicker function. This info is then used to get the actual content using the gapi.get function
+ * 
+ * @prereq: SaveAs_TempStore vars are set (by create picker folder function)
+ *
+ * @Param: data; object; the data for the user-selected file 
+ */
+function pickerCallback_Folder(data) {
+  if (data.action && data.action !== "loaded")
+  {
+  	if(data.action === google.picker.Action.PICKED) 
+  	{	  
+    	SaveFolderID = data.docs[0].id;
+  	}
+
+    //calls the actual save function (regardless if clicked something or not)
+    createMetaData(SaveAs_TempStore_IsSaveAs, SaveAs_TempStore_PageNumber, SaveAs_TempStore_Canvas);
+
+    //memory clearing
+    SaveAs_TempStore_IsSaveAs = SaveAs_TempStore_Canvas = SaveAs_TempStore_PageNumber = null; 
+  }
+}
+
+function createMetaData(IsSaveAs, PageNumber, Canvas)
+{	
 	 /*creates the current canvas image*/ 
 	var TempCanvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth)
 	var TempCtx = TempCanvas.getContext("2d");
@@ -204,39 +268,52 @@ function Save(IsSaveAs, PageNumber, Canvas)
 	
 	//memory clearing
 	TempCtx = null;
-	
+
 	//loads api and calls proper function function
-	 gapi.client.load('drive', 'v2', function () {		        
-		 
-		 	//creates the metadata for the file that is being loaded
+	 gapi.client.load('drive', 'v2', function () 
+	 {		        
+	 	//creates the metadata for the file that is being loaded, including folder insertion
+	 	if(SaveFolderID)
+	 	{
+	 	
 	        var metadata = {
 	            'title': PastName + "_" + PageNumber,
-	                'mimeType': 'image/png'
+	             'mimeType': 'image/png',		
+	             "parents": [{
+				    "kind": "drive#fileLink",
+				    "id": SaveFolderID
+				  }]
 	        };
-	        
-	        /*creates the URL that will be uploaded to drive*/
-	        
-	        //the part of the 'todataurl' that needs to be stripped
-	        var pattern = 'data:image/png;base64,';
-	        
-	        //converts the image to a url
-	        var base64Data = TempCanvas.toDataURL().replace(pattern, '');
-		    
-		    //clears memory
-		    TempCanvas = null;
-		    
-	        //based on the call type, calls either update or saveas
-	        if(IsSaveAs)
-	        {
-	        	//calls the save function
-	        	newInsertFile(base64Data, metadata);
-	        }
-	        else
-	        {
-	        	//calls the update function
-	        	updateFile(CanvasInfo[PageNumber].id, base64Data, metadata)
-	        }
-	    });
+	    }
+	    else
+	        var metadata = {
+	            'title': PastName + "_" + PageNumber,
+	             'mimeType': 'image/png'		
+	        };
+        
+        /*creates the URL that will be uploaded to drive*/
+        
+        //the part of the 'todataurl' that needs to be stripped
+        var pattern = 'data:image/png;base64,';
+        
+        //converts the image to a url
+        var base64Data = TempCanvas.toDataURL().replace(pattern, '');
+	    
+	    //clears memory
+	    TempCanvas = null;
+	    
+        //based on the call type, calls either update or saveas
+        if(IsSaveAs)
+        {
+        	//calls the save function
+        	newInsertFile(base64Data, metadata);
+        }
+        else
+        {
+        	//calls the update function
+        	updateFile(CanvasInfo[PageNumber].id, base64Data, metadata)
+        }
+    });
 }
 
 /**
@@ -330,9 +407,11 @@ var developerKey = 'AIzaSyArQbQNXR9K69jqBuWh7k6x9zgZyKC-LYY';
  * function, from which we can strip the selected file ID. 
  */
 function createPicker() {
-  var view = new google.picker.View(google.picker.ViewId.DOCS);
+  var view = new google.picker.DocsView()
   //only allow them to open images
-  view.setMimeTypes("image/png,image/jpeg,image/jpg");
+  		.setIncludeFolders(true) 
+        .setMimeTypes('application/vnd.google-apps.folder,image/png,image/jpeg,image/jpg')
+        .setSelectFolderEnabled(true);
   
   var picker = new google.picker.PickerBuilder()
      // .enableFeature(google.picker.Feature.NAV_HIDDEN)
@@ -360,7 +439,7 @@ function pickerCallback(data) {
 }
 
 /**
- * Print a file's metadata.
+ * Pass file to downloadFile
  *
  * @param {String} fileId ID of the file to print metadata for.
  */
