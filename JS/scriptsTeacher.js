@@ -315,7 +315,7 @@ document.getElementById("Redo").onclick = function()
  * @Param: "CommandFromStudent"; String; command to listen for
  * @Param: function; function; callback method
  * 		@Param: data; object; info passed along from the student
- */
+ *
 socket.on('CommandFromStudent', function(data) 
 {
 	if (data.ToolType == "Update")
@@ -337,7 +337,7 @@ document.getElementById("Update").onclick = function()
  * Undo command sends the current Undolist WITHOUT POPPING ANYTHING, which allows the student to seamlessly recreate
  * the board from the teacher's commands
  * 
- */
+ *
 function Update()
 {
 	var ImageList = new Array();

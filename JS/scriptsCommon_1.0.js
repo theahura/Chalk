@@ -24,7 +24,7 @@
 	var StoreToolType = "Paint";
 	
 	//Keeps track of who is sending out update calls to figure out who actually needs to be updated
-	var SelfUpdating = false; 
+	//var SelfUpdating = false; 
 
 	//keeps track of the zoom levels
 	var GlobalScale = 4;
@@ -246,7 +246,8 @@
 		// Connected, let's sign-up for to receive messages for this room
 		socket.emit('room', 
 		{
-			Room: Room 
+			Room: Room,
+			Name: Name
 		});
 	});
 	

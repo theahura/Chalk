@@ -49,6 +49,15 @@ Drive save-to-folder with Google Picker
 	Created temp global vars to help with the saving
 	Moved most of the saving work to createMetaData()
 	Added savedfolderID addition to metadata to save parent folders
+
+Fixed an error with promptInput vs. PromptInput html naming in indexstudent
+
+BugFix: Set dragmode to false on some ui changes
+
+Added Update feature to server
+	Made UpdateToClient/ToServer events on server side
+	Added backuplists object to keep track of room backup lists
+	Changed the location of the update button and moved the function to custom socket event
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images?  
 Note: Collab mode -> both by grabbing images and by letting them draw
@@ -80,14 +89,15 @@ Note: get rid of 70 magic number for top of ui- thing
 Note: Google Imagesearch in picker
 
 Glitch: Background touching isn't registered in background on submenus
-Glitch: Draw through cover css layer when scrolling
 Glitch: bottom pull up menu kills app function on second+ page
 Glitch: Pageup/down memory leak + image storage/Google Picker memory leak with image previews
 Glitch: ZoomIn doesn't lose red css click/clicking too fast makes red background permanent
+Glitch: Sometimes google picker pops up twice; check auto save on google picker
  
 Next update: 
 Check size limits on google drive image input
 Fix zooming/scrolling for textboxes on iPads
+Comment server, Cleanup update code
 
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw

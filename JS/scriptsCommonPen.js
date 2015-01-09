@@ -602,7 +602,8 @@ function adjustShape(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
 	   //places box at user's where the user clicked
 	    box.style.position = 'absolute'; // position it
 	    box.style.left = x + 'px';
-	    box.style.top = y + 'px';
+	    box.style.top = y + 70 + 'px';
+
 	    box.rows = 5;
 
 	    //styles box
@@ -716,7 +717,8 @@ function wrapTextObj(t, context)
     //various magic numbers for making text look exactly like it did in the box
     //boxY+=(parseInt(inputSize) * 1.4);
     var bX= parseInt(t.StartPositionX);
-    var bY= parseInt(t.StartPositionY);
+    var bY= parseInt(t.StartPositionY) - 70;
+
     bY+=0.9295 * (parseInt(t.size)) + 4.86
     bX+=3;
 

@@ -56,6 +56,8 @@ $('.pen-type ul li').click(function(){
 
 
 $('.tool-picker ul li').click(function(){
+    DragMode = false; 
+
     $('.tool-picker ul li').css({"box-shadow":"none"});
     $(this).css({"box-shadow":"0px 0px 0px 3px black inset"});
 
@@ -71,6 +73,9 @@ $('.tool-picker ul li').click(function(){
 });
 
  $('.shapes-list ul li').click(function(){
+    
+    DragMode = false; 
+
     $('.shapes-list ul li').css({"box-shadow":"none"});
 
     $(this).css({"box-shadow":"0px 0px 0px 3px black inset"});

@@ -144,7 +144,7 @@ document.getElementById("Save").onclick = function()
 		           login);
 		}
 		else
-			Save(true, null,CanvasInfo[CurrentPage].canvas);
+			Save(true, null, CanvasInfo[CurrentPage].canvas);
 	};
 
 	$("#PromptBox").fadeIn(250);
@@ -164,6 +164,66 @@ document.getElementById('Open').onclick = function ()
 		createPicker(); 
 
 }
+
+
+
+/*********UPDATE*********************************************************************/
+		
+	document.getElementById("Update").onclick = function()
+	{
+		socket.emit('UpdateToServer',{});
+	}
+
+	socket.on('UpdateToClient', function(data) 
+	{
+		var UndoListBackUp = JSON.parse(data.UndoList);
+				
+		if(IsTeacher)
+		{
+			if(!CanvasInfo[data.PageNumber])
+			{
+				var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+				
+				CanvasInfo.push({});
+
+				CanvasInfo[data.PageNumber] = {};
+				
+				CanvasInfo[data.PageNumber].context = canvas.getContext("2d");
+				CanvasInfo[data.PageNumber].canvas = canvas; 
+
+				CanvasInfo[data.PageNumber].UndoList = new Array();
+				CanvasInfo[data.PageNumber].RedoList = new Array();
+			}
+
+			CanvasInfo[data.PageNumber].UndoList = UndoListBackUp;
+			redrawUndo(UndoListBackUp, CanvasInfo[data.PageNumber]);
+		}
+		else
+		{
+			if(!CanvasInfo[data.PageNumber])
+			{
+				CanvasInfo.push({});
+
+				var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+				var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -2, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+				
+				CanvasInfo[data.PageNumber] = {};
+				CanvasInfoTeacher[data.PageNumber] = {};
+				
+				CanvasInfo[data.PageNumber].context = canvas.getContext("2d");
+				CanvasInfo[data.PageNumber].canvas = canvas; 
+				
+				CanvasInfoTeacher[data.PageNumber].context = canvasT.getContext("2d");
+				CanvasInfoTeacher[data.PageNumber].canvas = canvasT; 
+
+				CanvasInfo[data.PageNumber].UndoList = new Array();
+				CanvasInfo[data.PageNumber].RedoList = new Array();
+			}
+
+			redrawUndo(UndoListBackUp, CanvasInfoTeacher[data.PageNumber]);
+		}
+
+	});
 
 /**Text Boxes****************************************************/
 document.getElementById("TextMode").onclick = function()

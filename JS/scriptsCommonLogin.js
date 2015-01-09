@@ -72,10 +72,10 @@ function login(authResult)
 	    	 // alert("Logged in to Google Drive as: " + User);
 	    	  
 	    	 document.getElementById("Accept").onclick = function()
-			{
-				document.getElementById("Save").onclick();
-				 document.getElementById("Accept").onclick = null;
-			};
+  			{
+  				document.getElementById("Save").onclick();
+  				 document.getElementById("Accept").onclick = null;
+  			};
 
 	    	  //loading div
 	    	  document.getElementById("LoadingColor").style.display = "none";
@@ -174,6 +174,24 @@ function logout()
  */
 function Save(IsSaveAs, PageNumber, Canvas) 
 {
+
+  if(IsTeacher && CanvasInfo[CurrentPage].UndoList.length > 0)
+  {
+    //On the save call, sends a backup list of the teacher stuff to the server JUST IN CASE
+    socket.emit('save', 
+    {
+      PageNumber: CurrentPage,
+      UndoList: JSON.stringify(CanvasInfo[CurrentPage].UndoList, function(key, value) //makes objects into strings
+      {
+        if(value instanceof Image) //images returned as empty if there are any in the undolist (which there shouldn't be YET)
+        {
+          return undefined;
+        }
+        return value;
+      })
+    });
+  }
+
 	//debugging/functionality, assumes the pagenumber is the current page if null
 	if (PageNumber == null)
 		PageNumber = CurrentPage;

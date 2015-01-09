@@ -253,16 +253,16 @@
 
 /*********UPDATE Student*********************************************************************/
 		
-	document.getElementById("Update").onclick = function()
-	{
-		SelfUpdating = true;
-		socket.emit('CommandToTeacher', 
-		{
-			ToolType: "Update"
-		});
-	}
+	// document.getElementById("Update").onclick = function()
+	// {
+	// 	SelfUpdating = true;
+	// 	socket.emit('CommandToTeacher', 
+	// 	{
+	// 		ToolType: "Update"
+	// 	});
+	// }
 	
-/**Undo and Redo***********************************************************************/    
+/**Undo and Redo***********************************************************************/   R 
 
 	//pops last part of undo list and redraws entire page from scratch
 	document.getElementById("Undo").onclick = function()
@@ -330,7 +330,7 @@
 		document.getElementById("Push").onclick = function()
 		{
 			$("#PromptText").html("Write what you want to send to the presenter here:");
-			document.getElementById("promptInput").value = "";
+			document.getElementById("PromptInput").value = "";
 
 			document.getElementById("Prompt_Accept").onclick = function()
 			{
@@ -413,40 +413,40 @@
 
 			document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 		}
-		else if (data.ToolType == "Update")
-		{			
-			if (SelfUpdating || data.type)
-			{
-				for (var i = 0; i < data.TotalPages; i++)
-				{
-					if(!CanvasInfo[i])
-					{
-						var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
-						var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -2, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+		// else if (data.ToolType == "Update")
+		// {			
+		// 	if (SelfUpdating || data.type)
+		// 	{
+		// 		for (var i = 0; i < data.TotalPages; i++)
+		// 		{
+		// 			if(!CanvasInfo[i])
+		// 			{
+		// 				var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+		// 				var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -2, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
 						
-						CanvasInfo[i] = {};
-						CanvasInfoTeacher[i] = {};
+		// 				CanvasInfo[i] = {};
+		// 				CanvasInfoTeacher[i] = {};
 						
-						CanvasInfo[i].context = canvas.getContext("2d");
-						CanvasInfo[i].canvas = canvas; 
+		// 				CanvasInfo[i].context = canvas.getContext("2d");
+		// 				CanvasInfo[i].canvas = canvas; 
 						
-						CanvasInfoTeacher[i].context = canvasT.getContext("2d");
-						CanvasInfoTeacher[i].canvas = canvasT; 
-					}		
+		// 				CanvasInfoTeacher[i].context = canvasT.getContext("2d");
+		// 				CanvasInfoTeacher[i].canvas = canvasT; 
+		// 			}		
 					
-					if (data.ImgData[i])
-					{		
-						redrawUndo(data.ImgData[i], CanvasInfoTeacher[i]);
-					}
-				}
+		// 			if (data.ImgData[i])
+		// 			{		
+		// 				redrawUndo(data.ImgData[i], CanvasInfoTeacher[i]);
+		// 			}
+		// 		}
 				
-				var TotalPages = CanvasInfo.length;
+		// 		var TotalPages = CanvasInfo.length;
 				
-				var CurrentPagesTemp = CurrentPage + 1;
+		// 		var CurrentPagesTemp = CurrentPage + 1;
 	
-				document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
-			}			
-		}
+		// 		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
+		// 	}			
+		// }
 		else if (data.ToolType == "Undo")
 		{			
 			var UndoListTeacher = JSON.parse(data.UndoList);
