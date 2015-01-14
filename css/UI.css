@@ -4,6 +4,7 @@ body,html
     margin:0px;
     padding:0px;
     font-family:"Raleway",sans-serif;
+    -webkit-user-select: none;
 }
 .ui
 {
@@ -956,6 +957,11 @@ textarea {
     padding-left: 10%;
     padding-right: 10%;
 }
+
+    #PromptInput
+    {
+        width: 100%;
+    }
 
 
 /*whiteboard stuff*/

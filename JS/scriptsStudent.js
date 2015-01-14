@@ -262,7 +262,7 @@
 	// 	});
 	// }
 	
-/**Undo and Redo***********************************************************************/   R 
+/**Undo and Redo***********************************************************************/   
 
 	//pops last part of undo list and redraws entire page from scratch
 	document.getElementById("Undo").onclick = function()
@@ -441,7 +441,7 @@
 		// 		}
 				
 		// 		var TotalPages = CanvasInfo.length;
-				
+						
 		// 		var CurrentPagesTemp = CurrentPage + 1;
 	
 		// 		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
@@ -497,8 +497,13 @@
 				{
 					CanvasInfoTeacher[TeacherPage].context.clearRect(data.PanX, data.PanY, data.PanWidth, data.PanHeight);
 				}
-							
+						
+				CanvasInfoTeacher[TeacherPage].context.save();
+				CanvasInfoTeacher[TeacherPage].context.globalAlpha = 1.0;
+
 				CanvasInfoTeacher[TeacherPage].context.drawImage(CanvasStore, data.ShapeStartX, data.ShapeStartY);
+
+				CanvasInfoTeacher[TeacherPage].context.restore();
 			}
 			else if (data.ToolType == "Image")
 			{

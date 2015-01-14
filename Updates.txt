@@ -1,63 +1,17 @@
-Added restriction on filesize in google drive picker
-
-Added exit buttons at the top left of each panel
-
-Cleaned up all of the css/html on the panels so its easier to click the background of the panel
-
-Move the CSS to another file, combine between student/teacher
-
-Move the UI JS to another file, combine between student/teacher
-
-Cleaned up the major functions so that each one is smaller, added a click handler, and moved event callers to scriptsCommon
-
-Removed shapeadjust var and made it a part of ToolType
-
-Fixed css so that helptext doesn't over extend on an ipad
-
-Locks in shapes if another button is clicked
-
-Textboxes 
-
-Made textboxes work on whiteboard
-
-Cleaned up whiteboard css/html
-
-Re-Added CSS for pushnotes on the teacher end
-
-Updated UI so that black outline fades out for tools and shapes 
-
-Made alerts/prompts sexy (and custom)
-
-Name document on login to drive
-
-Made text-mode button stop textmode if double clicked
-
-Pen styling button doesn't change tooltype anymore
-
-UI Fixes: made it so that black borders match current usage, made sure eraser can't be colored
-
-Made it so that the canvases line up with the bottom of the topui bar
-
-Updated the saving div UI
-
-Fixed drawing through cover layer when scrolling with DragMode var
-
-Made google picker folder view
-
-Drive save-to-folder with Google Picker
-	Created a savetodrive folder picker chain, complete with callbacks
-	Created temp global vars to help with the saving
-	Moved most of the saving work to createMetaData()
-	Added savedfolderID addition to metadata to save parent folders
-
-Fixed an error with promptInput vs. PromptInput html naming in indexstudent
-
-BugFix: Set dragmode to false on some ui changes
-
 Added Update feature to server
 	Made UpdateToClient/ToServer events on server side
 	Added backuplists object to keep track of room backup lists
 	Changed the location of the update button and moved the function to custom socket event
+
+Made it so that the code recognizes and separates saving new pages in a different location/folder
+
+BugFix: Highlight mode copy/pan on student side wasn't working (came out transparent)
+
+Moved Update client event to ScriptsCommon instead of ScriptsCommonFeatures (separating function from UI)
+
+Fixed size of input textbox (HTML/CSS)
+
+Added -webkit-select-none to prevent text selection
 __________________________________________________________________________________________________________________________
 Note: Static vs. nonstatic images?  
 Note: Collab mode -> both by grabbing images and by letting them draw
@@ -93,11 +47,12 @@ Glitch: bottom pull up menu kills app function on second+ page
 Glitch: Pageup/down memory leak + image storage/Google Picker memory leak with image previews
 Glitch: ZoomIn doesn't lose red css click/clicking too fast makes red background permanent
 Glitch: Sometimes google picker pops up twice; check auto save on google picker
+Glitch: On update mode, page numbers don't update until clicking left/right page
  
 Next update: 
 Check size limits on google drive image input
-Fix zooming/scrolling for textboxes on iPads
-Comment server, Cleanup update code
+Fix zooming/scrolling for textboxes on iPads + Split up clicks to close a textbox and open a new one
+Separate scripts Common 1.0 into general features
 
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw

@@ -172,7 +172,7 @@ function logout()
  * @Param: PageNumber; int; which page that needs to be saved (if null, assume the current page) 
  * @Param: Canvas; canvas; the image that needs to be saved (for student, assumes double image is built and already passed to save function)
  */
-function Save(IsSaveAs, PageNumber, Canvas) 
+function Save(IsSaveAs, PageNumber, Canvas, PickLocation) 
 {
 
   if(IsTeacher && CanvasInfo[CurrentPage].UndoList.length > 0)
@@ -203,8 +203,11 @@ function Save(IsSaveAs, PageNumber, Canvas)
     	document.getElementById("Updating").innerHTML = "Saving " + PastName + "_" + PageNumber + "...";
     	document.getElementById("Updating").style.display = "block";
 
-    	//Gets the save folder location; save is called on picker callbaack
-    	createPicker_Folder(IsSaveAs, PageNumber, Canvas);
+      if(!SaveFolderID || PickLocation)
+      	//Gets the save folder location; save is called on picker callback
+      	createPicker_Folder(IsSaveAs, PageNumber, Canvas);
+      else
+        createMetaData(IsSaveAs, PageNumber, Canvas);
     }
     else
     {
@@ -294,20 +297,23 @@ function createMetaData(IsSaveAs, PageNumber, Canvas)
 	 	if(SaveFolderID)
 	 	{
 	 	
-	        var metadata = {
-	            'title': PastName + "_" + PageNumber,
-	             'mimeType': 'image/png',		
-	             "parents": [{
-				    "kind": "drive#fileLink",
-				    "id": SaveFolderID
-				  }]
-	        };
-	    }
-	    else
-	        var metadata = {
-	            'title': PastName + "_" + PageNumber,
-	             'mimeType': 'image/png'		
-	        };
+      var metadata = 
+      {
+        'title': PastName + "_" + PageNumber,
+         'mimeType': 'image/png',		
+         "parents": 
+         [{
+          "kind": "drive#fileLink",
+          "id": SaveFolderID
+         }] 
+      };
+	  }
+    else
+      var metadata = 
+      {
+          'title': PastName + "_" + PageNumber,
+          'mimeType': 'image/png'		
+      };
         
         /*creates the URL that will be uploaded to drive*/
         
