@@ -11,53 +11,86 @@
 
 	//Type: bool; Defines whether collaboration mode is on (not currently implemented)
 	var IsCollaborating = false;
-	
-	//Type: bool; Defines whether dragging is on or not
-	var DragMode = false
-	
-	//Type: canvas; the overlay to prevent user drawing while in dragmode
-	var DragCanv;
+
+	//Type: textarea; defines whether there is an active textbox available
+	var ActiveBox;
+
+	//Type: int; defines the height and width of a textbox
+	var BoxHeight = 0;
+	var BoxWidth = 0;
 	
 	//Type: String; stores what tool the user is currently using, modifies users stroke and click
 	var ToolType = "Paint";
 	var StoreToolType = "Paint";
 	
-	//Type: Array List; stores a list of commands the user has done to undo/redo mistakes, etc. Paint commands are stored as arrays
-	//within the array to account for strokes and to avoid undo-ing each individual point; other commands are stored as single objects
-	var UndoList = new Array();
-	var RedoList = new Array();
-	
 	//Keeps track of who is sending out update calls to figure out who actually needs to be updated
-	var SelfUpdating = false; 
+	//var SelfUpdating = false; 
 
 	//keeps track of the zoom levels
 	var GlobalScale = 4;
 	var MaxZoom = 4;
+
+	//glitch fix: avoid drawing on scroll by accident
+	var DragMode; 
 		
 /*Storage of preferences for canvas; used for resetting properties on drag resizing or for multiple drawers */
 	
-	//Type: String; Stores Color, in hex or RGB
-	var BackUpColor;
+	//The following are objects that track pen settings for each different type of pen (Pen, Erase, and Highlight)
+	//Each setting obj contains the type, color, size, globalOperation, and Opacity of the preference (with opacity, type, and globalOperation hardcoded)
+	//colorElementID stores the DOM UI element for later CSS/UI usage
+	var BackUpPen = 
+	{
+		type: "Pen", 
+		color:"",
+		size: 5,
+		erase: "source-over",
+		opacity: 1.0,
+		colorElementID: "Black"
+	};
 	
-	//Type: double; Stores Size of the line being drawn
-	var BackUpSize;
+	var BackUpErase = 
+	{
+			type: "Erase",
+			color:"#000000",
+			size: 70,
+			erase: "destination-out",
+			opacity: 1.0
+	};
 	
-	//Type: String; Stores Line design (specifically, cap of line)
-	var BackUpCap;
+	var BackUpHighlight =
+	{
+		type: "Highlight",
+		color:"#FFFF00",
+		size: 40,
+		erase: "source-over",
+		opacity: 0.4,
+		colorElementID: "Yellow"
+	};
 	
-	//Type: String; Stores whether the object erases or not
-	var BackUpErase = "source-over";
+	//This is the preference set that actually gets edited at any given time. It's default setting is pen. 
+	var PaintType = BackUpPen;
 	
-	//Type: double; stores opacity of line
-	var BackUpOpacity = 1.0;
 	
 /*Saving vars*/ 
 
 	//used to save an image as the same name as previously given
-	var PastName = "notes";
+	var d = new Date();
+	var day = d.getDate(); 
+	var month = d.getMonth() + 1; 
+	var year = d.getFullYear();
+	var PastName = month + "_" + day + "_" + year;
 	
 	//Type: TimeOut; sets a counter for the amount of time since the last action to trigger google drive saving
 	var UpdateTimeOut;
+
+	//Type: Boolean; stores the save-as variable IsSaveAs (generally true)
+	var SaveAs_TempStore_IsSaveAs;
+
+	//Type: int; stores the page number that is being saved-as
+  	var SaveAs_TempStore_PageNumber;
+
+  	//Type: Canvas; stores the canvas that is being saved-as
+  	var SaveAs_TempStore_Canvas;
 
 /*Canvas/Drawing vars*/
 	
@@ -69,18 +102,30 @@
 	//as a tracker of pages, where the index represents the pageNumber
 	var CanvasInfo = new Array();
 	var CanvasInfoTeacher;
+
+	CanvasInfo[0] = {};
+	
+	//Type: Array List; stores a list of commands the user has done to undo/redo mistakes, etc. Paint commands are stored as arrays
+	//within the array to account for strokes and to avoid undo-ing each individual point; other commands are stored as single objects
+	CanvasInfo[0].UndoList = new Array();
+	CanvasInfo[0].RedoList = new Array();
+	
 	
 	//Type: Int; stores the page the user is currently on to access info from CanvasInfo array list
 	var CurrentPage = 0;
 	
 	//Type: Canvas; this canvas overlays the rendered canvas whenever the user takes an action in order to make dynamic changes 
 	//before posting to permanent image as well as avoiding editing drawings directly below the image until absolutely necessary
-	var DrawCanvas = document.getElementById("DrawLayer"); 
 	
-	var DrawContext = DrawCanvas.getContext("2d");
+	if(document.getElementById("DrawLayer"))
+	{
+		var DrawCanvas = document.getElementById("DrawLayer"); 
+		
+		var DrawContext = DrawCanvas.getContext("2d");
 	
-	DrawContext.fillStyle = "solid";
-	DrawContext.lineCap = "round";
+		DrawContext.fillStyle = "solid";
+		DrawContext.lineCap = "round";
+	}
 	
 	//Type: Varies; A third layer to store image things (either canvases or images) when moving them around
 	var OverlayObject;
@@ -89,12 +134,16 @@
 	var XMid;
 	var YMid;
 	
+	//Used for the student/teacher to keep track of X/Y positioning of incoming commands
 	var XMidOther;
 	var YMidOther;
 	
 	//stores image start location (for scrolling)
 	var ImageScrollX;
 	var ImageScrollY;
+	
+	//Used to store highlight commands on student side before transferring to main canvas; acts as temp
+	var HighlightCanvas;
 
 /*Shape vars (including copy/paste and pan)*/
 	
@@ -111,23 +160,24 @@
 		
 	//Type: Int; Keeps track of X/Y positioning for user selection of drawing area that needs to be panned/copied
 	var CopyPanX, CopyPanY, CopyPanWidth, CopyPanHeight;
-	
-	//Type: Boolean; Checks whether the user has just drawn a shape and is now in shape maneuvering mode
-	var ShapeAdjust = false; 
 
 /*Misc*/
 
-	//make this 8 by 11, or the default for powerpoint
+	//The starting visible number of pixels of the canvas
 	var CanvasHeight = 500;
 	var CanvasWidth = 500;
 	
+	//The total number of pixels in the canvas
 	var CanvasPixelHeight = 2000;
 	var CanvasPixelWidth = 2000;
 	
 	//Type: Socket; used to transfer data/commands to the student
-	//socket = io.connect('notepad.pingry.org:4000');
-	//socket = io('54.86.173.127:3000');
-	socket = io();
+	socket = io('http://54.86.173.127:3000');
+	//socket = io();
+	
+	var IsWhiteboard = false;
+
+	var IsTeacher = false; 
 	
 /**Rooms Setup ************************************************************************
  * Analyzes URL for room name and joins corresponding room
@@ -138,7 +188,9 @@
 	var Index_Ampersand = document.URL.indexOf("&");
 	
 	//Type: String; based on whether the index exists, the room is either the string after the index number in the URL, or a test room
-	var Room; 
+	var Room;
+	
+	//Type: String; based on whether the & index exists, the name is either Anonymous or the string after the index in the URL
 	var Name;
 	
 	if (Index_Question == -1) //no question mark
@@ -168,6 +220,7 @@
 		}
 	}
 	
+	//Error checking in case either scenario is not filled
 	if (Room == "")
 	{
 		Room = "Test";
@@ -177,7 +230,7 @@
 	{
 		Name = "Anonymous";
 	}
-	
+		
 	/**
 	 * When the socket connects (recieving 'connect' as a command) 
 	 * it emits it's room choice to the socket.io server, which 
@@ -193,7 +246,8 @@
 		// Connected, let's sign-up for to receive messages for this room
 		socket.emit('room', 
 		{
-			Room: Room 
+			Room: Room,
+			Name: Name
 		});
 	});
 	
@@ -207,21 +261,28 @@
 	 */
 	socket.on('Joined', function(data) 
 	{
-	//	alert("You joined: " + Room);
+		//alert("You joined: " + data.Room);
 	});
 
 /**End of Rooms Setup **************************************************************************/
 
 /**Fast button setup***************************************************************************/
 
+	//Type: array; stores every button in the UI, indicated in css/html by class .button
 	var templist = document.getElementsByClassName("button");
 	
+	//Goes through each button in the UI and sets an eventlistener for touchstart, hijacks click function to start immediately on touchstart
+	//to prevent 300ms lag on iPads/touch screens
 	for(var i = 0; i < templist.length; i++)
 	{
 		templist[i].addEventListener('touchstart', function(e)
 		{
 			this.focus();
-			this.onclick();
+			if(this.onclick)
+				this.onclick;
+			
+			$(this).trigger("click"); 
+			
 			e.preventDefault();
 			e.stopPropagation();
 			e.stopImmediatePropagation();
@@ -278,14 +339,14 @@
 		canvas.style.position = "absolute";
 		
 		if (top)
-			canvas.style.top =  top + "px";
+			canvas.style.top =  top + 70 + "px";
 		else 
-			canvas.style.top = "0px";
+			canvas.style.top = "70px";
 		
 		if (left)
-			canvas.style.left = 120 + left + "px";
+			canvas.style.left = left + "px";
 		else
-			canvas.style.left = "120px";
+			canvas.style.left = "0px";
 		
 		//Sets layer
 		canvas.style.zIndex = zIndex + "";
@@ -312,7 +373,7 @@
 	 *  The clear function does just what you'd expect: it clears the page the user currently on. Will eventually be 
 	 *  implemented as an actual button; for now, its used as a helper method
 	 *  
-	 *  @Param: IsUndo; Boolean; makes sure the clear command isn't being called by the undo list because once implemented as 
+	 *  @Param: Don'tStoreUndo; Boolean; makes sure the clear command isn't being called by the undo list because once implemented as 
 	 *  		a button, it can't create an infinite loop in which the undo list calls a clear that is added to the undo list and 
 	 *  		called again
 	 *  
@@ -325,7 +386,7 @@
 		context.clearRect(0, 0, 2000, 2000);
 		
 		if(!DontStoreUndo)
-			UndoList.push({ToolType: "Clear"});
+			CanvasInfo[CurrentPage].UndoList.push({ToolType: "Clear"});
 	}
 	
 	/**
@@ -348,105 +409,72 @@
 	
 /**End of Multipurpose************************************************************/
 
-
-	/**
-	 * Toggles the UI for the drag canvas. It creates a canvas overlay and sets the css styling so that
-	 * the user cannot drag over it. Although it creates a canvas, it would be far more efficient for the 
-	 * code to create a div; will change as soon as I can figure out why the div is not working. 
-	 */
-	function dragMode()
-	{
-		//toggles between drag or not with the same button
-		DragMode = !DragMode;
-		
-		//turn dragmode on
-		if (DragMode)
-		{
-			//Changes text of the inside of the drag box to indicate what will happen on click
-			document.getElementById("Drag").innerHTML = "Click Here to Paint";
-
-			/*creates the div that covers the page and acts as a drag pad; should be div...*/ 
-			DragCanv = createCanvas(CanvasHeight*GlobalScale, CanvasWidth*GlobalScale, 3, 0, 0)
-		
-			//mostly CSS styling that sets it apart from normal canvases
-			DragCanv.style.opacity = "0.2";
-			DragCanv.style.background = 'blue';
-
-			//renders to screen
-			document.body.appendChild(DragCanv);
-		}
-		//turn dragmode off
-		else
-		{
-			//Again, changes inner html text
-			document.getElementById("Drag").innerHTML = "Click Here to Drag";
-
-			//removes the dragcanvas if it exists
-			if (DragCanv != null)
-			{
-				document.body.removeChild(DragCanv);
-				DragCanv = null;
-			}
-		}
-	}
-	
-
-/**End of Drawing tool setup*************************************************************/
+/**Drawing tool setup*************************************************************/
 	
 	/**
-	 *  changeStyle is the central function that handles changing the context of the overall pen being used
-	 *  It should probly be used more often in the above sections of the code than it is, especially if it took 
-	 *  in a fourth parameter for the context that's being edited (a simplification that may appear later). Note that 
-	 *  the actual context variables are never changed, only the backups; this is due to the redundancy of having 
-	 *  the context changed in the actual draw function anyway.
+	 *  Used to change preferences in the PaintType object that are later stored into backups
 	 *  
-	 *  If changeStyle is being used, it automatically sets the tooltype to Paint
-	 *  
-	 *  Erase is done by switching between destination-out (i.e. erase mode) and source-over
+	 *  If changeStyle is being used, it automatically sets the tooltype to Paint unless called by color/size changes
 	 *  
 	 *  @Param: color; Hex/RGB; the color the pen needs to become
-	 *  @Param: erase; String; whether the pen becomes an eraser or not (destination-out or source-over)
+	 *  @Param: colorElementID; the element used to change the color, used to set CSS settings in the UI
 	 *  @Param: size; double; the number of pixels the pen draws 
+	 *  @Param: opacity; double; tracks how transparent the pen stroke is
 	 */
-	function changeStyle(color, erase, size, opacity)
-	{
-		ToolType = "Paint";
+	function changeStyle(color, colorElementID, size, opacity)
+	{		
+		if(PaintType.type === "Erase")
+			return;
 
-		//stores current properties as backups
-		if(size)
-			BackUpSize = size;
+		if (color)
+			PaintType.color = color; 
 		
-		if(color)
-			BackUpColor = color;
+		if(colorElementID)
+			PaintType.colorElementID = colorElementID;
 		
-		if(erase)
-			BackUpErase = erase;
+		if (size)
+			PaintType.size = size;
 		
-		if(opacity)
-			BackUpOpacity = opacity;
+		if (opacity)
+			PaintType.opacity = opacity; 
 	}
 	
-
+	/**
+	 * Used to initiate changes between different pen styles (pen, erase, highlighter)
+	 * 
+	 * @Param: BackUpObj; Pen Pref Obj; used to determine what the new painttype will be
+	 */
+	function changePaintType(BackUpObj)
+	{
+		//checks which backup to save latest preferences to
+		if(PaintType.type == "Pen")
+			BackUpPen = PaintType; 
+		else if (PaintType.type == "Highlight")
+			BackUpHighlight = PaintType;
+		else if (PaintType.type == "Erase")
+			BackUpErase = PaintType;
+		
+		//pulls old preferences
+		PaintType = BackUpObj;
+		
+		//UI settings
+		document.getElementById("FontSize").value = PaintType.size;
+		$(".dot i").css({"font-size":PaintType.size});
+        $('.color-list ul li').css({"box-shadow":"none"});        
+		$("#"+PaintType.colorElementID).css({"box-shadow":"0px 0px 0px 4px white inset"});
+	}
+	
 	/**
 	 * The main tool for pages. Handles adding new pages and flipping up and down between pages
 	 * 
 	 * @Param: DirectionUp; boolean; tracks whether the page flip is up or down 
 	 */
 	function changePage(directionUp)
-	{
-		//clears undo/redo list on page change to save space
-		UndoList = new Array();
-		RedoList = new Array();
-
-		/*Stores the image for undo/redo due to undo/redo list clear*/
-		var previous_image = new Image(); 
-		
-		//creates the image
-		previous_image.src = CanvasInfo[CurrentPage].canvas.toDataURL();
-		
+	{	
 		if (directionUp)
 		{
-			//makes sure it doesn't go above to a page thats not created
+			//makes sure it doesn't go above to a page thats not created; teachers going up a page should have created 
+			//a new page in scriptsTeacher
 			if(!CanvasInfo[CurrentPage + 1])
 			{
 				document.getElementById("LoadingColor").style.display = "none"; //turns off the loading screen				
@@ -458,12 +486,7 @@
 			CurrentPage++;
 			document.body.appendChild(CanvasInfo[CurrentPage].canvas);
 			
-			previous_image.onload = function()
-			{
-				CanvasInfo[CurrentPage - 1].image = previous_image;
-				
-				document.getElementById("LoadingColor").style.display = "none"; //turns off the loading screen				
-			}
+			document.getElementById("LoadingColor").style.display = "none"; //turns off the loading screen				
 		}
 		else 
 		{	
@@ -479,23 +502,21 @@
 			CurrentPage--;
 			document.body.appendChild(CanvasInfo[CurrentPage].canvas);
 			
-			previous_image.onload = function()
-			{
-				CanvasInfo[CurrentPage + 1].image = previous_image;
-				
-				document.getElementById("LoadingColor").style.display = "none";
-			}
+			document.getElementById("LoadingColor").style.display = "none";
 		}
 		
+		//makes sure the new page's zoom is the same as the last one's
 		Zoom(GlobalScale);
 		
 		//Used to write to the pageNumber div
-		var TotalPages = CanvasInfo.length-1;
+		var TotalPages = CanvasInfo.length;
+		
+		var CurrentPageTemp = CurrentPage + 1;
 		
 		//edits the page number div to let the user know what page they are on
-		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+		document.getElementById("PageNumber").innerHTML = CurrentPageTemp + " of " + TotalPages;
 		
-		//makes sure when you jump to a new page you always start at the 0/0 spot
+		//makes sure when you jump to a page you always start at the 0/0 spot
 		window.scrollTo(0, 0);
 	}
 	
@@ -512,20 +533,17 @@
 		//wipes the canvas to prep for rebuild
 	    clear(true, canvasListObject.context); 
 	    
-	    //redraws what happened before the undolist was cleared on page up or down
-	    if(canvasListObject.image)
-	    {
-		    canvasListObject.context.globalCompositeOperation = "source-over";
-
-	    	canvasListObject.context.drawImage(canvasListObject.image, 0, 0);
-	    }
+	    //Saves the current canvascontext setup, for restoration after undo/redo build
+	    canvasListObject.context.save();
+	    canvasListObject.context.globalAlpha = 1.0;
 	    
 	    //Debugging
-	    if (list.length == 0) 
+	    if (list.length == 0)
+	    {
+	    	canvasListObject.context.restore();
 	        return;
-	    
-	    //makes sure object doesn't accidentally erase
-	    
+	    }
+	    	    
 	    //runs through the entire undo list
 	    for (var i = 0; i < list.length; i++) 
 	    {
@@ -546,15 +564,24 @@
 	        	var PageNumber = pt[0].PageNumber;
 
 	        	var canvasctx = canvasListObject.context;
+	        	
+	        	if (pt[0].opacity != 1.0)
+	        		if(HighlightCanvas)
+	        			canvasctx = HighlightCanvas.getContext("2d"); 
+	        		else
+	        			canvasctx = DrawContext;
 	        		        	
 	        	canvasctx.strokeStyle = pt[0].color;
 	        	canvasctx.globalCompositeOperation = pt[0].erase;
-	        		     
-        		canvasctx.globalAlpha = pt[0].opacity;
-	        	
+	        		        		     	        	
 	        	var XMid_Undo = 0;
 	        	var YMid_Undo = 0;
-	        	
+	        		     
+	        	//to draw a consistent highlighting line, need to draw a full line at complete opaqueness on a doubled canvas, and then copy to the 
+	        	//base canvas at a lower opacity setting
+        		canvasListObject.context.globalAlpha = pt[0].opacity; 
+
+	        	//draws pointbypoint
 	        	for (var j = 0; j < list[i].length; j++)
 	        	{
 		        	canvasctx.beginPath();
@@ -573,8 +600,19 @@
 	     
 				    canvasctx.stroke();
 	        	}
+	        	
+	        	//copies from drawcanvas to base if opacity is in highlight mode
+	        	if (pt[0].opacity != 1.0)
+	        	{
+	        		if(HighlightCanvas)
+	        			canvasListObject.context.drawImage(HighlightCanvas, 0, 0);
+	        		else
+	        			canvasListObject.context.drawImage(DrawCanvas, 0, 0);
+
+	        	    clear(true, canvasctx); 
+	        	}
 	        }
-	    	else //not paint; shapes
+	    	else //not paint; shapes and others
 	    	{	
 	    		/*pt has x, y, StartPositionX, StartPositionY, PageNumber, ToolType, Color, Size, Erase*/
 	    		
@@ -640,14 +678,14 @@
 	        			canvasListObject.context.drawImage(img, 0, 0);
 	        		}
 	        	}
+	        	else if (pt.ToolType === "TextMode")
+	        	{
+	        		wrapTextObj(pt, canvasListObject.context);
+	        	}
 	        }	       
 	    }
 	    
-	    canvasListObject.context.strokeStyle = BackUpColor;	    
-	    canvasListObject.context.globalCompositeOperation = BackUpErase;
-	    canvasListObject.context.globalAlpha = BackUpOpacity;
-	    canvasListObject.context.lineWidth = BackUpSize;
-	    
+	    canvasListObject.context.restore();
 	}
 	
 	/**********************************Zooming***********************************************************/
@@ -659,16 +697,171 @@
 	 */
 	function Zoom(Scale)
 	{
-		CanvasInfo[CurrentPage].canvas.style.width = DrawCanvas.style.width = CanvasWidth*Scale + "px";
-		CanvasInfo[CurrentPage].canvas.style.height = DrawCanvas.style.height = CanvasHeight*Scale + "px";//changing the visible size of both the back canvas and the drawcanvas
-	
+		//changing the visible size of both the back canvas and the drawcanvas
+		if(CanvasInfo)
+		{
+			CanvasInfo[CurrentPage].canvas.style.width = DrawCanvas.style.width = CanvasWidth*Scale + "px";
+			CanvasInfo[CurrentPage].canvas.style.height = DrawCanvas.style.height = CanvasHeight*Scale + "px";
+		}
+		
+		//if a teachercanvas exists...
 		if(CanvasInfoTeacher)
 		{
+			//do the same for the teacher canvas set
 			CanvasInfoTeacher[CurrentPage].canvas.style.width = CanvasWidth*Scale + "px";
 			CanvasInfoTeacher[CurrentPage].canvas.style.height = CanvasWidth*Scale + "px";
 		}
 	}
 	
+/****Update event**********************************************************/
+
+	socket.on('UpdateToClient', function(data) 
+	{
+		var UndoListBackUp = JSON.parse(data.UndoList);
+				
+		if(IsTeacher)
+		{
+			if(!CanvasInfo[data.PageNumber])
+			{
+				var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+				
+				CanvasInfo.push({});
+
+				CanvasInfo[data.PageNumber] = {};
+				
+				CanvasInfo[data.PageNumber].context = canvas.getContext("2d");
+				CanvasInfo[data.PageNumber].canvas = canvas; 
+
+				CanvasInfo[data.PageNumber].UndoList = new Array();
+				CanvasInfo[data.PageNumber].RedoList = new Array();
+			}
+
+			CanvasInfo[data.PageNumber].UndoList = UndoListBackUp;
+			redrawUndo(UndoListBackUp, CanvasInfo[data.PageNumber]);
+		}
+		else
+		{
+			if(!CanvasInfo[data.PageNumber])
+			{
+				CanvasInfo.push({});
+
+				var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+				var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -2, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+				
+				CanvasInfo[data.PageNumber] = {};
+				CanvasInfoTeacher[data.PageNumber] = {};
+				
+				CanvasInfo[data.PageNumber].context = canvas.getContext("2d");
+				CanvasInfo[data.PageNumber].canvas = canvas; 
+				
+				CanvasInfoTeacher[data.PageNumber].context = canvasT.getContext("2d");
+				CanvasInfoTeacher[data.PageNumber].canvas = canvasT; 
+
+				CanvasInfo[data.PageNumber].UndoList = new Array();
+				CanvasInfo[data.PageNumber].RedoList = new Array();
+			}
+
+			redrawUndo(UndoListBackUp, CanvasInfoTeacher[data.PageNumber]);
+		}
+
+	});
+
+
+/***********************Drawing click handler***************************/
+
+
+/**
+ * $(document).on is a jquery command looking for an event defined in the first parameter, on a DOM object (read: an html object)
+ * with class defined in parameter two. Parameter three is the callback function/handler. These events are called from the plugin 
+ * (jquery.event.drag-2.2). These commands invariably call the draw command or shapeadjust command in some shape or form. 
+ * 
+ * @Param: "dragstart"; String; name of event being called
+ * @Param: ".drag"; String; name of class of event target. Used to differentiate between objects that need to be drawn on (i.e. canvas) and those that don't (i.e. toolbar, dragpad)
+ * @Param: function; function; call back operation
+ * 		@Param: ev; event; event information from ipad or computer registration
+ * 		@Param: dd; data pulled from plugin (not currently used) 
+ */
+$(document).on("dragstart", ".drag", function(ev, dd){
+	clickHandler(ev.pageX, ev.pageY - 70, "dragstart");
+});
+
+$(document).on("drag", ".drag", function(ev, dd){
+	clickHandler(ev.pageX, ev.pageY - 70, "drag");
+});
+
+$(document).on("dragend",".drag",function(ev, dd){
+	clickHandler(ev.pageX, ev.pageY - 70, "dragend");
+});
+
+/*
+	clickHandler handles incoming events from the jquery drag plugin and passes input along to the functions that control what a pen click does in 
+	specific scenarios. 
+
+	@param: pageX; int; x location of the event call
+	@param: pageY; int; y location of the event call
+	@param: type; String; dragstart, drag, or dragend
+*/
+function clickHandler(pageX, pageY, type)
+{
+	//Glitch fix for dragmode accidental drawing
+	if(DragMode)
+		return;
+
+	x = (pageX)*MaxZoom/GlobalScale; 
+	y = (pageY)*MaxZoom/GlobalScale; 
+	
+
+	if(ToolType === "TextMode")
+	{
+		setup_click(CanvasInfo[CurrentPage].context, CurrentPage);
+		ActiveBox = drawBox(x, y, type, MouseX, MouseY, ActiveBox);
+	}
+	else if(ToolType === "ShapeAdjust")
+		adjustShape(x, y, type, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);	
+	else
+	{
+		setup_click(CanvasInfo[CurrentPage].context, CurrentPage);
+
+		if(ToolType === "Paint")		
+			paint(x, y, type, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+		else if (ToolType !== "Paint")
+			other_tools(x, y, type, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+		else
+			alert("There was an Error");
+
+		if(type === "dragend")
+			cleanup_click();
+	}
+
+	MouseX = x;
+	MouseY = y; 
+}
+
+
+//locks a shape into place if another button is pressed
+//Disables text mode if another button is pressed
+$(".button").click(function()
+{
+	if(ToolType === "ShapeAdjust")
+	{
+		adjustShape(MouseX, MouseY, "drag", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+
+		adjustShape(MouseX, MouseY, "dragend", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+	}
+	else if (ToolType === "TextMode" && !$(this).is("#TextMode"))
+	{
+		$("#TextMode").css({"background":"-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) )"});
+
+		if(ActiveBox)
+			saveBox(ActiveBox, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+
+		ToolType = "Paint";
+	}
+});
+
+/***************End Drawing Click Handler****************************/
+
+
 	//weird window refresh glitch, scrolls to 0,0 on refresh
 	$(window).on('beforeunload', function() {
 	    $(window).scrollTop(0, 0);

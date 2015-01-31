@@ -12,6 +12,20 @@
 var CLIENT_ID = '1019578559045-6alrhfpff3iqauja90gucjr3sccn1f5f.apps.googleusercontent.com';
 var SCOPES = 'https://www.googleapis.com/auth/drive';
 
+/*General login*/
+
+//Type: String; the id of the folder to save to
+var SaveFolderID;
+
+//Type: String; the name of the current user logged into gDrive
+var User;
+
+//Type: Token; the string used by google to authorize calls to a user's drive
+var OauthToken = null;
+
+//Type: Bool; tracks whether someone is logged in currently
+var Auth = false;
+
 /*First time login*/
 
 /**
@@ -40,17 +54,6 @@ function checkAuth() {
 	           login);
 }
 
-/*General login*/
-
-//Type: String; the name of the current user logged into gDrive
-var User;
-
-//Type: Token; the string used by google to authorize calls to a user's drive
-var OauthToken = null;
-
-//Type: Bool; tracks whether someone is logged in currently
-var Auth = false;
-
 /**
  * Called when authorization server replies. Sets login vars, manipulates loading vars
  *
@@ -63,12 +66,24 @@ function login(authResult)
 	   request.execute(function(resp) 
 	   {
 		   	  User = resp.name;
-	    	  alert("Logged in to Google Drive as: " + User);
+
+		   	  $("#AlertText").html("Logged in to Google Drive as: " + User);
+		   	  $("#AlertBox").fadeIn(250);
+	    	 // alert("Logged in to Google Drive as: " + User);
 	    	  
+	    	 document.getElementById("Accept").onclick = function()
+  			{
+  				document.getElementById("Save").onclick();
+  				 document.getElementById("Accept").onclick = null;
+  			};
+
 	    	  //loading div
 	    	  document.getElementById("LoadingColor").style.display = "none";
 
 	    	  document.getElementById("LogIn").innerHTML = "Log Out";
+	    	  
+	    	  document.getElementById("LoginName").innerHTML = "Cloud Tools - " + User;
+	    		  
 	    	  Auth = true;	 
 	    	  OauthToken = authResult.access_token;
 	    	  
@@ -79,7 +94,9 @@ function login(authResult)
    {
 	   if (authResult.error === "immediate_failed" || authResult.error === "access_denied")
 	   {
-		   alert("Not logged in to Google Drive");
+	   	   $("#AlertText").html("Not logged in to Google Drive");
+		   $("#AlertBox").fadeIn(250);
+		   //alert("Not logged in to Google Drive");
 		   document.getElementById("LoadingColor").style.display = "none";
 	   }
 	   else
@@ -91,8 +108,10 @@ function login(authResult)
    }
    else
    {
-	   alert("Not logged in to Google Drive");
-	   document.getElementById("LoadingColor").style.display = "none";
+	   	$("#AlertText").html("Not logged in to Google Drive");
+		$("#AlertBox").fadeIn(250);
+		//alert("Not logged in to Google Drive");
+		document.getElementById("LoadingColor").style.display = "none";
 	   return false;
    }
 }
@@ -127,8 +146,12 @@ function logout()
 	    		CanvasInfo[i].id = null; 
 	    		
 	    	  
-	    	  alert("Logged Out");
+	    	    $("#AlertText").html("Logged Out of Google Drive");
+			   $("#AlertBox").fadeIn(250);
+			   //alert("Logged Out");
+	    	  
 	    	  document.getElementById("LogIn").innerHTML = "Log In";
+	    	  document.getElementById("LoginName").innerHTML = "Cloud Tools - Not Logged In";
 	    },
 	    error: function(e) {
 	    	alert("There was an error: " + e);
@@ -149,8 +172,26 @@ function logout()
  * @Param: PageNumber; int; which page that needs to be saved (if null, assume the current page) 
  * @Param: Canvas; canvas; the image that needs to be saved (for student, assumes double image is built and already passed to save function)
  */
-function Save(IsSaveAs, PageNumber, Canvas) 
+function Save(IsSaveAs, PageNumber, Canvas, PickLocation) 
 {
+
+  if(IsTeacher && CanvasInfo[CurrentPage].UndoList.length > 0)
+  {
+    //On the save call, sends a backup list of the teacher stuff to the server JUST IN CASE
+    socket.emit('save', 
+    {
+      PageNumber: CurrentPage,
+      UndoList: JSON.stringify(CanvasInfo[CurrentPage].UndoList, function(key, value) //makes objects into strings
+      {
+        if(value instanceof Image) //images returned as empty if there are any in the undolist (which there shouldn't be YET)
+        {
+          return undefined;
+        }
+        return value;
+      })
+    });
+  }
+
 	//debugging/functionality, assumes the pagenumber is the current page if null
 	if (PageNumber == null)
 		PageNumber = CurrentPage;
@@ -161,14 +202,78 @@ function Save(IsSaveAs, PageNumber, Canvas)
     	//styles for updating tag
     	document.getElementById("Updating").innerHTML = "Saving " + PastName + "_" + PageNumber + "...";
     	document.getElementById("Updating").style.display = "block";
+
+      if(!SaveFolderID || PickLocation)
+      	//Gets the save folder location; save is called on picker callback
+      	createPicker_Folder(IsSaveAs, PageNumber, Canvas);
+      else
+        createMetaData(IsSaveAs, PageNumber, Canvas);
     }
     else
     {
     	//styles for updating tag
     	document.getElementById("Updating").innerHTML = "Updating " + PastName + "_" + PageNumber + "...";
     	document.getElementById("Updating").style.display = "block";
-    }		
 
+    	//save without getting a picker folder
+    	createMetaData(IsSaveAs, PageNumber, Canvas);
+    }		
+}
+
+/**
+ * Called when saving-as, the create picker opens a google open UI that allows users
+ * to select information from their google drive. That info is then sent through the pickerCallback_Folder
+ * function, from which we can strip the selected file ID. 
+ */
+function createPicker_Folder(IsSaveAs, PageNumber, Canvas) {
+
+  SaveAs_TempStore_IsSaveAs = IsSaveAs;
+  SaveAs_TempStore_PageNumber = PageNumber;
+  SaveAs_TempStore_Canvas = Canvas;
+
+  var view = new google.picker.DocsView()
+  //only allow them to open images
+  		.setIncludeFolders(true) 
+        .setMimeTypes('application/vnd.google-apps.folder')
+        .setSelectFolderEnabled(true);
+  
+  var picker = new google.picker.PickerBuilder()
+      //.enableFeature(google.picker.Feature.NAV_HIDDEN)
+      .setAppId(1019578559045) //project number
+      .setOAuthToken(OauthToken)
+      .addView(view)
+      .setDeveloperKey(developerKey)
+      .setCallback(pickerCallback_Folder)
+      .build();
+   picker.setVisible(true);
+}
+
+/**
+ * Callback for the picker object, used to get the fileID from the file selected by the user in the
+ * createPicker function. This info is then used to get the actual content using the gapi.get function
+ * 
+ * @prereq: SaveAs_TempStore vars are set (by create picker folder function)
+ *
+ * @Param: data; object; the data for the user-selected file 
+ */
+function pickerCallback_Folder(data) {
+  if (data.action && data.action !== "loaded")
+  {
+  	if(data.action === google.picker.Action.PICKED) 
+  	{	  
+    	SaveFolderID = data.docs[0].id;
+  	}
+
+    //calls the actual save function (regardless if clicked something or not)
+    createMetaData(SaveAs_TempStore_IsSaveAs, SaveAs_TempStore_PageNumber, SaveAs_TempStore_Canvas);
+
+    //memory clearing
+    SaveAs_TempStore_IsSaveAs = SaveAs_TempStore_Canvas = SaveAs_TempStore_PageNumber = null; 
+  }
+}
+
+function createMetaData(IsSaveAs, PageNumber, Canvas)
+{	
 	 /*creates the current canvas image*/ 
 	var TempCanvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth)
 	var TempCtx = TempCanvas.getContext("2d");
@@ -184,39 +289,55 @@ function Save(IsSaveAs, PageNumber, Canvas)
 	
 	//memory clearing
 	TempCtx = null;
-	
+
 	//loads api and calls proper function function
-	 gapi.client.load('drive', 'v2', function () {		        
-		 
-		 	//creates the metadata for the file that is being loaded
-	        var metadata = {
-	            'title': PastName + "_" + PageNumber,
-	                'mimeType': 'image/png'
-	        };
-	        
-	        /*creates the URL that will be uploaded to drive*/
-	        
-	        //the part of the 'todataurl' that needs to be stripped
-	        var pattern = 'data:image/png;base64,';
-	        
-	        //converts the image to a url
-	        var base64Data = TempCanvas.toDataURL().replace(pattern, '');
-		    
-		    //clears memory
-		    TempCanvas = null;
-		    
-	        //based on the call type, calls either update or saveas
-	        if(IsSaveAs)
-	        {
-	        	//calls the save function
-	        	newInsertFile(base64Data, metadata);
-	        }
-	        else
-	        {
-	        	//calls the update function
-	        	updateFile(CanvasInfo[PageNumber].id, base64Data, metadata)
-	        }
-	    });
+	 gapi.client.load('drive', 'v2', function () 
+	 {		        
+	 	//creates the metadata for the file that is being loaded, including folder insertion
+	 	if(SaveFolderID)
+	 	{
+	 	
+      var metadata = 
+      {
+        'title': PastName + "_" + PageNumber,
+         'mimeType': 'image/png',		
+         "parents": 
+         [{
+          "kind": "drive#fileLink",
+          "id": SaveFolderID
+         }] 
+      };
+	  }
+    else
+      var metadata = 
+      {
+          'title': PastName + "_" + PageNumber,
+          'mimeType': 'image/png'		
+      };
+        
+        /*creates the URL that will be uploaded to drive*/
+        
+        //the part of the 'todataurl' that needs to be stripped
+        var pattern = 'data:image/png;base64,';
+        
+        //converts the image to a url
+        var base64Data = TempCanvas.toDataURL().replace(pattern, '');
+	    
+	    //clears memory
+	    TempCanvas = null;
+	    
+        //based on the call type, calls either update or saveas
+        if(IsSaveAs)
+        {
+        	//calls the save function
+        	newInsertFile(base64Data, metadata);
+        }
+        else
+        {
+        	//calls the update function
+        	updateFile(CanvasInfo[PageNumber].id, base64Data, metadata)
+        }
+    });
 }
 
 /**
@@ -310,9 +431,11 @@ var developerKey = 'AIzaSyArQbQNXR9K69jqBuWh7k6x9zgZyKC-LYY';
  * function, from which we can strip the selected file ID. 
  */
 function createPicker() {
-  var view = new google.picker.View(google.picker.ViewId.DOCS);
+  var view = new google.picker.DocsView()
   //only allow them to open images
-  view.setMimeTypes("image/png,image/jpeg,image/jpg");
+  		.setIncludeFolders(true) 
+        .setMimeTypes('application/vnd.google-apps.folder,image/png,image/jpeg,image/jpg')
+        .setSelectFolderEnabled(true);
   
   var picker = new google.picker.PickerBuilder()
      // .enableFeature(google.picker.Feature.NAV_HIDDEN)
@@ -333,14 +456,14 @@ function createPicker() {
  * @Param: data; object; the data for the user-selected file 
  */
 function pickerCallback(data) {
-  if (data.action == google.picker.Action.PICKED) {
+  if (data.action == google.picker.Action.PICKED) {	  
     var fileId = data.docs[0].id;
     getFile(fileId);
   }
 }
 
 /**
- * Print a file's metadata.
+ * Pass file to downloadFile
  *
  * @param {String} fileId ID of the file to print metadata for.
  */
@@ -360,44 +483,53 @@ function getFile(fileId) {
  * @param {File} file Drive File instance.
  */
 function downloadFile(file) {
-  if (file.downloadUrl) {
-    var accessToken = gapi.auth.getToken().access_token;
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', file.downloadUrl);
-    xhr.responseType =  'blob' ;
-    xhr.setRequestHeader('Authorization', 'Bearer ' + OauthToken);
-    xhr.onload = function() 
-    {	
-    	//creates a blob (a variable data struct) from the content
-    	var blob =  this.response;
+  if (file.downloadUrl) 
+  {
+  	if(file.fileSize < 5000000)
+  	{
+  		var accessToken = gapi.auth.getToken().access_token;
+	    var xhr = new XMLHttpRequest();
+	    xhr.open('GET', file.downloadUrl);
+	    xhr.responseType =  'blob' ;
+	    xhr.setRequestHeader('Authorization', 'Bearer ' + OauthToken);
+	    xhr.onload = function() 
+	    {	
+	    	//creates a blob (a variable data struct) from the content
+	    	var blob =  this.response;
 
-        var img = new Image();
+	        var img = new Image();
+	        
+	        img.onload =  function ()  
+	        {
+	        	//stores the storage overlay
+	        	OverlayObject = img;
 
-        //uses the blob to create the url for the img
-        img.src =  URL.createObjectURL ( blob ); 
-        
-        img.onload =  function ()  
-        {
-        	//stores the storage overlay
-        	OverlayObject = img;
+	        	//draws the image to temp canvas
+	        	DrawCanvas.getContext("2d").drawImage( img, document.body.scrollLeft,  document.body.scrollTop ); 
+	        	
+	        	//saves location for redrawing
+	        	ImageScrollX = document.body.scrollLeft;
+	        	ImageScrollY = document.body.scrollTop;
+	        	
+	        	ToolType = "ShapeAdjust";
+	        	StoreToolType = "Image";
+	        }; 
 
-        	//draws the image to temp canvas
-        	DrawCanvas.getContext("2d").drawImage( img, document.body.scrollLeft,  document.body.scrollTop ); 
-        	
-        	//saves location for redrawing
-        	ImageScrollX = document.body.scrollLeft;
-        	ImageScrollY = document.body.scrollTop;
-        	
-        	StoreToolType = "Image";
-        	
-        	//prepares to move the image around
-        	ShapeAdjust = true;
-        }; 
-    };
-    xhr.onerror = function() {
-    	alert("There was an error");
-    };
-    xhr.send();
+	        //uses the blob to create the url for the img
+	        img.src =  URL.createObjectURL ( blob ); 
+	    };
+	    xhr.onerror = function() {
+	    	alert("There was an error");
+	    };
+	    xhr.send();
+  	}
+  	else
+  	{
+  		$("#AlertText").html("File Size Too Big");
+		$("#AlertBox").fadeIn(250);
+		//alert("File Size Too Big");
+  	}
+    
   } else {
   	alert("There was an error");
   }

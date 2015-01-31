@@ -1,0 +1,321 @@
+<html>
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="css/font-awesome-4.1.0/css/font-awesome.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Raleway:400,100' rel='stylesheet' type='text/css'>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('.center-panel').fadeIn(1000, function(){
+                    $('.header').animate({"padding-top":"0px"}, 600, function(){
+                        $('#ul-wrapper').fadeIn(800);
+                    });
+                });
+                $('#sign_up').click(function(){
+                    $('.center-panel').animate({"left":"-25%"}, 600);
+                    $('#sign_up-panel').animate({"left":"37.5%"}, 600);
+                });
+                $('a#login').click(function(){
+                    $('.center-panel').animate({"left":"100%"}, 600);
+                    $('#login-panel').animate({"left":"37.5%"},600);
+                });
+                $('a#demo').click(function(){
+                    $('.center-panel').animate({"left":"-25%"}, 600);
+                    $('#demo-panel').animate({"left":"37.5%"},600);
+                });
+                $('.back-container').click(function(){
+                    $('.center-panel').animate({"left":"37.5%"}, 600);
+                    $('#sign_up-panel').animate({"left":"115%"}, 600);
+                    $('#login-panel').animate({"left":"-40%"}, 600);
+                    $('#demo-panel').animate({"left":"115%"}, 600);
+                });
+
+                document.getElementById("Submit").onclick = function() 
+                {
+                    var client = document.getElementById("demo_client_options").options[document.getElementById("demo_client_options").selectedIndex].value; 
+
+                    var link = client + "?" + document.getElementById("Room").value + "&" + document.getElementById("Name").value; 
+
+                    window.location.href = link;
+                }
+
+            });
+        </script>
+        <style type="text/css">
+            html,body
+            {
+                font-family:"Raleway", "sans-serif";
+                font-weight:300;
+                -webkit-font-smoothing:antialiased;
+                color:#42A6F3;
+                min-height: 400px;
+                min-width: 1171px;
+                overflow:hidden;
+            }
+            .center-panel
+            {
+                position:absolute;
+                display:none;
+                left:37.5%;
+                top: 25%;
+                height:40%;
+                width:25%;
+                text-align:center;
+                font-size:100px;
+            }
+            #login-panel
+            {
+                z-index: 1;
+                position:absolute;
+                left:-40%;
+                top: 25%;
+                height:40%;
+                width:25%;
+                background-color:white;
+                text-align: center;
+            }
+            #sign_up-panel
+            {
+                z-index: 1;
+                position:absolute;
+                left:115%;
+                top: 25%;
+                height:40%;
+                width:25%;
+                background-color:white;
+                text-align: center;
+            }
+            #demo-panel
+            {
+                z-index: 1;
+                position:absolute;
+                left:115%;
+                top: 25%;
+                height:247px;
+                width:342px;
+                background-color:white;
+                text-align: center;
+            }
+            .header
+            {
+                padding-top:50px;   
+            }
+            .header a
+            {
+                cursor:pointer;
+            }
+            #ul-wrapper
+            {
+                display:none;   
+            }
+            .center-panel ul
+            {
+                padding:0px;
+                margin:0px;
+                background-color:blue;
+            }
+            .center-panel ul li
+            {
+                float:right;
+                width:50%;
+                height:100px;
+            }
+            .top-panel
+            {
+                position:absolute;
+                width:100%;
+                height:50px;
+                text-align: right;
+                font-weight:300;
+            }
+            .pad
+            {
+                height:30%;
+                width:100%;
+                //background-color:black;
+            }
+            .pad2
+            {
+                height:10%;
+                width:100%;
+            }
+            .pad3
+            {
+                height:50%;
+                width:100%;
+            }
+            .c1
+            {
+                height:40%;
+                width:100%;
+                font-size:30px;
+                font-weight:400;
+            }
+            .c1 a
+            {
+                cursor:pointer;
+            }
+            
+            .dynamic-header
+            {
+                //margin-left:20px;
+                font-size:70px;
+                font-weight:400;
+            }
+            form
+            {
+                font-size:20px;
+                margin-left:20px;   
+                font-weight: 400;
+            }
+            form#x
+            {
+                margin-left:-60px;   
+            }
+            [type|=text],[type|=password], select
+            {
+                margin-top:-100px;
+                border:1px solid #aaa;
+                height:20px;
+            }
+
+            .demo-select
+            {
+                width: 143px;
+            }
+
+            input:focus
+            {
+                outline:0;
+            }
+            .back-container
+            {
+                position:absolute;
+                text-align: left;
+                font-size:40px;
+                cursor:pointer;
+                height:100%;
+                width:15%;
+            }  
+            .back-button
+            {
+                height:5%;   
+            }
+            .login-back
+            {
+                left:100%;
+                text-align: right;
+            }
+            .sign_up-back
+            {
+                left:-15%;
+            }
+            .footer
+            {
+                position:fixed;
+                bottom:0px;
+                height:60px;
+                font-size:15px;
+                font-weight:300;
+            }
+            .demo-submit-button
+            {
+                cursor:pointer;
+            }
+
+        </style>
+    </head>
+    
+    <body>
+        <div class="center-panel">
+            <div class="header"><a>Chalk</a></div>
+            <div class="pad2"></div>
+            <div id="ul-wrapper">
+                <ul>
+                    <li>
+                        <div class="pad"></div>
+                            <div class="c1" style="display: none;">
+                                <a id="sign_up" >Sign Up</a>
+                            </div>
+                        <div class="pad"></div>
+                    </li>
+                    <li>
+                        <div class="pad"></div>
+                            <div class="c1" style="display: none;">
+                                <a id="login">Log in</a>
+                            </div>
+                        <div class="pad"></div>
+                    </li>
+                </ul>
+                <div class="pad"></div>
+                            <div class="c1">
+                                <a id="demo" >Demo</a>
+                            </div>
+                        <div class="pad"></div>
+                </div>
+        </div>
+        <div id="login-panel">
+            <div class="back-container login-back">
+                <div class="pad3"></div>
+                    <div class="back-button"></div><i class="fa fa-chevron-right"></i>
+                <div class="pad3"></div>
+            </div>
+            <div class="dynamic-header">
+                Log In
+            </div>
+            <form>
+                <div class="pad2"></div>
+                <label> Username: </label> <input type="text"/>
+                <div class="pad2"></div>
+                <label> Password: </label> <input type="password"/>
+            </form>
+        </div>
+        <div id="sign_up-panel">
+            <div class="back-container sign_up-back">
+                <div class="pad3"></div>
+                    <div class="back-button"></div><i class="fa fa-chevron-left"></i>
+                <div class="pad3"></div>
+            </div>
+            <div class="dynamic-header">
+                Sign Up
+            </div>
+            <form>
+                <div class="pad2"></div>
+                <label> Username: </label> <input type="text"/>
+                <div class="pad2"></div>
+                <label> E-mail: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> <input type="text"/>
+                <div class="pad2"></div>
+                <label> Password: </label> <input type="password"/>
+            </form>
+        </div>
+        <div id="demo-panel">
+             <div class="back-container sign_up-back">
+                <div class="pad3"></div>
+                    <div class="back-button"></div><i class="fa fa-chevron-left"></i>
+                <div class="pad3"></div>
+            </div>
+            <div class="dynamic-header">
+                Demo
+            </div>
+            <form>
+                <div class="pad2"></div>
+                <label> Client Type: </label> 
+                <select class="demo-select" id="demo_client_options">
+                    <option value="indexStudent.html">Student</option>
+                    <option value="indexTeacher.html">Teacher</option>
+                    <option value="indexWhiteboard.html">Projector</option>
+                </select>
+                <div class="pad2"></div>
+                <label> Room ID: &nbsp;&nbsp;&nbsp;</label> <input type="text" id="Room"/>
+                <div class="pad2"></div>
+                <label> Name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> <input type="text" id="Name"/>
+                <div class="pad2"></div>
+                <div class="demo-submit-button" id="Submit"> Submit </div>
+            </form>
+        </div>
+        <div class="footer">
+            Diagraphic Technologies &copy;
+            <br>
+            By: Amol Kapoor, Kunal Nabar, Eric Klawitter, Maulin Hemani, Derek Hong
+        </div>
+    </body>
+</html>

@@ -13,6 +13,11 @@
 	//current page of teacher
 	var TeacherPage = 0;
 	
+	var MouseTeacherX, MouseTeacherY;
+	
+	//note: highlightcanvas can be drawn on, even though it is not ever rendered
+	HighlightCanvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, 0, 0, 0, true);
+	
 	//Differences between student and teacher
 	//var PageDifference = 0;
 	
@@ -34,7 +39,7 @@
 
 	//color
 	CanvasInfoTeacher[0].context.strokeStyle = "#A8A8A8";
-
+	
 	//size
 	CanvasInfoTeacher[0].context.lineWidth = 5;
 
@@ -46,7 +51,6 @@
 	var StudentLayer = document.getElementById('StudentLayer');
 	
 	//sets default marker styling 
-	CanvasInfo[0] = {};
 	CanvasInfo[0].context = StudentLayer.getContext("2d");
 	CanvasInfo[0].canvas = StudentLayer;
 
@@ -54,15 +58,13 @@
 
 	//color
 	CanvasInfo[0].context.strokeStyle = "#000000";
-	BackUpColor = CanvasInfo[0].context.strokeStyle; 
-
+	BackUpPen.color = PaintType.color = CanvasInfo[0].context.strokeStyle; 
+		
 	//size
 	CanvasInfo[0].context.lineWidth = 5;
-	BackUpSize = CanvasInfo[0].context.lineWidth;
 
 	//cap style
 	CanvasInfo[0].context.lineCap = "round";
-	BackUpCap = CanvasInfo[0].context.lineCap;
 	
 	
 	
@@ -81,68 +83,6 @@
 		}	
 	}
 	
-	
-	/***Draw Events; binds mouse click to dragstart (click), drag (click+move), and dragend (release)*********************/
-	//uses plugin
-	$(document).on("dragstart", ".drag", function(ev, dd){
-		
-		x = (ev.pageX-120)*MaxZoom/GlobalScale; 
-		y = (ev.pageY)*MaxZoom/GlobalScale; 
-		
-		if(!ShapeAdjust)
-			//calls the drag start event
-			draw(x, y, "dragstart", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		else
-			adjustShape(x, y, "dragstart", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-
-		MouseX = x;
-		MouseY = y; 
-	});
-	
-	$(document).on("drag", ".drag", function(ev, dd){
-				
-		x = (ev.pageX-120)*MaxZoom/GlobalScale; 
-		y = (ev.pageY)*MaxZoom/GlobalScale; 
-
-		if(!ShapeAdjust)
-			//calls the drag start event
-			draw(x, y, "drag", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		else
-			adjustShape(x, y, "drag", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		
-		MouseX = x;
-		MouseY = y; 
-	});
-	
-	$(document).on("dragend",".drag",function(ev, dd){
-
-		x = (ev.pageX-120)*MaxZoom/GlobalScale; 
-		y = (ev.pageY)*MaxZoom/GlobalScale; 
-		
-		if(!ShapeAdjust)
-			//calls the drag start event
-			draw(x, y, "dragend", true, MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		else
-			adjustShape(x, y, "dragend", MouseX, MouseY, CanvasInfo[CurrentPage].context, CurrentPage, false);		
-		
-		MouseX = x;
-		MouseY = y; 
-	});
-	
-/****************************MODES***********************************/
-
-	document.getElementById("Drag").onclick = function()
-	{
-		dragMode();
-	}
-	
-	document.getElementById("toolbar").onclick = function()
-	{
-		if (DragMode)
-		{
-			dragMode();
-		}
-	}
 
 /********************************************************************************************
   Random Tools 
@@ -159,73 +99,35 @@
 		window.scrollTo(0, window.pageYOffset);
 	}
 	
-	/**Copy/Paste + Pan**************************************/	
-	
-	document.getElementById("Copy").onclick = function()
-	{
-		ToolType = "Copy";
-	}
-	
-	document.getElementById("Pan").onclick = function()
-	{
-		ToolType = "Pan";
-	}
-	
-	/*********************Shapes***********************************/
-
-	document.getElementById("Box").onclick = function(){
-		ToolType = "Box";
-	}	
-	
-	document.getElementById("Line").onclick = function(){
-		ToolType = "Line";
-	}	
-	
-	document.getElementById("Circle").onclick = function(){
-		ToolType = "Circle";
-	}	
-	
-	
-	/***Color Change and Size***/ 
-
+	/**	Colors **/
 	//Red
 	document.getElementById("Red").onclick = function(){
-		changeStyle("#990000", "source-over", 5);
+		changeStyle("#cc0000", "Red");
 		};
 		
 	//Blue
 	document.getElementById("Blue").onclick = function(){
-		changeStyle("#000099", "source-over", 5);};
+		changeStyle("#0000cc", "Blue");};
 		
 	//Yellow
 	document.getElementById("Yellow").onclick = function(){
-		changeStyle("#999900", "source-over", 5);};
+		changeStyle("#cccc00", "Yellow");};
 		
 	//Green
 	document.getElementById("Green").onclick = function(){
-		changeStyle("#009900", "source-over", 5);};
+		changeStyle("#00cc00", "Green");};
 		
 	//Purple
 	document.getElementById("Purple").onclick = function(){
-		changeStyle("#990099", "source-over", 5);};
+		changeStyle("#44146f", "Purple");};
 		
 	//Orange
 	document.getElementById("Orange").onclick = function(){
-		changeStyle("#996300", "source-over", 5);};
+		changeStyle("#cc8400", "Orange");};
 		
 	//Black
 	document.getElementById("Black").onclick = function(){
-		changeStyle("#000000", "source-over", 5);};
-
-	//Black
-	document.getElementById("Paint").onclick = function(){
-		changeStyle("#000000", "source-over", 5);};
-	
-	
-	//Erase
-	document.getElementById("Eraser").onclick = function(){
-		changeStyle("rgba(0,0,0,1)", "destination-out", 70);}; 
-
+		changeStyle("#000000", "Black");};
 	
 /**Extend ************************************************************************/
 	
@@ -251,9 +153,11 @@
 			document.body.appendChild(CanvasInfo[CurrentPage].canvas);
 		}
 		
-		var TotalPages = CanvasInfo.length-1;
+		var TotalPages = CanvasInfo.length;
+		
+		var CurrentPagesTemp = CurrentPage + 1;
 
-		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 	}
 	
 	document.getElementById("PageUp").onclick = function()
@@ -268,7 +172,7 @@
 		}
 		
 		changePage(true);		
-				
+		
 		//saves previous page (not new page) on pageup/down		
 		if(window.auth)
 		{
@@ -306,7 +210,7 @@
 		}
 		
 		changePage(false);
-								
+			
 		//saves previous page (not new page) on pageup/down		
 		if(window.auth)
 		{
@@ -346,86 +250,19 @@
 		return TempCanvas;
 	}
 
-	document.getElementById("LogIn").onclick = function()
-	{
-		//if you're already logged in...
-		if(Auth)	
-		{
-			//confirm logout intent
-			var check = prompt("Are you sure you want to log out? (Y/N)", "N");
-			
-			if (check.toLowerCase() == "n")
-			{
-				return;
-			}
-			else //Could be risky if its not a direct yes
-			{
-				logout();
-			}
-		}
-		//if not already logged in...
-		else
-			//requests login info, and calls the login function handler on callback
-			gapi.auth.authorize(
-			           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
-			           login);
-		
-	}
-	
 
-	/**
-	 * Checks if the user has already logged in. If he hasn't, asks for login confirmation. 
-	 * 
-	 * Either way, begins the save flow. 
-	 * 
-	 * @Param: "Save"; String; ID of DOM element that begins save callback
-	 */
-	document.getElementById("Save").onclick = function()
-	{
-		//gets the save file name from the user if they want a different one; pastname is the previous save name
-		var name = prompt("Please enter the name of the file (note: only saves current page)", PastName);
-		
-		if (name != null)
-			PastName = name;
-		
-		if (Auth == false) //if not already logged in
-		{
-			//requests login
-			gapi.auth.authorize(
-			           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
-			           login);
-		}
-		else
-			Save(true, null,CanvasInfo[CurrentPage].canvas);
-	};
-
-	
-	document.getElementById('Open').onclick = function () 
-	{
-		if (Auth == false) //if not already logged in
-		{
-			//requests login
-			gapi.auth.authorize(
-			           {'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
-			           login);
-		}
-		else
-			createPicker(); 
-
-	}
-	
 /*********UPDATE Student*********************************************************************/
 		
-	document.getElementById("Update").onclick = function()
-	{
-		SelfUpdating = true;
-		socket.emit('CommandToTeacher', 
-		{
-			ToolType: "Update"
-		});
-	}
+	// document.getElementById("Update").onclick = function()
+	// {
+	// 	SelfUpdating = true;
+	// 	socket.emit('CommandToTeacher', 
+	// 	{
+	// 		ToolType: "Update"
+	// 	});
+	// }
 	
-/**Undo and Redo***********************************************************************/    
+/**Undo and Redo***********************************************************************/   
 
 	//pops last part of undo list and redraws entire page from scratch
 	document.getElementById("Undo").onclick = function()
@@ -434,11 +271,11 @@
 		clearSaveTimer();
 		
 		//pops last undo command to redo, calls redraw
-		if (UndoList.length > 0)
+		if (CanvasInfo[CurrentPage].UndoList.length > 0)
 		{
-			RedoList.push(UndoList.pop());
+			CanvasInfo[CurrentPage].RedoList.push(CanvasInfo[CurrentPage].UndoList.pop());
 			
-			redrawUndo(UndoList, CanvasInfo[CurrentPage]);
+			redrawUndo(CanvasInfo[CurrentPage].UndoList, CanvasInfo[CurrentPage]);
 		}
 		
 		startSave();
@@ -450,10 +287,10 @@
 		clearSaveTimer();
 		
 		//pops last redo command to undo, calls redraw
-		if (RedoList.length > 0)
+		if (CanvasInfo[CurrentPage].RedoList.length > 0)
 		{
-			UndoList.push(RedoList.pop());
-			redrawUndo(UndoList, CanvasInfo[CurrentPage]);
+			CanvasInfo[CurrentPage].UndoList.push(CanvasInfo[CurrentPage].RedoList.pop());
+			redrawUndo(CanvasInfo[CurrentPage].UndoList, CanvasInfo[CurrentPage]);
 		}
 		
 		startSave();
@@ -465,56 +302,50 @@
 	
 	document.getElementById("MoveToTeacher").onclick = function()
 	{		
-		document.body.removeChild(CanvasInfo[CurrentPage].canvas);
-		document.body.removeChild(CanvasInfoTeacher[CurrentPage].canvas);
-				
-		document.body.appendChild(CanvasInfoTeacher[TeacherPage].canvas);
-		document.body.appendChild(CanvasInfo[TeacherPage].canvas);
+		if(TeacherPage != CurrentPage)
+		{
+			document.body.removeChild(CanvasInfo[CurrentPage].canvas);
+			document.body.removeChild(CanvasInfoTeacher[CurrentPage].canvas);
+					
+			document.body.appendChild(CanvasInfoTeacher[TeacherPage].canvas);
+			document.body.appendChild(CanvasInfo[TeacherPage].canvas);
+		}
 		
 		CurrentPage = TeacherPage;
 		
-		var TotalPages = CanvasInfo.length-1;
+		var TotalPages = CanvasInfo.length;
+		
+		var CurrentPagesTemp = CurrentPage + 1;
 
-		document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 
 		window.scrollTo(MouseTeacherX - window.innerWidth/2, MouseTeacherY - window.innerHeight/2); 
 	}
 	
 
-	/**********************ZOOMING*****************************************************/
-		
-		document.getElementById("ZoomIn").onclick = function()
-		{
-			if (GlobalScale < MaxZoom)
-				GlobalScale++;
-			else
-				return;
 
-			Zoom(GlobalScale);
-		}
-		
-		document.getElementById("ZoomOut").onclick = function()
-		{
-			if (GlobalScale > 1)
-				GlobalScale--;
-			else
-				return;
-
-			Zoom(GlobalScale);
-		}
 		
 	/************************Push Notifications**************************************/
 		
-//		document.getElementById("Push").onclick = function()
-//		{
-//			var note = prompt("Write what you want to send to the presenter here:");
-//			
-//			socket.emit('CommandToStudent', 
-//			{
-//				ToolType: "Notification",
-//				PushText: note
-//			});
-//		}	
+		document.getElementById("Push").onclick = function()
+		{
+			$("#PromptText").html("Write what you want to send to the presenter here:");
+			document.getElementById("PromptInput").value = "";
+
+			document.getElementById("Prompt_Accept").onclick = function()
+			{
+				var note = document.getElementById("PromptInput").value;
+				socket.emit('CommandToTeacher', 
+				{
+					ToolType: "Notification",
+					PushText: note,
+					Name: Name
+				});
+			};
+
+			$("#PromptBox").fadeIn(250);
+		}	
+
 	
 	
 /********************************************Handles all communication**************************************************/
@@ -528,13 +359,35 @@
 			MouseTeacherX = data.x; 
 			MouseTeacherY = data.y;
 			
-			CanvasInfoTeacher[TeacherPage].context.strokeStyle = data.color;
-			CanvasInfoTeacher[TeacherPage].context.lineWidth = data.size;
-			CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
+			if(data.opacity && data.opacity != 1.0) //highlighter
+			{
+				CanvasInfoTeacher[TeacherPage].context.save();
+				CanvasInfoTeacher[TeacherPage].context.globalAlpha = data.opacity;
+				CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
 
-			CanvasInfoTeacher[TeacherPage].context.globalAlpha = data.opacity; 
-						
-		    draw(data.x, data.y, data.type, false, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
+				HighlightCanvas.getContext("2d").strokeStyle = data.color; 
+				HighlightCanvas.getContext("2d").lineWidth = data.size;
+				
+
+				//not_self(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
+				not_self(data.x, data.y, data.type, data.lastX, data.lastY, HighlightCanvas.getContext("2d"), TeacherPage);
+				
+				if(data.type == "dragend")
+				{
+					CanvasInfoTeacher[TeacherPage].context.drawImage(HighlightCanvas, 0, 0);
+					clear(true, HighlightCanvas.getContext("2d"));
+					CanvasInfoTeacher[TeacherPage].context.restore();
+				}
+			}
+			else
+			{
+				CanvasInfoTeacher[TeacherPage].context.strokeStyle = data.color;
+				CanvasInfoTeacher[TeacherPage].context.lineWidth = data.size;
+				CanvasInfoTeacher[TeacherPage].context.globalCompositeOperation = data.erase; 
+				CanvasInfoTeacher[TeacherPage].context.globalAlpha = 1.0;
+
+				not_self(data.x, data.y, data.type, data.lastX, data.lastY, CanvasInfoTeacher[TeacherPage].context, TeacherPage);
+			}
 		}
 		else if (data.ToolType == "Extend")
 		{
@@ -547,72 +400,58 @@
 			CanvasInfo.push({}); 
 			CanvasInfo[CanvasInfo.length - 1].context = context; 
 			CanvasInfo[CanvasInfo.length - 1].canvas = canvas; 
-			
+			CanvasInfo[CanvasInfo.length - 1].UndoList = new Array(); 
+			CanvasInfo[CanvasInfo.length - 1].RedoList = new Array(); 
+
 			CanvasInfoTeacher.push({}); 
 			CanvasInfoTeacher[CanvasInfoTeacher.length - 1].context = contextT; 
 			CanvasInfoTeacher[CanvasInfoTeacher.length - 1].canvas = canvasT; 
 			
-			var TotalPages = CanvasInfo.length-1;
+			var TotalPages = CanvasInfo.length;
+			
+			var CurrentPagesTemp = CurrentPage + 1;
 
-			document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
+			document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
 		}
-		else if (data.ToolType == "Update")
-		{			
-			if (SelfUpdating || data.type)
-			{
-				for (var i = 0; i < data.TotalPages; i++)
-				{
-					if(!CanvasInfo[i])
-					{
-						var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, 0, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
-						var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+		// else if (data.ToolType == "Update")
+		// {			
+		// 	if (SelfUpdating || data.type)
+		// 	{
+		// 		for (var i = 0; i < data.TotalPages; i++)
+		// 		{
+		// 			if(!CanvasInfo[i])
+		// 			{
+		// 				var canvas = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -1, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
+		// 				var canvasT = createCanvas(CanvasPixelHeight, CanvasPixelWidth, -2, 0, 0, true, null, null, CanvasHeight, CanvasWidth);
 						
-						CanvasInfo[i] = {};
-						CanvasInfoTeacher[i] = {};
+		// 				CanvasInfo[i] = {};
+		// 				CanvasInfoTeacher[i] = {};
 						
-						CanvasInfo[i].context = canvas.getContext("2d");
-						CanvasInfo[i].canvas = canvas; 
+		// 				CanvasInfo[i].context = canvas.getContext("2d");
+		// 				CanvasInfo[i].canvas = canvas; 
 						
-						CanvasInfoTeacher[i].context = canvasT.getContext("2d");
-						CanvasInfoTeacher[i].canvas = canvasT; 
-					}		
+		// 				CanvasInfoTeacher[i].context = canvasT.getContext("2d");
+		// 				CanvasInfoTeacher[i].canvas = canvasT; 
+		// 			}		
 					
-					if (data.ImgData[i])
-					{
-						var img = new Image();
-						
-						img.src = data.ImgData[i];
-						CanvasInfoTeacher[i].context.drawImage(img,0,0);
-					}
-				}
+		// 			if (data.ImgData[i])
+		// 			{		
+		// 				redrawUndo(data.ImgData[i], CanvasInfoTeacher[i]);
+		// 			}
+		// 		}
 				
-				var TotalPages = CanvasInfo.length-1;
+		// 		var TotalPages = CanvasInfo.length;
+						
+		// 		var CurrentPagesTemp = CurrentPage + 1;
 	
-				document.getElementById("PageNumber").innerHTML = CurrentPage + " of " + TotalPages;
-			}			
-		}
-		else if (data.ToolType == "Undo" || data.ToolType == "UndoUpdate")
-		{
-			if(data.ToolType == "UndoUpdate")
-				if (!(data.type || SelfUpdating) )
-				{
-					return;
-				}
-			
+		// 		document.getElementById("PageNumber").innerHTML = CurrentPagesTemp + " of " + TotalPages;
+		// 	}			
+		// }
+		else if (data.ToolType == "Undo")
+		{			
 			var UndoListTeacher = JSON.parse(data.UndoList);
-			
-			//if theres a previously stored image
-			if (data.ImgData)
-			{
-				var img = new Image();
-				img.src = data.ImgData;
-				CanvasInfoTeacher[data.PageNumber].image = img;
-			}
 				
 			redrawUndo(UndoListTeacher, CanvasInfoTeacher[data.PageNumber]);
-			
-			if(data.ToolType == "UndoUpdate")
-				SelfUpdating = false;
 		}
 		else //shapes
 		{
@@ -658,17 +497,31 @@
 				{
 					CanvasInfoTeacher[TeacherPage].context.clearRect(data.PanX, data.PanY, data.PanWidth, data.PanHeight);
 				}
-							
+						
+				CanvasInfoTeacher[TeacherPage].context.save();
+				CanvasInfoTeacher[TeacherPage].context.globalAlpha = 1.0;
+
 				CanvasInfoTeacher[TeacherPage].context.drawImage(CanvasStore, data.ShapeStartX, data.ShapeStartY);
+
+				CanvasInfoTeacher[TeacherPage].context.restore();
 			}
 			else if (data.ToolType == "Image")
 			{
 				var img = new Image();
-				img.src = data.ImgData;
 				img.onload = function()
 				{
 					CanvasInfoTeacher[TeacherPage].context.drawImage(img, 0, 0);
 				}
+				img.src = data.ImgData;
+			}
+			else if (data.ToolType === "TextMode")
+			{
+				data.StartPositionX = data.ShapeStartX;
+				data.StartPositionY = data.ShapeStartY;
+				data.EndPositionX = data.Panx;
+				data.EndPositionY = data.Pany; 
+				
+				wrapTextObj(data, CanvasInfoTeacher[TeacherPage].context);
 			}
 		}
 		

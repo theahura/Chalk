@@ -43,3 +43,7 @@ Note: Div to store username + div to store google drive login account name
 Unreplicated glitches: 
 Socket.io would randomly add users (teacher) back into the same room but without ability to draw
 Random copy issue with dotted line saving and replicating over
+
+Next update:
+To Presenter Zoom Glitch
+Check cabral's stuff
