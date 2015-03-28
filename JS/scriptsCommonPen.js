@@ -594,7 +594,10 @@ function adjustShape(x, y, type, lastX, lastY, context, pageNumber, isTeacher)
 	if(type === "dragstart")
 	{
 		if (box)
+		{
 			saveBox(box, CanvasInfo[CurrentPage].context, CurrentPage, IsTeacher);
+			return
+		}
 
 		box = document.createElement('textarea'); // creates the element
 	    box.id = "activeBox";

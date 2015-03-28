@@ -312,6 +312,8 @@
 		}
 		
 		CurrentPage = TeacherPage;
+
+		Zoom(GlobalScale);
 		
 		var TotalPages = CanvasInfo.length;
 		
