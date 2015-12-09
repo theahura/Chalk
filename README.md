@@ -9,7 +9,10 @@ Client 1: Teacher
 Client 2: Student
 
 Client 3: Whiteboard
+
+
 ========================================
+
 Teacher is the head whiteboard. All data the teacher writes on his whiteboard is transmitted through the backend to student and whiteboard.
 
 Student is reciever. It listens for any command broadcast by the teacher and writes the same output accordingly. 
@@ -23,5 +26,4 @@ the corresponding layer on the other end as necessary.
 Each class session maintains a global update list, which contains all details of what the teacher has drawn. Each student maintains a 
 local undo/redo list. 
 
-Drive integration is built in and isolated. Treats canvases as images, and loads images from drive. 
-
+Drive integration is built in and isolated. Treats canvases as images, and loads images from drive.
