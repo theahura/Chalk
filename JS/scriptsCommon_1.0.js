@@ -172,7 +172,8 @@
 	var CanvasPixelWidth = 2000;
 	
 	//Type: Socket; used to transfer data/commands to the student
-	socket = io('http://54.86.173.127:3000');
+	socket = io('http://54.164.115.173:3000');
+
 	//socket = io();
 	
 	var IsWhiteboard = false;
